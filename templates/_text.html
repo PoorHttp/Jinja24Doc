@@ -1,0 +1,38 @@
+      <menu class="sidebar">
+        {% if page == 'jinja24doc' %}<h2><a href="#Usage">How to use</a></h2>{% endif %}
+    {% for type, name, args, doc in sects %}
+        {% if type == 'h2' %}<h2><a href="#{{ name }}">{{ name }}</a></h2>
+        {% elif type == 'h3' %}<h3><a href="#{{ name }}">{{ name }}</a></h3>
+        {% endif %}
+    {% endfor %}
+      </menu><!-- sidebar --!>
+
+    <div class="content">
+    {% if page == 'jinja24doc' %}
+      <h2>How to use
+        <span class="links">
+          <a name="{{ name }}" href="#Usage">link</a> |
+          <a href="#">top</a></span></h2>
+      <div>{{ wiki(api[0][3]) }}</div>
+    {% endif %}
+    {% for type, name, args, doc in sects %}
+      {% if type == 'h2' %}
+      <h2>{{ name }}
+        <span class="links">
+          <a name="{{ name }}" href="#{{ name }}">link</a> |
+          <a href="#">top</a></span></h2>
+      {% elif type == 'h3' %}
+      <h3>{{ name }}
+        <span class="links">
+          <a name="{{ name }}" href="#{{ name }}">link</a> |
+          <a href="#">top</a></span></h3>
+      {% elif type == 'h4' %}
+      <h4>{{ name }}
+        <span class="links">
+          <a name="{{ name }}" href="#{{ name }}">link</a> |
+          <a href="#">top</a></span></h4>
+      {% elif type == 'text' %}
+      <div>{{ wiki(doc) }}</div>
+      {% endif %}
+    {% endfor %}
+    </div><!-- content --!>
