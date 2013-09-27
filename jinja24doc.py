@@ -425,7 +425,14 @@ def load_text(textfile):    # jinja function
     """
     doc = []
     tmp = ''
-    with open (textfile, 'r') as f:
+    x_textfile = ''
+    for path in paths:
+        if os.access(path+'/'+textfile, os.R_OK):
+            x_textfile = path+'/'+textfile
+    if not x_textfile:
+        _usage('Access denied to %s' % fname)
+
+    with open (x_textfile, 'r') as f:
         for line in f:
             match = re_section4.search(line) or re_section3.search(line) or \
                     re_section2.search(line) or re_section1.search(line)
@@ -499,17 +506,21 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         _usage('Not enough arguments')
 
+    if len(sys.argv) > 2:
+        paths = sys.argv[2].split(':')
+    else:
+        paths = [os.path.abspath(os.path.dirname(fname))]
+
     fname = sys.argv[1]
-    if not os.access(fname, os.R_OK):
+    for path in paths:
+        if os.access(path+'/'+fname, os.R_OK):
+            x_fname = path+'/'+fname
+
+    if not x_fname:
         _usage('Access denied to %s' % fname)
 
-    if len(sys.argv) > 2:
-        path = sys.argv[2]
-    else:
-        path = os.path.abspath(os.path.dirname(fname))
-
     try:
-        sys.stdout.write(_generate(fname, path).encode('utf-8'))
+        sys.stdout.write(_generate(fname, paths).encode('utf-8'))
     except:
         traceback = format_exception(sys.exc_type,
                                  sys.exc_value,
