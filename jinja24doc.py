@@ -64,10 +64,10 @@ re_bold     = re.compile(r"\*(.*?)\*")                              # * bold *
 re_italic   = re.compile(r"/(.*?)/")                                # / italic /
 re_code     = re.compile(r"{(.*?)}")                                # { code }
 
-re_section1 = re.compile(r"^(\s*={1})([^=]+)(={1}\s*)")
-re_section2 = re.compile(r"(\s*={2})(.*?)(={2}\s*)")
-re_section3 = re.compile(r"(\s*={3})(.*?)(={3}\s*)")
-re_section4 = re.compile(r"(\s*={4})(.*?)(={4}\s*)")
+re_section1 = re.compile(r"^(={1})([^=]+)(={1}\s*)")
+re_section2 = re.compile(r"^(={2})(.*?)(={2}\s*)")
+re_section3 = re.compile(r"^(={3})(.*?)(={3}\s*)")
+re_section4 = re.compile(r"^(={4})(.*?)(={4}\s*)")
 
 re_header2  = re.compile(r"==(.*?)==")                              # = head3 =
 re_header3  = re.compile(r"===(.*?)===")                            # = head3 =

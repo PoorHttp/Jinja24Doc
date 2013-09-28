@@ -131,9 +131,8 @@ a:active {
     font-size: 11pt;
 }
 
-h2 {
+h1, h2 {
     color: #b02c29;
-    /*color: #cc0000;*/
 } 
 h2 > i {
     font-size: 70%;
@@ -216,6 +215,7 @@ pre {
     background-color: #ddd;
     border: 1px dotted gray;
     border-radius: 6px 6px 6px;
+    overflow: auto;
 }
 pre > b {
     color: #b02c29;
