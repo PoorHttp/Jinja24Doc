@@ -14,7 +14,7 @@ if not path.exists('build/_html_'):
 call(['./jinja24doc.py', '_jinja24doc.html', 'templates:doc'],
                         stdout=file('build/_html_/index.html', 'w'))
 call(['./jinja24doc.py', '_jinja24doc_api.html', 'templates:doc'],
-                        stdout=file('build/_html_/jinja24dlc_api.html', 'w'))
+                        stdout=file('build/_html_/jinja24doc_api.html', 'w'))
 call(['./jinja24doc.py', '_licence.html', 'templates:doc'],
                         stdout=file('build/_html_/licence.html', 'w'))
 copyfile('templates/style.css', 'build/_html_/style.css')

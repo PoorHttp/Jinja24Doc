@@ -28,10 +28,37 @@ than one module on one page, you can join api variable from both of them.
     {% set api = load_module('first_module') %}
     {% set api = api + load_module('second_module') %}
     {% set _noval = keywords(api, 'api_page.html') %}
-    {% wiki(api[0][3]) %}
+    {{ wiki(api[0][3]) }}
 
 There are two hidden functions, which is add to jinja2 template globals:
-{truncate} and {lenght} as back compatibility for old jinja2 versions.
+{truncate} and {length} as back compatibility for old jinja2 versions.
+
+== Data structure ==
+
+The documentation list which returns functions load_module and load_text
+looks like that:
+
+    ((type, name, args, documentation),)    # all values are strings
+
+Of course, some items don't have all values, so on their place is None or
+another value, typical for their type. Next list is typical for load_module
+function.
+
+    (('module', 'name', None, documentation),
+     ('submodule', 'name', None, ''),   # submodule don't have documentation
+     ('class', 'ClassName', None, documentation),
+     ('method', 'ClassName.name', args, documentation)),
+     ('function', 'name', args, documentation),
+     ('variable', 'name', value, ''))   # variable have value instead of arguments
+                                        # and can't have documentation yet
+
+For load_text function is this typical list:
+
+    (('h1', 'title', None, ''),     # = title =
+     ('h2', 'title', None, ''),     # == title ==
+     ('h3', 'title', None, ''),     # === title ===
+     ('h4', 'title', None, ''),     # ==== title ====
+     ('text', '', None, 'text to end or next header'))
 
 == Writing documentation ==
 
@@ -40,6 +67,36 @@ python native tools. Documentation which is gets from pytnon elements is read
 with inspect.getdoc function. This function reads element.__doc__ variable, so
 this variable is fill by creating comment in element definition.
 
+    """
+        This could be nice documentation for all python module.
+    """
+
+    def boo():
+        """ This is one line documentation """
+
+    class Foo:
+        """ This is more line documentation 
+            of this nice class.
+        """
+
+    class Goo:
+        """
+        This is another way of more line documentation
+        of this nice class.
+        """
+
+Problem could be variables. Jinja24Doc (and python documentation system) cant
+set documentation for variable. But some documentation system, and jinja2doc
+too have some special mechanisms how to get variable documentation. Jinja24Doc
+looks for previous line of first variable definition. So you can create
+one-line documentation make by comments.
+
+    # this is comment ehmm documentation for this nice new instance
+    foo = Foo()
+
+    # this is not documentation for foo, because this is second definition of
+    # it
+    foo = Goo()
 
 == Get jinja2doc ==
 ==== Source tarbal ====
@@ -52,9 +109,9 @@ this variable is fill by creating comment in element definition.
 
 
     #!text
-    ~$ git clone git://git.code.sf.net/p/poorhttp/git poorhttp-git
+    ~$ git clone git://git.code.sf.net/p/poorhttp/jinja24doc jinja24doc
     or
-    ~$ git clone http://git.code.sf.net/p/poorhttp/git poorhttp-git
+    ~$ git clone http://git.code.sf.net/p/poorhttp/jinja24doc jinja24doc
 
 ==== Install from PyPI ====
 

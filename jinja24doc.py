@@ -5,41 +5,25 @@
     WSGI/HTTP Server and mod_python connector). It could load modules and gets
     documentation for its items. No configuration is needed, only jinja2
     templates. Your or from jinja2doc package.
+    
+    Just create your {template.html} file, and add to them these too files:
+
+        #!jinja
+        {% set manual = load_module('your_python_module') %}
+        {% include '_simple.html' %}
+
+    and call the jinga24doc tool with right parameters:
 
         #!text
-        usage:
-            jinga24doc template [path]
+        jinga24doc path-to_simple.html template.html > page.html
 
-            template    - file, which will be read as jinja2 template
-            path        - jinja2 template path
+    jinga24doc program parameters:
 
-        example:
-            PYTHONPATH=path_to_python_modules jinga24doc template.html > page.html
+        #!text
+        jinga24doc template [path[:path]]
 
-    The documentation list which returns functions load_module and load_text
-    looks like that:
-
-        ((type, name, args, documentation),)    # all values are strings
-
-    Of course, some items don't have all values, so on their place is None or
-    another value, typical for their type. Next list is typical for load_module
-    function.
-
-        (('module', 'name', None, documentation),
-         ('submodule', 'name', None, ''),   # submodule don't have documentation
-         ('class', 'ClassName', None, documentation),
-         ('method', 'ClassName.name', args, documentation)),
-         ('function', 'name', args, documentation),
-         ('variable', 'name', value, ''))   # variable have value instead of arguments
-                                            # and can't have documentation yet
-
-    For load_text function is this typical list:
-
-        (('h1', 'title', None, ''),     # = title =
-         ('h2', 'title', None, ''),     # == title ==
-         ('h3', 'title', None, ''),     # === title ===
-         ('h4', 'title', None, ''),     # ==== title ====
-         ('text', '', None, 'text to end or next header'))
+        template    - file, which will be read as jinja2 template
+        path        - jinja2 template path or paths separates by colons
 
 """ 
 
@@ -75,6 +59,7 @@ _ordering   = { 'module'    : 0,
 
 re_lt       = re.compile(r"<")
 re_gt       = re.compile(r">")
+# TODO: not work on multi type on same line :(
 re_bold     = re.compile(r"\*(.*?)\*")                              # * bold *
 re_italic   = re.compile(r"/(.*?)/")                                # / italic /
 re_code     = re.compile(r"{(.*?)}")                                # { code }
@@ -99,7 +84,7 @@ re_param    = re.compile(r"(^|\n) {4}(\S*\s*)")
 
 re_source   = re.compile(r'<pre class="(\w*)">(.*?)</pre>', re.S)
 
-re_python   = re.compile(r"(\b\w+\b|\".*\"|'[^\']*'|#.*|@[\w\.]+)")
+re_python   = re.compile(r"(\b\w+\b|\"[^\"]*\"|'[^\']*'|#.*|@[\w\.]+)")
 re_jinja    = re.compile(r"(\b\w+\b|{{|}}|{%|%}|\".*\"|'[^\']*'|{#.*#})")
 re_ini      = re.compile(r"(\n\s*\w+\b|\n\s*\[.*\]|#.*)", re.M)
 
@@ -354,7 +339,9 @@ def wiki(doc):    # jinja function
             {{ wiki('/ italic text /') }}       {# <i> iatlic text </i> #}
             {{ wiki('{ code text }') }}         {# <code> code text </code> #}
 
-        Formated pre code, type could be python (/default/), jinja, ini or text:
+        Formated pre code type could be python (/default if not set/),
+        jinja, ini or text. Text type stops highlighting. Code type
+        must be on first line with hashbang prefix like in example:
                 
             #!text
             #!python
@@ -506,12 +493,14 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         _usage('Not enough arguments')
 
+    fname = sys.argv[1]
+
     if len(sys.argv) > 2:
         paths = sys.argv[2].split(':')
     else:
         paths = [os.path.abspath(os.path.dirname(fname))]
 
-    fname = sys.argv[1]
+    x_fname = None
     for path in paths:
         if os.access(path+'/'+fname, os.R_OK):
             x_fname = path+'/'+fname
