@@ -29,12 +29,15 @@ setup(
     url                 = "http://poorhttp.zeropage.cz/jinja24doc.html",
     scripts             = ['build/_scripts_/jinja24doc'],
     data_files          = [
-                ('share/doc/jinja24doc',
-                        ['doc/readme.txt', 'doc/licence.txt']),
+                ('share/doc/jinja24doc', ['doc/readme.txt', 'doc/licence.txt']),
                 ('share/doc/jinja24doc/html',
-                        ['build/_html_/*', 'templates/style.css']),
+                        ['build/_html_/index.html',
+                         'build/_html_/jinja24doc_api.html',
+                         'build/_html_/licence.html',
+                         'build/_html_/style.css']),
                 ('share/jinja24doc/templates',
-                        ['templates/*'])],
+                        ['templates/_simple.html',
+                         'templates/_simple_with_submodules.html'])],
     license             = "BSD",
     long_description    =
     """
