@@ -93,12 +93,8 @@ re_docs     = None
 _api_url     = ''
 _modules     = []
 
-def _sort_doc(a, b):
-    if _ordering[a[0]] < _ordering[b[0]]:
-        return -1
-    if _ordering[a[0]] > _ordering[b[0]]:
-        return 1
-    return cmp(a[1], b[1])
+def _key_doc(a):
+    return str(_ordering[a[0]])+a[1]
 
 
 def load_module(module):                    # jinja function
@@ -183,7 +179,7 @@ def load_module(module):                    # jinja function
                         repr(item),                                     # value
                         comment))                                       # no doc
 
-    return sorted(doc, cmp = _sort_doc)
+    return sorted(doc, key = _key_doc)
 
 
 def keywords(api, api_url = ""):      # jinja function
@@ -512,7 +508,10 @@ if __name__ == '__main__':
         _usage('Access denied to %s' % fname)
 
     try:
-        sys.stdout.write(_generate(fname, paths).encode('utf-8'))
+        data = _generate(fname, paths)
+        if not isinstance(data, str):
+            data = data.encode('utf-8')
+        sys.stdout.write(data)
     except:
         traceback = format_exception(sys.exc_type,
                                  sys.exc_value,
