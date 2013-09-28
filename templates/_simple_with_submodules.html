@@ -57,7 +57,9 @@
       {% endfor %}
 {%- endmacro %}
 
-{% set manual = load_module('jinja24doc') %}
+{% if manual is not defined %}
+    {% set manual = (('module', 'manual variable is not defined', None, ''),) %}
+{% endif %}
 {{ keywords(manual) }}
 {{ generate_doc(manual) }}
 {% for n in range(100) %} {% if length(manuals) > 0 %}

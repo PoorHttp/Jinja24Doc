@@ -21,14 +21,15 @@
   </head>
   <body>
     <div class="page">
-    {% set manual = load_module('jinja24doc') %}
+    {% if manual is not defined %}
+        {% set manual = (('module', 'manual variable is not defined', None, ''),) %}
+    {% endif %}
     {{ keywords(manual) }}
       <div class="content">
-        <h1>jinja24doc.py</h1>
       {% for type, name, args, doc in manual %}
       {% set doc = wiki(doc) %}
       {% if type == 'module' %}
-        <h2><small>module</small> {{ name }}</h2>
+        <h1><small>module</small> {{ name }}</h1>
         <div>{{ doc }}</div>
       {% elif type == 'class' %}
         <h3><small>class</small> {{name}}</h3>
@@ -51,7 +52,7 @@
       </div>
     
       <hr>
-      <small>Create by Ondřej Tůma (McBig). &copy; 2013. Generate by Jinja24doc.</small>
+      <small>Generate by <a href="http://poorhttp.zeropage.cz/jinjadoc24.html">Jinja24doc</a>.</small>
     </div><!-- page --!>
   </body>
 </html>

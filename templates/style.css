@@ -10,17 +10,16 @@ menu {
 
 .header {
     display: table;
-    width: 60em;
-}
-
-.header img {
-    padding-left: 1em;
+    width: 100%;
+    max-width: 60em;
+    min-width: 10em;
 }
 
 .header h1 {
     display: table;
     margin: 0.5em 0 0em 0.5em;
-    font-size: 160%;
+    font-size: 200%;
+    color: #000;
 }
 .header small {
     display: table;
@@ -37,8 +36,8 @@ menu {
    border-bottom: 1px dotted #fff; 
 }
 
-
 .pannel {
+    clear: both;
     padding: 0.5em 1em;
     background-color: #306900;
     background-image: linear-gradient(to bottom, #508920, #306900);
@@ -92,15 +91,22 @@ a:active {
 
 .page {
     clear: both;
-    width: 60em;
+    max-width: 60em;
     margin: 0 auto;
+    padding: 0 1em 0 1em;
 }
 
 .content {
     margin-left: 17em;
+    min-width: 16em;
 }
 .content >:first-child {
     margin-top: 0.5em;
+}
+
+@media (max-width: 560px){
+    .content { margin: 0;}
+    .sidebar { float: none;}
 }
 
 .footer {
@@ -109,6 +115,9 @@ a:active {
     color: #333;
     font-size: 80%;
     text-align: center;
+}
+.footer .credit {
+    padding: 0.5em;
 }
 .line {
     border-top: 1px solid #888;
@@ -201,7 +210,7 @@ div.method {
     padding-left: 3em;
 }
 pre {
-    font-size: 110%;
+    font-size: 10pt;
     margin: 0.5em 0 1.5em 0;
     padding: 0.5em 0 0.5em 0;
     background-color: #ddd;
@@ -220,7 +229,7 @@ pre > i {
     font-style: normal;
 }
 code {
-    font-size: 120%;
+    font-size: 11pt;
     color: #000;
 }
 code.param {
