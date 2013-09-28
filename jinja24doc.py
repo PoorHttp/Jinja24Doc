@@ -158,18 +158,11 @@ def load_module(module):                    # jinja function
                         name,                                           # name
                         formatargspec(args, vargs, kwords, defaults),   # args
                         getdoc(item) or ''))                            # doc
-        elif isinstance(item, int) or isinstance(item, str) or \
-        isinstance(item, tuple) or isinstance(item, list) or \
-        isinstance(item, dict):
-            if name[0:2] == '__':
-                continue
-            # get last previous comment start with hash char (#)
-            match = re.search("\n#\s*([^\n]*)\n%s\s*=", source)
-            comment = match.groups()[0] if match else ''
-            doc.append(('variable',                                     # type
-                        name,                                           # name
-                        repr(item),                                     # value
-                        comment))                                       # no doc
+        elif ismodule(item):
+            doc.append(('submodule',
+                        name,
+                        None,
+                        ''))
         elif isinstance(item, re._pattern_type):
             if name[0:2] == '__':
                 continue
@@ -179,11 +172,20 @@ def load_module(module):                    # jinja function
                         name,                                           # name
                         "(%s, %s)" % (item.pattern, item.flags),        # value
                         ''))                                            # no doc
-        elif ismodule(item):
-            doc.append(('submodule',
-                        name,
-                        None,
-                        ''))
+        else:
+            if name[0:2] == '__':
+                continue
+            # get last previous comment start with hash char (#)
+            match = re.search("\n#\s*([^\n]*)\n%s\s*=" % name, source)
+            if name == "app":
+                sys.stderr.write("\n#\s*([^\n]*)\n%s\s*=\n" % name)
+                sys.stderr.write(repr(match)+'\n')
+            comment = match.groups()[0] if match else ''
+            doc.append(('variable',                                     # type
+                        name,                                           # name
+                        repr(item),                                     # value
+                        comment))                                       # no doc
+
     return sorted(doc, cmp = _sort_doc)
 
 
