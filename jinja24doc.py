@@ -164,7 +164,7 @@ def load_module(module):                    # jinja function
                         None,
                         ''))
         elif isinstance(item, re._pattern_type):
-            if name[0:2] == '__':
+            if name[0:2] == '__' or not re.search("\n%s\s*=" % name, source):
                 continue
             match = re.search("\n#\s*([^\n]*)\n%s\s*=", source)
             comment = match.groups()[0] if match else ''
@@ -173,13 +173,10 @@ def load_module(module):                    # jinja function
                         "(%s, %s)" % (item.pattern, item.flags),        # value
                         ''))                                            # no doc
         else:
-            if name[0:2] == '__':
+            if name[0:2] == '__' or not re.search("\n%s\s*=" % name, source):
                 continue
             # get last previous comment start with hash char (#)
             match = re.search("\n#\s*([^\n]*)\n%s\s*=" % name, source)
-            if name == "app":
-                sys.stderr.write("\n#\s*([^\n]*)\n%s\s*=\n" % name)
-                sys.stderr.write(repr(match)+'\n')
             comment = match.groups()[0] if match else ''
             doc.append(('variable',                                     # type
                         name,                                           # name
@@ -212,6 +209,8 @@ def keywords(api, api_url = ""):      # jinja function
     """
     global re_docs
     global _api_url
+
+    # TODO: dict for mapping names to parametres (for title in href)
 
     re_docs = re.compile(r"(\b)(%s)(\b)" % \
                 '|'.join((name for type, name, args, doc in api \
@@ -394,6 +393,8 @@ def wiki(doc):    # jinja function
     doc = re_source.sub(_code, doc)
    
     # links
+    # TODO: call method insead of sub, to put title and _api_url for specied
+    # module :) yeaa !!
     if not re_docs is None:     # api keywords
         doc = re_docs.sub(r'\1<a href="%s#\2">\2</a>\3' % _api_url, doc)
     doc = re_pep3.sub(          # pep with 3 numbers
