@@ -126,4 +126,11 @@ lists. But jinja2doc will be create as simple way to generate documentation
 easy, fast and miscellaneous. I write really fast, and as tool for generate
 documentation of Poor WSGI. After this work, i put some time to document and
 smooth this project, so if you want to do same improvement do it, and pleas
-send me it for another users.
+send me it for another users via sf.net or to mail: mcbig at zeropage.cz.
+
+=== Python 3 ===
+
+Jinja24doc works with python 3 well, but be carefully with generation
+documentation for both python versions (2 and 3). Some modules, classes,
+functions, methods and variables of course are different. So compiled regular
+expressions from re module has different flag number by default for example.
