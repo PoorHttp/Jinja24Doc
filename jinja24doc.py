@@ -59,6 +59,7 @@ _ordering   = { 'module'    : 0,
 
 re_lt       = re.compile(r"<")
 re_gt       = re.compile(r">")
+re_amp      = re.compile(r"&(?!amp;)")
 # TODO: not work on multi type on same line :(
 re_bold     = re.compile(r"\*(.*?)\*")                              # * bold *
 re_italic   = re.compile(r"/(.*?)/")                                # / italic /
@@ -380,7 +381,8 @@ def wiki(doc):    # jinja function
 
     doc = re_gt.sub(r"&gt;", doc)
     doc = re_lt.sub(r"&lt;", doc)
-    
+    doc = re_amp.sub(r"&amp;", doc)
+
     # main tags (pre, code and br)
     doc = re_preauto.sub(_pre, doc)
     doc = re_notpre.sub(_not_in_pre, doc)
