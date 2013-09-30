@@ -415,8 +415,9 @@ def load_text(textfile):    # jinja function
     for path in paths:
         if os.access(path+'/'+textfile, os.R_OK):
             x_textfile = path+'/'+textfile
+            break
     if not x_textfile:
-        _usage('Access denied to %s' % fname)
+        _usage('Access denied to text file %s' % textfile)
 
     with open (x_textfile, 'r') as f:
         for line in f:
@@ -497,21 +498,25 @@ if __name__ == '__main__':
     if len(sys.argv) > 2:
         paths = sys.argv[2].split(':')
     else:
-        paths = [os.path.abspath(os.path.dirname(fname))]
+        paths = []
+    paths.insert(0, '.')
 
     x_fname = None
     for path in paths:
         if os.access(path+'/'+fname, os.R_OK):
             x_fname = path+'/'+fname
+            break
 
     if not x_fname:
-        _usage('Access denied to %s' % fname)
+        _usage('Access denied to template %s' % fname)
 
     try:
         data = _generate(fname, paths)
         if not isinstance(data, str):
             data = data.encode('utf-8')
         sys.stdout.write(data)
+    except SystemExit as e:
+        sys.exit(e.code)
     except:
         traceback = format_exception(sys.exc_type,
                                  sys.exc_value,
