@@ -62,8 +62,8 @@ re_gt       = re.compile(r">")
 re_amp      = re.compile(r"&(?!amp;)")
 # TODO: not work on multi type on same line :(
 re_bold     = re.compile(r"\*(.*?)\*")                              # * bold *
-re_italic   = re.compile(r"/(.*?)/")                                # / italic /
-re_code     = re.compile(r"{(.*?)}")                                # { code }
+re_italic   = re.compile(r"\s/(.*?)/\b")                            # / italic /
+re_code     = re.compile(r"{(.*?)}", re.S)                          # { code }
 
 re_section1 = re.compile(r"^(={1})([^=]+)(={1}\s*)")
 re_section2 = re.compile(r"^(={2})(.*?)(={2}\s*)")
@@ -77,8 +77,9 @@ re_nlnl     = re.compile(r"(\n\s*\n)")                              # <br><br>
 
 re_pep3     = re.compile(r"(PEP )([0-9]{3})([\s.(]+)")              # pep link
 re_pep4     = re.compile(r"(PEP )([0-9]{4})([\s.(]+)")              # pep link
-re_preauto  = re.compile(r"\n\s*\n( {4}.*?)(\n?)((\n\S)|$)", re.S)  # <pre>
+re_link     = re.compile(r"(http://\S*)", re.I)
 
+re_preauto  = re.compile(r"\n\s*\n( {4}.*?)(\n?)((\n\S)|$)", re.S)  # <pre>
 re_notpre   = re.compile(r'(.*?)((<pre class="\w*">.*?</pre>)|$)', re.S) # 3 groups !
 #        r"(^.*?<pre>)|(</pre>.*?<pre>)|(</pre>.*?$)|(^.*?$)", re.S)
 re_param    = re.compile(r"(^|\n) {4}(\S*\s*)")
@@ -395,6 +396,8 @@ def wiki(doc):    # jinja function
     # module :) yeaa !!
     if not re_docs is None:     # api keywords
         doc = re_docs.sub(r'\1<a href="%s#\2">\2</a>\3' % _api_url, doc)
+
+    doc = re_link.sub(r'<a href="\1">\1</a>', doc)
     doc = re_pep3.sub(          # pep with 3 numbers
             r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>\3',doc)
     doc = re_pep4.sub(          # pep with 4 numbers
