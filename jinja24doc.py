@@ -77,7 +77,9 @@ re_nlnl     = re.compile(r"(\n\s*\n)")                              # <br><br>
 
 re_pep3     = re.compile(r"(PEP )([0-9]{3})([\s.(]+)")              # pep link
 re_pep4     = re.compile(r"(PEP )([0-9]{4})([\s.(]+)")              # pep link
-re_link     = re.compile(r"(http://\S*)", re.I)
+re_link     = re.compile(r"((http|git|ftp)://\S*)", re.I)
+
+re_notlink  = re.compile(r"(.*?)((<a .*?</a>)|$)", re.S)
 
 re_preauto  = re.compile(r"\n\s*\n( {4}.*?)(\n?)((\n\S)|$)", re.S)  # <pre>
 re_notpre   = re.compile(r'(.*?)((<pre class="\w*">.*?</pre>)|$)', re.S) # 3 groups !
@@ -240,6 +242,17 @@ def _not_in_pre(obj):
     return re_nlnl.sub(r'<br><br>\n\n', tmp)+groups[1]
 
 
+def _not_in_link(obj):
+    groups = obj.groups()
+    if not groups[0]:
+        return groups[1]
+
+    # TODO: call method insead of sub, to put title and _api_url for specied
+    # module :) yeaa !!
+    tmp = re_docs.sub(r'\1<a href="%s#\2">\2</a>\3' % _api_url, groups[0])
+    return tmp + groups[1]
+
+
 def _python(obj):
     """ Highlight python syntax on Match object with one group """
     tmp = obj.group()
@@ -390,14 +403,13 @@ def wiki(doc):    # jinja function
 
     # highlighting in pre tags
     doc = re_source.sub(_code, doc)
-   
-    # links
-    # TODO: call method insead of sub, to put title and _api_url for specied
-    # module :) yeaa !!
-    if not re_docs is None:     # api keywords
-        doc = re_docs.sub(r'\1<a href="%s#\2">\2</a>\3' % _api_url, doc)
 
+    # links
     doc = re_link.sub(r'<a href="\1">\1</a>', doc)
+
+    if not re_docs is None:     # api keywords
+        doc = re_notlink.sub(_not_in_link, doc)
+
     doc = re_pep3.sub(          # pep with 3 numbers
             r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>\3',doc)
     doc = re_pep4.sub(          # pep with 4 numbers
