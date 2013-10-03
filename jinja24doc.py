@@ -5,7 +5,7 @@
     WSGI/HTTP Server and mod_python connector). It could load modules and gets
     documentation for its items. No configuration is needed, only jinja2
     templates. Your or from jinja2doc package.
-    
+
     Just create your {template.html} file, and add to them these too files:
 
         #!jinja
@@ -25,7 +25,7 @@
         template    - file, which will be read as jinja2 template
         path        - jinja2 template path or paths separates by colons
 
-""" 
+"""
 
 from jinja2 import Environment, FileSystemLoader, Undefined
 from traceback import format_exception
@@ -94,8 +94,9 @@ re_ini      = re.compile(r"(\n\s*\w+\b|\n\s*\[.*\]|#.*)", re.M)
 
 re_docs     = None
 
-_api_url     = ''
-_modules     = []
+_api_url        = ''
+_api_keywords   = {}
+_modules        = []
 
 def _key_doc(a):
     return str(_ordering[a[0]])+a[1]
@@ -104,7 +105,7 @@ def _key_doc(a):
 def load_module(module):                    # jinja function
     """
         get documentation of function, variables and classes from module
-        
+
             #!jinja
             {% set api = load_module('module') %}
             {% for type, name, args, doc = api[0] %}
@@ -149,7 +150,7 @@ def load_module(module):                    # jinja function
                             getdoc(it) or ''))                              # doc
                     except:
                         pass
-            
+
         elif isfunction(item):                  # module function
             if module.__name__ != item.__module__:
                 continue
@@ -190,7 +191,7 @@ def keywords(api, api_url = ""):      # jinja function
     """ Fill internal api_url variable from names of modules, classes, functions,
         methods, variables or h1, h2 and h3 sections. With this, wiki can create
         links to this functions  or classes.
-            
+
             #!jinja
             {% set api = load_module('module') %}
 
@@ -209,6 +210,7 @@ def keywords(api, api_url = ""):      # jinja function
     """
     global re_docs
     global _api_url
+    global _api_keywords
 
     # TODO: dict for mapping names to parametres (for title in href)
 
@@ -217,6 +219,9 @@ def keywords(api, api_url = ""):      # jinja function
                         if type in ('module', 'class', 'method','variable',
                                     'h1', 'h2', 'h3') )))
     _api_url = api_url
+
+    _api_keywords = dict((name, args or type) for type, name, args, doc in api)
+
     return ''
 
 
@@ -229,7 +234,7 @@ def _not_in_pre(obj):
     groups = obj.groups()
     if not groups[0]:           # r"(.*?)(('.*?')(\".*?\")|$)"
         return groups[1]
-    
+
     tmp = groups[0]
 
     tmp = re_bold.sub(r"<b>\1</b>", tmp)
@@ -241,15 +246,25 @@ def _not_in_pre(obj):
     tmp = re_param.sub(r'<br>\1<code class="param">\2</code>', tmp)
     return re_nlnl.sub(r'<br><br>\n\n', tmp)+groups[1]
 
+def _keyword(obj):
+    groups = obj.groups()
+    key = groups[1]
+
+    args = _api_keywords[key]
+    if args == 'class':
+        args = '__init__' + _api_keywords[key+'.__init__']
+
+    tmp = '<a href="%s#%s" title="%s">%s</a>' % \
+            (_api_url, key, args, key )
+    return groups[0] + tmp + groups[2]
+
 
 def _not_in_link(obj):
     groups = obj.groups()
     if not groups[0]:
         return groups[1]
 
-    # TODO: call method insead of sub, to put title and _api_url for specied
-    # module :) yeaa !!
-    tmp = re_docs.sub(r'\1<a href="%s#\2">\2</a>\3' % _api_url, groups[0])
+    tmp = re_docs.sub(_keyword, groups[0])
     return tmp + groups[1]
 
 
@@ -302,7 +317,7 @@ def _code(obj):
         source = tmp[1]
 
     return '<pre class="%s">%s</pre>' % (tmp[0], source)
-    
+
 
 def _pre(obj):
     """ Create pre tag with specific code type. """
@@ -324,7 +339,7 @@ def _pre(obj):
         code = 'python'
         source = groups[0]
     return '\n<pre class="%s">%s</pre>%s' % (code, source, groups[2])
-    
+
 
 def _nlstrip(s):
     s = s.strip()
@@ -354,7 +369,7 @@ def wiki(doc):    # jinja function
         Formated pre code type could be python (/default if not set/),
         jinja, ini or text. Text type stops highlighting. Code type
         must be on first line with hashbang prefix like in example:
-                
+
             #!text
             #!python
             # simple python example
@@ -381,7 +396,7 @@ def wiki(doc):    # jinja function
             text is on next line.
                 parameter - some text for parameter
                 parameter - some text for parameter
-        
+
         Looks that:
 
         This is some text, which could be little bit long. Never mind if
@@ -479,7 +494,7 @@ def _truncate(string, length = 255, killwords = True, end='...'):
     if len(string) > length:
         return string[:length] + end
     return string
-        
+
 
 def _usage(err = None):
     sys.stderr.write("%s\n" % err)
@@ -501,7 +516,6 @@ def _generate(fname, path):
     env.globals['length']    = len
     env.globals['truncate']  = _truncate
 
-        
     temp = env.get_template(fname)
     return temp.render(filename = fname)
 
