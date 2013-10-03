@@ -77,7 +77,7 @@ re_nlnl     = re.compile(r"(\n\s*\n)")                              # <br><br>
 
 re_pep3     = re.compile(r"(PEP )([0-9]{3})([\s.(]+)")              # pep link
 re_pep4     = re.compile(r"(PEP )([0-9]{4})([\s.(]+)")              # pep link
-re_link     = re.compile(r"((http|git|ftp)://\S*)", re.I)
+re_link     = re.compile(r"((http|https|git|ftp)://\S*)", re.I)
 
 re_notlink  = re.compile(r"(.*?)((<a .*?</a>)|$)", re.S)
 
