@@ -20,8 +20,9 @@
     jinga24doc program parameters:
 
         #!text
-        jinga24doc template [path[:path]]
+        jinga24doc [-v] template [path[:path]]
 
+        -v          - verbose mode
         template    - file, which will be read as jinja2 template
         path        - jinja2 template path or paths separates by colons
 
@@ -497,8 +498,11 @@ def _truncate(string, length = 255, killwords = True, end='...'):
 
 
 def _usage(err = None):
-    sys.stderr.write("%s\n" % err)
-    sys.stderr.write("Usage: %s template [path]\n" % sys.argv[0])
+    sys.stderr.write("Usage: %s [-v] template [path]\n" % sys.argv[0])
+    sys.stderr.write("    -v            verbose mode\n")
+    sys.stderr.write("    template      jinja2 template\n")
+    sys.stderr.write("    path          list of path separates by colon where tempates are\n")
+    sys.stderr.write("Error:\n    %s\n" % err)
     sys.exit(1)
 
 
@@ -523,19 +527,35 @@ def _generate(fname, path):
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         _usage('Not enough arguments')
+    verbose = False
 
-    fname = sys.argv[1]
+    if sys.argv[1] == '-v':         # verbose mode is set on
+        if len(sys.argv) < 3:
+            _usage('Not enough arguments')
+        verbose = True
 
-    if len(sys.argv) > 2:
-        paths = sys.argv[2].split(':')
-    else:
-        paths = []
+        fname = sys.argv[2]
+
+        if len(sys.argv) > 3:
+            paths = sys.argv[3].split(':')
+        else:
+            paths = []
+    else:                           # not verbose option
+        fname = sys.argv[1]
+
+        if len(sys.argv) > 2:
+            paths = sys.argv[2].split(':')
+        else:
+            paths = []
+
     paths.insert(0, '.')
 
     x_fname = None
     for path in paths:
         if os.access(path+'/'+fname, os.R_OK):
             x_fname = path+'/'+fname
+            if verbose:
+                sys.stderr.write('jinja24doc processing %s ...\n' % x_fname)
             break
 
     if not x_fname:
