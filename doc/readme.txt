@@ -99,7 +99,7 @@ one-line documentation make by comments.
     foo = Goo()
 
 == Get jinja2doc ==
-==== Source tarbal ====
+==== Source tarball ====
 
 
     #!text
