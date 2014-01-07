@@ -2,7 +2,7 @@
 
 {% set api = load_module('jinja24doc') %}
 
-{% set kw = keywords(api) %}
+{% do keywords(api) %}
       <menu class="sidebar">
         {% for type, name, args, doc in api %}
         {% if type == 'module' %}<h2><a href="#{{ name }}">{{ name }}</a></h2>

@@ -197,12 +197,12 @@ def keywords(api, api_url = ""):      # jinja function
             {% set api = load_module('module') %}
 
             {# create api rexex for from module where api will be on module_api.html #}
-            {% set _no = keywords(api, 'module_api.html') %}
+            {% do keywords(api, 'module_api.html') %}
 
             {# create api rexex for from module where api will be on same page #}
-            {% set _no = keywords(api) %}
+            {% do keywords(api) %}
 
-            {# another way how to call keywords function without set variable #}
+            {# another way how to call keywords function without do keyword #}
             {{ keywords(api) }}      {# keywords function return empty string #}
 
         Nice to have: there could be nice, if will be arguments in title, so
@@ -508,7 +508,8 @@ def _usage(err = None):
 
 def _generate(fname, path):
     env = Environment(loader=FileSystemLoader(path),
-                      trim_blocks = True)
+                      trim_blocks = True,
+                      extensions=['jinja2.ext.do'])
                       #lstrip_blocks = True)     # add in 2.7
     env.globals['load_module']  = load_module
     env.globals['wiki']     = wiki

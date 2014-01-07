@@ -2,10 +2,10 @@
 
 {% set sects = load_text("readme.txt") %}
 
-{#      need api for keywords yea?      #}
+{#      need api for keywords yea?     #}
 {% set api = load_module('jinja24doc') %}
 
-{% set kw = keywords(api, 'jinja24doc_api.html') %}
+{% do keywords(api, 'jinja24doc_api.html') %}
 
 {% include "_text.html" %}
       
