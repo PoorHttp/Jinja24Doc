@@ -15,7 +15,7 @@ want to create api links, you must fill api regex variable by keywords
 function first.
 
     #!jinja
-    {% set _noval = keywords(api, 'api_page.html') %}
+    {% do keywords(api, 'api_page.html') %}
     {{ wiki(api[0][3]) }}   {# put to document formated first documentation #}
                             {# from api (it wold be module documentation #}
 
@@ -27,7 +27,7 @@ than one module on one page, you can join api variable from both of them.
     #!jinja
     {% set api = load_module('first_module') %}
     {% set api = api + load_module('second_module') %}
-    {% set _noval = keywords(api, 'api_page.html') %}
+    {% do keywords(api, 'api_page.html') %}
     {{ wiki(api[0][3]) }}
 
 There are two hidden functions, which is add to jinja2 template globals:

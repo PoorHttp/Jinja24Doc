@@ -9,13 +9,23 @@
     Just create your {template.html} file, and add to them these too files:
 
         #!jinja
+        {% set title = 'Your Python Module' %}
         {% set manual = load_module('your_python_module') %}
         {% include '_simple.html' %}
 
-    and call the jinga24doc tool with right parameters:
+    and call the jinga24doc tool with right parameters from path where your
+    python module is available:
 
         #!text
-        jinga24doc path-to_simple.html template.html > page.html
+        jinga24doc template.html ./:/usr/local/share/jinja24doc/templates/ > page.html
+
+    If you want to import modules from your package, which are not installed on
+    system, or which are not in actual directory, you must set PYTHONPATH
+    environment variable. Next example extend module search path to ./falias,
+    ./morias and ./poorwsgi directories:
+
+        #!text
+        PYTHONPATH=falias:morias:poorwsgi template.html ./:/usr/local/share/jinja24doc/templates/ > page.html
 
     jinga24doc program parameters:
 
@@ -113,7 +123,10 @@ def load_module(module):                    # jinja function
                 ...
     """
     try:
+        ml = module.split('.')
         module = __import__(module)
+        for it in ml[1:]:                   # if module is submodule
+            module = module.__getattribute__(it)
     except Exception as e:
         sys.stderr.write(repr(e)+'\n')
         return []
@@ -130,6 +143,7 @@ def load_module(module):                    # jinja function
         source = ''
 
     doc = []
+    # TODO: third parameter could be tuple of author, date and version
     doc.append(('module', module.__name__, None, getdoc(module) or '' ))
     for name, item in getmembers(module):
         if isclass(item):                       # module classes
@@ -409,9 +423,9 @@ def wiki(doc):    # jinja function
     if isinstance(doc, Undefined):      # template error
         return doc
 
+    doc = re_amp.sub(r"&amp;", doc)
     doc = re_gt.sub(r"&gt;", doc)
     doc = re_lt.sub(r"&lt;", doc)
-    doc = re_amp.sub(r"&amp;", doc)
 
     # main tags (pre, code and br)
     doc = re_preauto.sub(_pre, doc)
@@ -562,6 +576,7 @@ if __name__ == '__main__':
     if not x_fname:
         _usage('Access denied to template %s' % fname)
 
+    sys.path.insert(0, os.getcwd())
     try:
         data = _generate(fname, paths)
         if not isinstance(data, str):
