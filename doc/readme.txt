@@ -103,7 +103,7 @@ one-line documentation make by comments.
 
 
     #!text
-    Not yet
+    ~$ wget http://sourceforge.net/projects/poorhttp/files/jinja24doc-1.0.tar.gz/download
 
 ==== Source from git ====
 
@@ -117,7 +117,7 @@ one-line documentation make by comments.
 
 
     #!text
-    Not yet
+    ~$ pip install Jinja24Doc
 
 == Few words at end ==
 
