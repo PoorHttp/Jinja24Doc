@@ -104,7 +104,7 @@ one-line documentation make by comments.
 
     #!text
     ~$ wget http://sourceforge.net/projects/poorhttp/files/jinja24doc-1.0.tar.gz/download
-    ~$ tar xz jinja24doc-1.0.tar.gz
+    ~$ tar xzf jinja24doc-1.0.tar.gz
     ~$ cd jinja24doc-1.0
     ~$ python setup.py install
 
