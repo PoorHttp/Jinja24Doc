@@ -104,6 +104,9 @@ one-line documentation make by comments.
 
     #!text
     ~$ wget http://sourceforge.net/projects/poorhttp/files/jinja24doc-1.0.tar.gz/download
+    ~$ tar xz jinja24doc-1.0.tar.gz
+    ~$ cd jinja24doc-1.0
+    ~$ python setup.py install
 
 ==== Source from git ====
 
@@ -112,6 +115,9 @@ one-line documentation make by comments.
     ~$ git clone git://git.code.sf.net/p/poorhttp/jinja24doc jinja24doc
     or
     ~$ git clone http://git.code.sf.net/p/poorhttp/jinja24doc jinja24doc
+    
+    ~$ cd jinja24doc
+    ~$ python setup.py install
 
 ==== Install from PyPI ====
 
