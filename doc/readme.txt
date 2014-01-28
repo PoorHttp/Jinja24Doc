@@ -1,3 +1,49 @@
+== What is Jinja24Doc ==
+
+Jinja24doc is lightweight documentation generator for python modules with
+jinja2 templates. It is part of *Poor Http* group tools (WSGI connector,
+WSGI/HTTP Server and mod_python connector). It could load modules and gets
+documentation for its items. No configuration is needed, only jinja2
+templates. Your or from jinja2doc package.
+
+It is more *powerful pydoc*, with style what you want. You can format
+your documentation string with some simple chars like in *AsciiDoc* and *Wiki*,
+and *highlight* your examples code. And of course it create automatic links to
+*PEP*.
+
+== Manual in few seconds ==
+Just create your {template.html} file, and add to them these lines:
+
+    #!jinja
+    {% set title = 'Your Python Module' %}
+    {% set manual = load_module('your_python_module') %}
+    {% include '_simple.html' %}
+
+and call the jinga24doc tool with right parameters from path where your
+python module is available:
+
+    #!text
+    ~$ jinga24doc template.html ./:/usr/local/share/jinja24doc/templates/ > page.html
+
+If you want to import modules from your package, which are not installed on
+system, or which are not in actual directory, you must set PYTHONPATH
+environment variable. Next example extend module search path to ./falias,
+./morias and ./poorwsgi directories:
+
+    #!text
+    ~$ PYTHONPATH=falias:morias:poorwsgi \
+        jinja24doc template.html ./:/usr/local/share/jinja24doc/templates/ > page.html
+
+
+jinga24doc program parameters:
+
+    #!text
+    jinga24doc [-v] template [path[:path]]
+
+    -v          - verbose mode
+    template    - file, which will be read as jinja2 template
+    path        - jinja2 template path or paths separates by colons
+
 == Templates ==
 
 There are few function, which is available in jinja2 templates. First two

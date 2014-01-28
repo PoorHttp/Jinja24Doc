@@ -11,7 +11,6 @@ menu {
 .header {
     display: table;
     width: 100%;
-    max-width: 60em;
     min-width: 10em;
 }
 
@@ -91,7 +90,7 @@ a:active {
 
 .page {
     clear: both;
-    max-width: 60em;
+    max-width: 62em;
     margin: 0 auto;
     padding: 0 1em 0 1em;
 }
