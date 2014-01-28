@@ -19,11 +19,11 @@ Just create your {template.html} file, and add to them these lines:
     {% set manual = load_module('your_python_module') %}
     {% include '_simple.html' %}
 
-and call the jinga24doc tool with right parameters from path where your
+and call the jinja24doc tool with right parameters from path where your
 python module is available:
 
     #!text
-    ~$ jinga24doc template.html ./:/usr/local/share/jinja24doc/templates/ > page.html
+    ~$ jinja24doc template.html ./:/usr/local/share/jinja24doc/templates/ > page.html
 
 If you want to import modules from your package, which are not installed on
 system, or which are not in actual directory, you must set PYTHONPATH
@@ -35,10 +35,10 @@ environment variable. Next example extend module search path to ./falias,
         jinja24doc template.html ./:/usr/local/share/jinja24doc/templates/ > page.html
 
 
-jinga24doc program parameters:
+jinja24doc program parameters:
 
     #!text
-    jinga24doc [-v] template [path[:path]]
+    jinja24doc [-v] template [path[:path]]
 
     -v          - verbose mode
     template    - file, which will be read as jinja2 template
