@@ -206,6 +206,7 @@ one-line documentation make by comments.
 
 
     #!text
+    ~$ pip install jinja2
     ~$ pip install jinja24doc
 
 == Few words at end ==
