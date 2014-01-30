@@ -1,6 +1,6 @@
 == What is Jinja24Doc ==
 
-Jinja24doc is lightweight documentation generator for python modules with
+Jinja24Doc is lightweight documentation generator for python modules with
 jinja2 templates. It is part of *Poor Http* group tools (WSGI connector,
 WSGI/HTTP Server and mod_python connector). It could load modules and gets
 documentation for its items. No configuration is needed, only jinja2
@@ -35,7 +35,6 @@ environment variable. Next example extend module search path to ./falias,
     ~$ PYTHONPATH=falias:morias:poorwsgi \
         jinja24doc template.html ./:/usr/local/share/jinja24doc/templates/ > page.html
     ~$ cp /usr/local/share/jinja24doc/templates/inverse.css ./style.css
-
 
 jinja24doc program parameters:
 
@@ -182,6 +181,10 @@ one-line documentation make by comments.
     foo = Goo()
 
 == Get jinja2doc ==
+Jinja24Doc need Jinja2 package for build and or for install. So you must
+install it first. You will need Jinja2 package for any python versions, for
+which you plan to use jinja24doc.
+
 ==== Source tarball ====
 
 
@@ -203,7 +206,9 @@ one-line documentation make by comments.
     ~$ python setup.py install
 
 ==== Install from PyPI ====
-
+Don't forget to install Jinja2 package first. Jinja24Doc will need it to
+install, but pip do not install jinja2 package first even if it download
+automatically.
 
     #!text
     ~$ pip install jinja2
@@ -220,7 +225,16 @@ send me it for another users via sf.net or to mail: mcbig at zeropage.cz.
 
 === Python 3 ===
 
-Jinja24doc works with python 3 well, but be carefully with generation
+Jinja24Doc works with python 3 well, but be carefully with generation
 documentation for both python versions (2 and 3). Some modules, classes,
 functions, methods and variables of course are different. So compiled regular
 expressions from re module has different flag number by default for example.
+
+If you have installed it with python2 in system, your script
+{/usr/local/bin/jinja24doc} have path python2 at the begin of script. But you
+could run it with any python version. Just run be sure, that you have
+installed Jinja2 package for your python version and run Jinja24Doc directly.
+
+    #!text
+    ~$ python3 /usr/local/bin/jinja24doc \
+            template.html ./:/usr/local/share/jinja24doc/templates/ > page.html
