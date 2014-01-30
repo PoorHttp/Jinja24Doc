@@ -14,6 +14,13 @@ from inspect import getargspec, getdoc, getmembers, getsource, formatargspec,\
 
 import sys, os, re
 
+unicode_exist = True
+try:
+    unicode()
+except:
+    unicode_exist = False
+
+
 _python_keywords = [
                 'False', 'None', 'True', 'and', 'as', 'assert', 'break',
                 'class', 'continue', 'def', 'del', 'elif', 'else', 'except',
@@ -78,6 +85,12 @@ _api_url        = ''
 _api_keywords   = {}
 _modules        = []
 
+
+def _str(text):
+    if unicode_exist and isinstance(text, str):
+        return text.decode('utf-8')
+    return text
+
 def _key_doc(a):
     return str(_ordering[a[0]])+a[1]
 
@@ -119,17 +132,17 @@ def load_module(module):                    # jinja function
             if module.__name__ != item.__module__:
                 continue
             doc.append(('class',                                        # type
-                        item.__name__.decode('utf-8'),                  # name
+                        _str(item.__name__),                            # name
                         None,                                           # args
-                        (getdoc(item) or '').decode('utf-8')))          # doc
+                        _str(getdoc(item) or '')))                      # doc
 
             for nm, it in getmembers(item):     # class members
                 if ismethod(it):
                     try:
                         args, vargs, kwords, defaults = getargspec(it)
                         doc.append(('method',                               # type
-                            item.__name__.decode('utf-8') + '.' + \
-                                        it.__name__.decode('utf-8'),        # name
+                            _str(item.__name__) + '.' + \
+                                        _str(it.__name__),                  # name
                             formatargspec(args, vargs, kwords, defaults),   # args
                             getdoc(it) or ''))                              # doc
                     except:
@@ -171,7 +184,9 @@ def load_module(module):                    # jinja function
     return sorted(doc, key = _key_doc)
 
 
-def keywords(api, api_url = ""):      # jinja function
+def keywords(api, api_url = "",                 # jinja function
+            types = ('module', 'class', 'method','variable','function',
+                     'h1', 'h2', 'h3')):
     """ Fill internal api_url variable from names of modules, classes, functions,
         methods, variables or h1, h2 and h3 sections. With this, wiki can create
         links to this functions  or classes.
@@ -199,9 +214,7 @@ def keywords(api, api_url = ""):      # jinja function
     # TODO: dict for mapping names to parametres (for title in href)
 
     re_docs = re.compile(r"(\b)(%s)(\b)" % \
-                '|'.join((name for type, name, args, doc in api \
-                        if type in ('module', 'class', 'method','variable',
-                                    'h1', 'h2', 'h3') )))
+                '|'.join((name for type, name, args, doc in api if type in types )))
     _api_url = api_url
 
     _api_keywords = dict((name, args or type) for type, name, args, doc in api)
@@ -441,7 +454,7 @@ def load_text(textfile):    # jinja function
                     re_section2.search(line) or re_section1.search(line)
             if match:
                 if tmp:                     # add block before header to doc
-                    doc.append(('text', '', None, tmp.decode('utf-8')))
+                    doc.append(('text', '', None, _str(tmp)))
                     tmp = ''
                 name = match.groups()[1].strip()
                 if match.re == re_section1:
@@ -455,11 +468,11 @@ def load_text(textfile):    # jinja function
                 else:
                     raise RuntimeError("No match regex")
 
-                doc.append((type, name.decode('utf-8'), None, ''))
+                doc.append((type, _str(name), None, ''))
             else:
                 tmp += line
         #endfor
-    doc.append(('text', '', None, tmp.decode('utf-8')))
+    doc.append(('text', '', None, _str(tmp)))
     return doc
 
 def local_name(name):
