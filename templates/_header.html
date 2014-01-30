@@ -4,8 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {%- if description is defined %}    <meta name="description" content="{{ description }}">{% endif %}
-    {%- if keywords is defined %}    <meta name="keywords" content="{{ keywords }}">{% endif %}
-    {%- if author is defined %}    <meta name="author" content="Ondřej Tůma McBig">{% endif %}
+    {%- if author is defined %}    <meta name="author" content="{{ content }}">{% endif %}
 
     <title>{{ title }}</title>
     <link href="style.css" rel="stylesheet">

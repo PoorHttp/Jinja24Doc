@@ -2,8 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    {%- if description is defined %}    <meta name="description" content="{{ description }}">{% endif %}
+    {%- if author is defined %}    <meta name="author" content="{{ content }}">{% endif %}
 
     <title>{{ title }}</title>
 
@@ -21,12 +21,12 @@
   </head>
   <body>
     <div class="page">
-    {% if manual is not defined %}
-        {% set manual = (('module', 'manual variable is not defined', None, ''),) %}
+    {% if api is not defined %}
+        {% set api = (('module', 'api variable is not defined', None, ''),) %}
     {% endif %}
-    {{ keywords(manual) }}
+    {{ keywords(api) }}
       <div class="content">
-      {% for type, name, args, doc in manual %}
+      {% for type, name, args, doc in api %}
       {% set doc = wiki(doc) %}
       {% if type == 'module' %}
         <h1><small>module</small> {{ name }}</h1>
@@ -47,7 +47,7 @@
       {% endif %}
       {% endfor %}
       <h2>Variables</h2>
-      {% for type, name, args, doc in manual %}
+      {% for type, name, args, doc in api %}
       {% set doc = wiki(doc) %}
       {% if type == 'variable' %}
         <h4><code>{{ name }} = {{ args|e }}</code></h4>

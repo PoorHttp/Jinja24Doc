@@ -1,6 +1,6 @@
 {%- include "_header.html" %}
       <menu class="sidebar">
-    {% for type, name, args, doc in sects %}
+    {% for type, name, args, doc in sections %}
         {% if type == 'h2' %}<h2><a href="#{{ name }}">{{ name }}</a></h2>
         {% elif type == 'h3' %}<h3><a href="#{{ name }}">{{ name }}</a></h3>
         {% endif %}
@@ -8,7 +8,7 @@
       </menu><!-- /sidebar -->
 
     <div class="content">
-    {% for type, name, args, doc in sects %}
+    {% for type, name, args, doc in sections %}
       {% if type == 'h2' %}
       <h2>{{ name }}
         <span class="links">

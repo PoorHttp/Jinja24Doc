@@ -5,7 +5,7 @@
 {#      need api for keywords yea?     #}
 {% set api = load_module('jinja24doc') %}
 
-{% do keywords(api, 'jinja24doc_api.html') %}
+{% do keywords(api, 'jinja24doc_api.html', types = ('variable','function')) %}
 
 {% include "_text.html" %}
       

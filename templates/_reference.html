@@ -1,6 +1,6 @@
 {%- include "_header.html" %}
       <menu class="sidebar">
-    {% for type, name, args, doc in manual %}
+    {% for type, name, args, doc in api %}
         {% if type == 'module' %}<h2><a href="#{{ name }}">{{ name }}</a></h2>
         {% elif (type == 'function' or type == 'class') and name[0] != '_' %}<h3><a href="#{{ name }}">{{ name }}</a></h3>
         {% endif %}
@@ -9,7 +9,7 @@
 
       <div class="content">
 {% set prev = 'none' %}
-{% for type, name, args, doc in manual %}
+{% for type, name, args, doc in api %}
   {% if type != 'submodule' and prev == 'submodule' %}
         </div><!-- /submodules -->
   {% endif%}
