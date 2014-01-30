@@ -3,33 +3,26 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Jinja24Doc homepage documentation">
-    <meta name="keywords" content="jinja2 python generator documentation doc py html manual reference api">
-    <meta name="author" content="Ondřej Tůma McBig">
+    {%- if description is defined %}    <meta name="description" content="{{ description }}">{% endif %}
+    {%- if keywords is defined %}    <meta name="keywords" content="{{ keywords }}">{% endif %}
+    {%- if author is defined %}    <meta name="author" content="Ondřej Tůma McBig">{% endif %}
 
-    <title>Jinja24Doc for Python</title>
-
+    <title>{{ title }}</title>
     <link href="style.css" rel="stylesheet">
-
   </head>
   <body>
     <div class="page">
 
       <div class="header">
-        <h1>Jinja24Doc for Python</h1>
-        <small>Lightweight documentation generator with jinja2 templates.</small>
+        <h1>{{ title }}</h1>
+{%- if description is defined %}        <small>{{ description }}.</small>{% endif %}
         <div class="pannel">
+{% if menu is defined -%}
           <menu class="main">
-            <span class="item {{ 'selected' if page == 'jinja24doc' }}"><a href="index.html" title="" >Documentation</a></span>
-            <span class="item {{ 'selected' if page == 'api' }}"><a href="jinja24doc_api.html" title="" >Api Reference</a></span>
-            <span class="item {{ 'selected' if page == 'licence' }}"><a href="licence.html" title="">Licence</a></span>
-            <span class="item"><a href="http://sourceforge.net/projects/poorhttp/">SourceForge</a></span>
+          {%- for item in menu %}
+            <span class="item {{ 'selected' if item.selected }}"><a href="{{ item.link }}" title="{{ item.title }}" >{{ item.label }}</a></span>
+          {%- endfor %}
           </menu>
-          <!--
-          <menu class="languages">
-            <span class="item selected"><a href="#" title="" >cz</a></span>
-            <span class="item"><a href="#" title="" >en</a></span>
-          </menu>
-          !-->
-        </div><!-- menu --!>
-      </div><!-- header --!>
+{% endif %}
+        </div><!-- /panel -->
+      </div><!-- /header -->

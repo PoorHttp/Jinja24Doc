@@ -17,7 +17,7 @@ class X_build_scripts(build_scripts):
 class X_build(build):
     def run(self):
         import jinja24doc
-        jinja24doc.paths = ('templates', 'doc')
+        jinja24doc.paths = ('templates/jinja24doc', 'doc')
         print "creating documentation"
         def _jinja24doc(tname, oname):
             jinja24doc.re_docs = None
@@ -36,7 +36,7 @@ class X_build(build):
         _jinja24doc('_jinja24doc.html',     'build/_html_/index.html')
         _jinja24doc('_jinja24doc_api.html', 'build/_html_/jinja24doc_api.html')
         _jinja24doc('_licence.html',        'build/_html_/licence.html')
-        copyfile('templates/style.css',     'build/_html_/style.css')
+        copyfile('templates/green.css',     'build/_html_/style.css')
         build.run(self)             # run original build
 
 
@@ -56,8 +56,17 @@ setup(
                          'build/_html_/licence.html',
                          'build/_html_/style.css']),
                 ('share/jinja24doc/templates',
-                        ['templates/_simple.html',
-                         'templates/_simple_with_submodules.html'])],
+                        ['templates/_header.html',
+                         'templates/_footer.html',
+                         'templates/simple.html',
+                         'templates/simple_with_submodules.html',
+                         'templates/text.html',
+                         'templates/reference.html',
+                         'templates/blue.css',
+                         'templates/red.css',
+                         'templates/green.css',
+                         'templates/gray.css',
+                         'templates/inverse.css'])],
     license             = "BSD",
     long_description    =
     """
