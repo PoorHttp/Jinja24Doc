@@ -7,6 +7,10 @@
     templates. Your or from jinja2doc package.
 """
 
+__author__  = "Ondrej Tuma (McBig) <mcbig@zeropage.cz>"
+__date__    = "30 January 2014"
+__version__ = "1.0.1"
+
 from jinja2 import Environment, FileSystemLoader, Undefined
 from traceback import format_exception
 from inspect import getargspec, getdoc, getmembers, getsource, formatargspec,\
@@ -14,11 +18,11 @@ from inspect import getargspec, getdoc, getmembers, getsource, formatargspec,\
 
 import sys, os, re
 
-unicode_exist = True
+_unicode_exist = True
 try:
     unicode()
 except:
-    unicode_exist = False
+    _unicode_exist = False
 
 
 _python_keywords = [
@@ -87,7 +91,7 @@ _modules        = []
 
 
 def _str(text):
-    if unicode_exist and isinstance(text, str):
+    if _unicode_exist and isinstance(text, str):
         return text.decode('utf-8')
     return text
 

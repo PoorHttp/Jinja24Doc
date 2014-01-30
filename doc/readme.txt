@@ -16,14 +16,15 @@ Just create your {template.html} file, and add to them these lines:
 
     #!jinja
     {% set title = 'Your Python Module' %}
-    {% set manual = load_module('your_python_module') %}
-    {% include '_simple.html' %}
+    {% set api = load_module('your_python_module') %}
+    {% include '_reference.html' %}
 
 and call the jinja24doc tool with right parameters from path where your
 python module is available:
 
     #!text
     ~$ jinja24doc template.html ./:/usr/local/share/jinja24doc/templates/ > page.html
+    ~$ cp /usr/local/share/jinja24doc/templates/blue.css ./style.css
 
 If you want to import modules from your package, which are not installed on
 system, or which are not in actual directory, you must set PYTHONPATH
@@ -33,6 +34,7 @@ environment variable. Next example extend module search path to ./falias,
     #!text
     ~$ PYTHONPATH=falias:morias:poorwsgi \
         jinja24doc template.html ./:/usr/local/share/jinja24doc/templates/ > page.html
+    ~$ cp /usr/local/share/jinja24doc/templates/inverse.css ./style.css
 
 
 jinja24doc program parameters:
@@ -56,8 +58,8 @@ load_module and load_text returns documentation list.
 Other functions works with string, they format it. Function wiki generate html
 string formated with base wiki syntax. It know headers, bold text, parameter
 padding, code block or paragraphs defined with double newline. Except for it,
-it can create links for PEP documentations and links to api definition. If you
-want to create api links, you must fill api regex variable by keywords
+it can create links for PEP documentations and links to api definition. If
+you want to create api links, you must fill api regex variable by keywords
 function first.
 
     #!jinja
@@ -78,6 +80,41 @@ than one module on one page, you can join api variable from both of them.
 
 There are two hidden functions, which is add to jinja2 template globals:
 {truncate} and {length} as back compatibility for old jinja2 versions.
+
+=== Public templates ===
+There are some public templates, which you find in
+{share/jinja24doc/templates} directory. All of them need set up *title*
+variable and *api* variable. But they use another variables For more detail
+see to code of template which you can use. Variables could be:
+    title       - html page title
+    api         - list of tuples - api data. See Data structure in manual.
+    sections    - variable looks like api, but generate from load_text.
+    description - html page description
+    author      - html page author
+
+Public templates which you can use are:
+==== _simple.html ====
+Simple html web page. Style is included.
+
+==== _simple_with_submodules.html ====
+Simple html web page. Style is included. All submodules are included
+recursive. This could be demo, how you can generate manual from your code
+recursively.
+
+==== _reference.html ====
+This template generates html pages looks like Jinja24Doc manual. There are
+some different styles: {red.css, blue.css, green.css, gray.css and
+inverse.css} which you can use with this template. You must only copy to
+output directory as style.css ;)
+
+==== _text.html ====
+This template looks like {_reference.html}, but it is prepare to generate html
+page from text. This template needs *sections* variable instead of api. It
+looks like api, but contain data generate from text file. See to load_text
+function.
+
+Like reference.html template, this use styles too, so You must only copy to
+output directory as style.css too.
 
 == Data structure ==
 
@@ -149,9 +186,9 @@ one-line documentation make by comments.
 
 
     #!text
-    ~$ wget http://sourceforge.net/projects/poorhttp/files/jinja24doc-1.0.tar.gz/download
-    ~$ tar xzf jinja24doc-1.0.tar.gz
-    ~$ cd jinja24doc-1.0
+    ~$ wget http://sourceforge.net/projects/poorhttp/files/jinja24doc-1.0.1.tar.gz/download
+    ~$ tar xzf jinja24doc-1.0.1.tar.gz
+    ~$ cd jinja24doc-1.0.1
     ~$ python setup.py install
 
 ==== Source from git ====
