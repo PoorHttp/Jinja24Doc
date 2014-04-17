@@ -15,6 +15,7 @@ from jinja2 import Environment, FileSystemLoader, Undefined
 from traceback import format_exception
 from inspect import getargspec, getdoc, getmembers, getsource, formatargspec,\
         isfunction, ismethod, isclass, ismodule
+from operator import itemgetter
 
 import sys, os, re
 
@@ -215,10 +216,11 @@ def keywords(api, api_url = "",                 # jinja function
     global _api_url
     global _api_keywords
 
+    api = sorted(api, key = itemgetter(1), reverse=True)
     # TODO: dict for mapping names to parametres (for title in href)
 
     re_docs = re.compile(r"(\b)(%s)(\b)" % \
-                '|'.join((name for type, name, args, doc in api if type in types )))
+                '|'.join((name.replace('.','\.') for type, name, args, doc in api if type in types )))
     _api_url = api_url
 
     _api_keywords = dict((name, args or type) for type, name, args, doc in api)
@@ -252,8 +254,6 @@ def _keyword(obj):
     key = groups[1]
 
     args = _api_keywords[key]
-    if args == 'class':
-        args = '__init__' + _api_keywords[key+'.__init__']
 
     tmp = '<a href="%s#%s" title="%s">%s</a>' % \
             (_api_url, key, args, key )
