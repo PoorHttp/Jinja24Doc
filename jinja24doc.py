@@ -80,7 +80,7 @@ re_param    = re.compile(r"(^|\n) {4}(\S*\s*)")
 
 re_source   = re.compile(r'<pre class="(\w*)">(.*?)</pre>', re.S)
 
-re_python   = re.compile(r"(\b\w+\b|\"[^\"]*\"|'[^\']*'|#.*|@[\w\.]+)")
+re_python   = re.compile(r"(def \w+\b|class \w+\b|\b\w+\b|\"[^\"]*\"|'[^\']*'|#.*|@[\w\.]+)")
 re_jinja    = re.compile(r"(\b\w+\b|{{|}}|{%|%}|\".*\"|'[^\']*'|{#.*#})")
 re_ini      = re.compile(r"(\n\s*\w+\b|\n\s*\[.*\]|#.*)", re.M)
 
@@ -276,6 +276,10 @@ def _python(obj):
         return "<i>%s</i>" % tmp
     if tmp[0] in ('@','0','1','2','3','4','5','6','7','8','9'):
         return "<u>%s</u>" % tmp
+    if tmp[:3] == "def":
+        return "<b>def</b> <u>%s</u>" % tmp[4:]
+    if tmp[:5] == "class":
+        return "<b>def</b> <u>%s</u>" % tmp[6:]
     if tmp in _python_keywords:
         return "<b>%s</b>" % tmp
     return tmp
@@ -479,6 +483,48 @@ def load_text(textfile):    # jinja function
     doc.append(('text', '', None, _str(tmp)))
     return doc
 
+
+def load_source(srcfile, code = 'python'):
+    """ Load source and format them as code
+
+            #!jinja
+            {{ load_source('example.py') }}
+            {{ load_source('example.ini', 'ini') }}
+    """
+    x_srcfile = ''
+    for path in paths:
+        if os.access(path+'/'+srcfile, os.R_OK):
+            x_srcfile = path+'/'+srcfile
+            break
+    if not x_srcfile:
+        _usage('Access denied to text file %s' % srcfile)
+
+    doc = ''
+    with open (x_srcfile, 'r') as f:
+        class Obj:
+            def groups(self):
+                doc = _str(f.read())
+                doc = re_amp.sub(r"&amp;", doc)
+                doc = re_gt.sub(r"&gt;", doc)
+                doc = re_lt.sub(r"&lt;", doc)
+                return (code, doc)
+
+        # highlighting in pre tags
+        doc = _code(Obj())
+
+        # links
+        doc = re_link.sub(r'<a href="\1">\1</a>', doc)
+
+        if not re_docs is None:     # api keywords
+            doc = re_notlink.sub(_not_in_link, doc)
+
+        doc = re_pep3.sub(          # pep with 3 numbers
+                r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>\3',doc)
+        doc = re_pep4.sub(          # pep with 4 numbers
+                r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>\3', doc)
+    return doc
+
+
 def local_name(name):
     """
     Returns striped name from its parent (module or class).
@@ -515,6 +561,7 @@ def _generate(fname, path):
     env.globals['wiki']     = wiki
     env.globals['keywords'] = keywords
     env.globals['load_text']    = load_text
+    env.globals['load_source']  = load_source
     env.globals['local_name']   = local_name
 
     # jinja2 compatibility with old versions
