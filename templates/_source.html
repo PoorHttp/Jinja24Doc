@@ -1,0 +1,13 @@
+{%- include "_header.html" %}
+   
+    {% set lines = length(source.split('\n')) %}
+    <div class="linebar">
+    {% for ln in range(1, lines) %}
+        <h3><a name="l{{ ln }}" href="#l{{ ln }}">{{ ln }}</a>:</h3>
+    {% endfor %}
+    </div> <!-- /linebar -->
+
+    <div class="content" style="margin: 0;">
+      {{ source }}
+    </div> <!-- /content -->
+{% include "_footer.html" -%}

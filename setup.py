@@ -73,6 +73,7 @@ setup(
                          'templates/_footer.html',
                          'templates/_simple.html',
                          'templates/_simple_with_submodules.html',
+                         'templates/_source.html',
                          'templates/_text.html',
                          'templates/_reference.html',
                          'templates/blue.css',

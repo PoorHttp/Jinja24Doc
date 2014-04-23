@@ -81,6 +81,23 @@ menu {
     font-weight: normal;
 }
 
+.linebar {
+    float: left;
+    margin: 0.5em 0 1.5em 0;
+    padding: 0.5em;
+    font-size: 11pt;
+    background-color: #ddd;
+    border: 1px dotted gray;
+    border-radius: 6px 6px 6px;
+    border-right: none;
+}
+.linebar h3 {
+    margin: 0;
+    font-size: 90%;
+    font-weight: normal;
+    text-align: right;
+}
+
 a:link,
 a:visited,
 a:hover,
@@ -225,6 +242,10 @@ pre > u {
 }
 pre > i {
     color: #005089;
+    font-style: normal;
+}
+pre > em {
+    color: #0000B0;
     font-style: normal;
 }
 code {
