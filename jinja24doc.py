@@ -8,8 +8,8 @@
 """
 
 __author__  = "Ondrej Tuma (McBig) <mcbig@zeropage.cz>"
-__date__    = "30 January 2014"
-__version__ = "1.0.1"
+__date__    = "23 April 2014"
+__version__ = "1.1.0"
 
 from jinja2 import Environment, FileSystemLoader, Undefined
 from traceback import format_exception
@@ -91,6 +91,12 @@ _api_keywords   = {}
 _modules        = []
 
 
+class Fn:
+    def __init__(self, name):
+        self.name = name
+    def __repr__(self):
+        return self.name
+
 def _str(text):
     if _unicode_exist and isinstance(text, str):
         return text.decode('utf-8')
@@ -145,6 +151,17 @@ def load_module(module):                    # jinja function
                 if ismethod(it):
                     try:
                         args, vargs, kwords, defaults = getargspec(it)
+                        if defaults:
+                            ndefaults = []                  # transport functions to their names
+                            for d in defaults:
+                                if isfunction(d):
+                                    ndefaults.append(Fn(".".join((d.__module__, d.__name__))))
+                                elif ismethod(d):
+                                    ndefaults.append(Fn(".".join((d.__objclass__, d.__name__))))
+                                else:
+                                    ndefaults.append(d)
+                            defaults = ndefaults
+
                         doc.append(('method',                               # type
                             _str(item.__name__) + '.' + \
                                         _str(it.__name__),                  # name
@@ -157,6 +174,17 @@ def load_module(module):                    # jinja function
             if module.__name__ != item.__module__:
                 continue
             args, vargs, kwords, defaults = getargspec(item)
+            if defaults:
+                ndefaults = []                  # transport functions to their names
+                for d in defaults:
+                    if isfunction(d):
+                        ndefaults.append(Fn(".".join((d.__module__, d.__name__))))
+                    elif ismethod(d):
+                        ndefaults.append(Fn(".".join((d.__objclass__, d.__name__))))
+                    else:
+                        ndefaults.append(d)
+                defaults = ndefaults
+
             doc.append(('function',                                     # type
                         name,                                           # name
                         formatargspec(args, vargs, kwords, defaults),   # args
