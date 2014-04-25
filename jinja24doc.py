@@ -8,13 +8,14 @@
 """
 
 __author__  = "Ondrej Tuma (McBig) <mcbig@zeropage.cz>"
-__date__    = "23 April 2014"
+__date__    = "25 April 2014"
 __version__ = "1.1.0"
 
 from jinja2 import Environment, FileSystemLoader, Undefined
 from traceback import format_exception
-from inspect import getargspec, getdoc, getmembers, getsource, formatargspec,\
-        isfunction, ismethod, isclass, ismodule
+from inspect import getargspec, getdoc, getmembers, getsource, formatargspec, \
+        isfunction, ismethod, isclass, ismodule, \
+        ismethoddescriptor, isgetsetdescriptor
 from operator import itemgetter
 
 import sys, os, re
@@ -42,12 +43,14 @@ _jinja_keywords = [
                 '{{', '}}']
 
 
-_ordering   = { 'module'    : 0,
-                'submodule' : 1,
-                'class'     : 2,
-                'method'    : 2,
-                'function'  : 3,
-                'variable'  : 4 }
+_ordering   = { 'module'    : (0,0),
+                'submodule' : (1,0),
+                'class'     : (2,0),
+                'property'  : (2,1),
+                'descriptor': (2,2),
+                'method'    : (2,3),
+                'function'  : (3,0),
+                'variable'  : (4,0)}
 
 re_lt       = re.compile(r"<")
 re_gt       = re.compile(r">")
@@ -103,7 +106,8 @@ def _str(text):
     return text
 
 def _key_doc(a):
-    return str(_ordering[a[0]])+a[1]
+    o = _ordering[a[0]]
+    return str(o[0])+a[1].replace('.',str(o[1]))
 
 
 def load_module(module):                    # jinja function
@@ -148,7 +152,7 @@ def load_module(module):                    # jinja function
                         _str(getdoc(item) or '')))                      # doc
 
             for nm, it in getmembers(item):     # class members
-                if ismethod(it):
+                if ismethod(it) or ismethoddescriptor(it) or isgetsetdescriptor(it):
                     try:
                         args, vargs, kwords, defaults = getargspec(it)
                         if defaults:
@@ -162,13 +166,24 @@ def load_module(module):                    # jinja function
                                     ndefaults.append(d)
                             defaults = ndefaults
 
-                        doc.append(('method',                               # type
+                        mtype = 'method' if ismethod(it) else 'descriptor'
+                        doc.append((mtype,                                  # type
                             _str(item.__name__) + '.' + \
                                         _str(it.__name__),                  # name
                             formatargspec(args, vargs, kwords, defaults),   # args
                             getdoc(it) or ''))                              # doc
                     except:
                         pass
+
+                elif isinstance(it, property):
+                    doc.append(('property',                                 # type
+                            _str(item.__name__) + '.' + \
+                                        _str(nm),                           # name
+                            None,                                           # value
+                            getdoc(it) or ''))                              # doc
+                # elif isbuiltin(it):    <- __new__, __subclasshook__
+                else:
+                    pass
 
         elif isfunction(item):                  # module function
             if module.__name__ != item.__module__:
@@ -218,8 +233,8 @@ def load_module(module):                    # jinja function
 
 
 def keywords(api, api_url = "",                 # jinja function
-            types = ('module', 'class', 'method','variable','function',
-                     'h1', 'h2', 'h3')):
+            types = ('module', 'class', 'method', 'descriptor', 'property',
+                     'variable','function', 'h1', 'h2', 'h3')):
     """ Fill internal api_url variable from names of modules, classes, functions,
         methods, variables or h1, h2 and h3 sections. With this, wiki can create
         links to this functions  or classes.
@@ -307,7 +322,7 @@ def _python(obj):
     if tmp[:4] == "def ":
         return "<b>def</b> <em>%s</em>" % tmp[4:]
     if tmp[:6] == "class ":
-        return "<b>class </b> <em>%s</em>" % tmp[6:]
+        return "<b>class</b> <em>%s</em>" % tmp[6:]
     if tmp in _python_keywords:
         return "<b>%s</b>" % tmp
     return tmp

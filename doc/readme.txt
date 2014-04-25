@@ -129,6 +129,8 @@ function.
     (('module', 'name', None, documentation),
      ('submodule', 'name', None, ''),   # submodule don't have documentation
      ('class', 'ClassName', None, documentation),
+     ('property', 'ClassName.name', None, documentation)),
+     ('descriptor', 'ClassName.name', args, documentation)),
      ('method', 'ClassName.name', args, documentation)),
      ('function', 'name', args, documentation),
      ('variable', 'name', value, ''))   # variable have value instead of arguments
