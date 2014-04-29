@@ -35,7 +35,7 @@
         <h3><small>class</small> {{name}}</h3>
         <div>{{ doc }}</div>
       {% elif type == 'property' %} 
-        <h4><code>{{ name }}</code></h4>
+        <h4><code>{{ name }} {{ property_info(args) }}</code></h4>
         <div>{{ doc }}</div>
       {% elif type in ('method', 'descriptor') %}
         <h4><code>{{ name }}{{ args }}</code></h4>

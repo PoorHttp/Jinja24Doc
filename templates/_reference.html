@@ -31,7 +31,7 @@
             <a name="{{ name }}" href="#{{ name }}">link</a> | 
             <a href="#">top</a></span></h3>
   {% elif type == 'property' %}
-        <h4 class="{{ type }}">{{ name }}
+        <h4 class="{{ type }}">{{ name }} {{ property_info(args) }}
           <span class="links">
             <a name="{{ name }}"></a>
             <a href="#">top</a></span></h4>

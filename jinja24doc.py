@@ -8,7 +8,7 @@
 """
 
 __author__  = "Ondrej Tuma (McBig) <mcbig@zeropage.cz>"
-__date__    = "25 April 2014"
+__date__    = "29 April 2014"
 __version__ = "1.1.0"
 
 from jinja2 import Environment, FileSystemLoader, Undefined
@@ -179,7 +179,7 @@ def load_module(module):                    # jinja function
                     doc.append(('property',                                 # type
                             _str(item.__name__) + '.' + \
                                         _str(nm),                           # name
-                            None,                                           # value
+                            (bool(it.fget), bool(it.fset), bool(it.fdel)),  # property info
                             getdoc(it) or ''))                              # doc
                 # elif isbuiltin(it):    <- __new__, __subclasshook__
                 else:
@@ -579,6 +579,21 @@ def local_name(name):
     return name[dot+1:]
 
 
+def property_info(info, delimiter = ' | '):
+    """
+    Returns property info from tupple, where there is flags if property is
+    writable,  readable and deletable.
+
+        #!jinja
+        {{ property_info(info) }}       {# return someone like this: WRITE | READ | DELETE #}
+    """
+    rv = []
+    if info[0]: rv.append('READ')
+    if info[1]: rv.append('WRITE')
+    if info[2]: rv.append('DELETE')
+    return delimiter.join(rv)
+
+
 def _truncate(string, length = 255, killwords = True, end='...'):
     """ Only True yet """
     if len(string) > length:
@@ -606,6 +621,7 @@ def _generate(fname, path):
     env.globals['load_text']    = load_text
     env.globals['load_source']  = load_source
     env.globals['local_name']   = local_name
+    env.globals['property_info']= property_info
 
     # jinja2 compatibility with old versions
     env.globals['length']    = len
