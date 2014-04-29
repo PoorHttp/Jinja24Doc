@@ -55,14 +55,17 @@ class X_clean(clean):
 
 setup(
     name                = "jinja24doc",
-    version             = "1.0.1",
+    version             = "1.1.0",
     description         = "Jinja24Doc for Python",
     author              = "Ondrej Tuma",
     author_email        = "mcbig@zeropage.cz",
     url                 = "http://poorhttp.zeropage.cz/jinja24doc.html",
     scripts             = ['build/_scripts_/jinja24doc'],
     data_files          = [
-                ('share/doc/jinja24doc', ['doc/readme.txt', 'doc/licence.txt']),
+                ('share/doc/jinja24doc',
+                        ['doc/readme.txt',
+                         'doc/licence.txt',
+                         'doc/ChangeLog']),
                 ('share/doc/jinja24doc/html',
                         ['build/_html_/index.html',
                          'build/_html_/jinja24doc_api.html',

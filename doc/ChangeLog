@@ -1,0 +1,212 @@
+2014-04-29  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt, jinja24doc.py, templates/_reference.html,
+	templates/_simple.html, templates/_simple_with_submodules.html: 
+	property info
+
+2014-04-25  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt, jinja24doc.py, templates/_reference.html,
+	templates/_simple.html, templates/_simple_with_submodules.html: 
+	Getting descriptors and properties to api and sorting in class
+
+2014-04-23  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: Function and method names in arguments + up version
+
+2014-04-23  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py, setup.py, templates/_source.html,
+	templates/blue.css, templates/gray.css, templates/green.css,
+	templates/inverse.css, templates/red.css: new _source template and
+	right def and class names match
+
+2014-04-22  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: load_source function and defs and classes names are
+	highlighted now
+
+2014-04-17  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: Referencing to method works now, and reference to
+	class is realy reference to class
+
+2014-01-30  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt: Documentation update
+
+2014-01-30  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt: jinja2 must be install before jinja24doc via pip
+
+2014-01-30  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt, jinja24doc.py, setup.py: Documentation update for
+	public templates and new version 1.0.1
+
+2014-01-30  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/_header.html, templates/_reference.html,
+	templates/_simple.html, templates/_simple_with_submodules.html,
+	templates/_text.html, templates/jinja24doc/_header.html,
+	templates/jinja24doc/_jinja24doc.html, templates/reference.html,
+	templates/simple.html, templates/simple_with_submodules.html,
+	templates/text.html: public templates right support
+
+2014-01-30  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: python3 compatible fix and keywords types is
+	function variable
+
+2014-01-30  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* setup.py, templates/_footer.html, templates/_header.html,
+	templates/_jinja24doc.html, templates/_jinja24doc_api.html,
+	templates/_licence.html, templates/_reference.html,
+	templates/_simple.html, templates/_simple_with_submodules.html,
+	templates/_text.html, templates/blue.css, templates/gray.css,
+	templates/green.css, templates/inverse.css,
+	templates/jinja24doc/_footer.html,
+	templates/jinja24doc/_header.html,
+	templates/jinja24doc/_jinja24doc.html,
+	templates/jinja24doc/_jinja24doc_api.html,
+	templates/jinja24doc/_licence.html,
+	templates/jinja24doc/_reference.html,
+	templates/jinja24doc/_text.html, templates/red.css,
+	templates/reference.html, templates/simple.html,
+	templates/simple_with_submodules.html, templates/style.css,
+	templates/text.html: jinja24doc look-like public templates
+
+2014-01-28  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt: doc typing error fix
+
+2014-01-28  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt, jinja24doc.py, templates/_text.html,
+	templates/style.css: Documentation update & bug fix
+
+2014-01-26  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt, setup.py: doc fix
+
+2014-01-26  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt, setup.py: setup use jinja24doc internal and
+	generate document at right moment
+
+2014-01-24  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt: correct pip package name
+
+2014-01-24  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt: Download documentation update
+
+2014-01-24  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/_header.html: Documentation header fix
+
+2014-01-24  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt, jinja24doc.py, templates/_simple.html,
+	templates/_simple_with_submodules.html: * support direct load submodules like module.submodule * insert current directory to python module search path * simple templates update * ampersand bug fix * documentation update
+
+2014-01-07  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py, templates/_jinja24doc.html,
+	templates/_jinja24doc_api.html: do extension
+
+2013-10-08  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: http link fix
+
+2013-10-08  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt: doc fix
+
+2013-10-06  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: verbose mode
+
+2013-10-03  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: Support https links detect
+
+2013-10-03  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: Api keywords links have title with args now
+
+2013-10-03  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: links to keywords are generate only not in links
+
+2013-10-02  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: Link support and italic format must be spaced from
+	begin
+
+2013-09-30  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: Ampersand html char
+
+2013-09-30  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/_simple.html: simple template support text documentation
+	(load_text variables)
+
+2013-09-30  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: Access denied works right now
+
+2013-09-30  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/_jinja24doc.html: little bug fix with html manual
+	template
+
+2013-09-29  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt: Python 3 info in documentation
+
+2013-09-29  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py, setup.py: Python 3 supported :)
+
+2013-09-29  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: variables filter to match only defined variables in
+	module
+
+2013-09-29  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: Full variables support
+
+2013-09-28  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* setup.py: setup.py fix
+
+2013-09-28  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py, templates/style.css: better pre style and header
+	detection in text
+
+2013-09-28  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt, jinja24doc.py, setup.py: Documentation fixes
+
+2013-09-28  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/_footer.html, templates/_simple.html,
+	templates/_simple_with_modules.html,
+	templates/_simple_with_submodules.html, templates/style.css: 
+	Templates and style bugfixes
+
+2013-09-27  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* MANIFEST.in, jinja24doc.py, setup.py, templates/_jinja24doc.html: 
+	distuitil setup.py and some bug fixies
+
+2013-09-27  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* Initial commit
+
