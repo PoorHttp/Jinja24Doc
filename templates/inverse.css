@@ -200,7 +200,7 @@ h3.variable {
     font-size: 130%;
 }
 
-h4.method {
+h4.method, h4.staticmethod {
     margin: 2em 0 0 0;
     padding-left: 2em;
     font-family: monospace;
@@ -214,11 +214,11 @@ h4.property {
     font-size: 120%;
 }
 
-h4.property > small {
+h4.property > small, h4.staticmethod > small {
     color: #888;
 }
 
-div.module, div.class, div.method, div.function, div.property {
+div.module, div.class, div.method, div.staticmethod, div.function, div.property {
     text-align: jus-tify;
     color: #ddd;
     margin: 0.7em 0 0 0;
@@ -234,7 +234,7 @@ div.module > h4 {
     font-size: 100%;
     margin: 0 0 0 -1em;
 }
-div.method, div.property {
+div.method, div.staticmethod, div.property {
     padding-left: 3em;
 }
 pre {

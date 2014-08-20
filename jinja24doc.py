@@ -8,13 +8,13 @@
 """
 
 __author__  = "Ondrej Tuma (McBig) <mcbig@zeropage.cz>"
-__date__    = "29 April 2014"
-__version__ = "1.1.0"
+__date__    = "21 August 2014"
+__version__ = "1.2.0"
 
 from jinja2 import Environment, FileSystemLoader, Undefined
 from traceback import format_exception
 from inspect import getargspec, getdoc, getmembers, getsource, formatargspec, \
-        isfunction, ismethod, isclass, ismodule, \
+        isfunction, isroutine, ismethod, isclass, ismodule, \
         ismethoddescriptor, isgetsetdescriptor
 from operator import itemgetter
 
@@ -45,10 +45,12 @@ _jinja_keywords = [
 
 _ordering   = { 'module'    : (0,0),
                 'submodule' : (1,0),
+                'dependence': (1,1),
                 'class'     : (2,0),
                 'property'  : (2,1),
                 'descriptor': (2,2),
                 'method'    : (2,3),
+                'staticmethod' : (2,4),
                 'function'  : (3,0),
                 'variable'  : (4,0)}
 
@@ -139,9 +141,10 @@ def load_module(module):                    # jinja function
     except:
         source = ''
 
+    dependences = set()
     doc = []
-    # TODO: third parameter could be tuple of author, date and version
-    doc.append(('module', module.__name__, None, getdoc(module) or '' ))
+    modinfo = {'author': None, 'date': None, 'version': None}
+    
     for name, item in getmembers(module):
         if isclass(item):                       # module classes
             if module.__name__ != item.__module__:
@@ -152,8 +155,23 @@ def load_module(module):                    # jinja function
                         _str(getdoc(item) or '')))                      # doc
 
             for nm, it in getmembers(item):     # class members
-                if ismethod(it) or ismethoddescriptor(it) or isgetsetdescriptor(it):
+                if ismethod(it) or isfunction(it) or ismethoddescriptor(it) or isgetsetdescriptor(it):
                     try:
+                        mtype = 'descriptor'
+                        if sys.version_info[0] > 2: # python 3.x
+                            if isfunction(it):
+                                mtype = 'method'
+                            elif isinstance(it, staticmethod):
+                                mtype = 'staticmethod'
+                        else:                       # python 2.x
+                            if ismethod(it):
+                                mtype = 'method'
+                            elif isfunction(it):
+                                mtype = 'staticmethod'
+
+                        if isinstance(it, staticmethod):    # python 3.x
+                            it = it.__func__
+                        
                         args, vargs, kwords, defaults = getargspec(it)
                         if defaults:
                             ndefaults = []                  # transport functions to their names
@@ -166,10 +184,8 @@ def load_module(module):                    # jinja function
                                     ndefaults.append(d)
                             defaults = ndefaults
 
-                        mtype = 'method' if ismethod(it) else 'descriptor'
                         doc.append((mtype,                                  # type
-                            _str(item.__name__) + '.' + \
-                                        _str(it.__name__),                  # name
+                            _str(item.__name__) + '.' + _str(nm),           # name
                             formatargspec(args, vargs, kwords, defaults),   # args
                             getdoc(it) or ''))                              # doc
                     except:
@@ -185,8 +201,9 @@ def load_module(module):                    # jinja function
                 else:
                     pass
 
-        elif isfunction(item):                  # module function
+        elif isfunction(item) or isroutine(item):           # module function
             if module.__name__ != item.__module__:
+                dependences.add(item.__module__)    # append to dependences
                 continue
             args, vargs, kwords, defaults = getargspec(item)
             if defaults:
@@ -205,10 +222,7 @@ def load_module(module):                    # jinja function
                         formatargspec(args, vargs, kwords, defaults),   # args
                         getdoc(item) or ''))                            # doc
         elif ismodule(item):
-            doc.append(('submodule',
-                        name,
-                        None,
-                        ''))
+            doc.append(('submodule',name, None, ''))
         elif isinstance(item, re._pattern_type):
             if name[0:2] == '__' or not re.search("\n%s\s*=" % name, source):
                 continue
@@ -220,6 +234,8 @@ def load_module(module):                    # jinja function
                         ''))                                            # no doc
         else:
             if name[0:2] == '__' or not re.search("\n%s\s*=" % name, source):
+                if name in ('__author__', '__date__', '__version__'):
+                    modinfo[name.strip('_')] = repr(item)
                 continue
             # get last previous comment start with hash char (#)
             match = re.search("\n#\s*([^\n]*)\n%s\s*=" % name, source)
@@ -228,13 +244,22 @@ def load_module(module):                    # jinja function
                         name,                                           # name
                         repr(item),                                     # value
                         comment))                                       # no doc
+    #endfor
+
+    doc.append(('module',
+                module.__name__,
+                (modinfo['author'], modinfo['date'], modinfo['version']),
+                getdoc(module) or '' ))
+
+    for name in dependences:
+        doc.append(('dependence',name, None, ''))
 
     return sorted(doc, key = _key_doc)
 
 
 def keywords(api, api_url = "",                 # jinja function
-            types = ('module', 'class', 'method', 'descriptor', 'property',
-                     'variable','function', 'h1', 'h2', 'h3')):
+            types = ('module', 'class', 'method', 'staticmethod', 'descriptor',
+                     'property', 'variable','function', 'h1', 'h2', 'h3')):
     """ Fill internal api_url variable from names of modules, classes, functions,
         methods, variables or h1, h2 and h3 sections. With this, wiki can create
         links to this functions  or classes.
@@ -266,7 +291,7 @@ def keywords(api, api_url = "",                 # jinja function
                 '|'.join((name.replace('.','\.') for type, name, args, doc in api if type in types )))
     _api_url = api_url
 
-    _api_keywords = dict((name, args or type) for type, name, args, doc in api)
+    _api_keywords = dict((name, (args if type != 'module' else None) or type) for type, name, args, doc in api)
 
     return ''
 
@@ -593,6 +618,14 @@ def property_info(info, delimiter = ' | '):
     if info[2]: rv.append('DELETE')
     return delimiter.join(rv)
 
+def log(message):
+    """
+    Write message to stderr.
+    
+        #!jinja
+        {% do log('some debug message') %}
+    """
+    sys.stderr.write("%s\n" % message)
 
 def _truncate(string, length = 255, killwords = True, end='...'):
     """ Only True yet """
@@ -622,6 +655,7 @@ def _generate(fname, path):
     env.globals['load_source']  = load_source
     env.globals['local_name']   = local_name
     env.globals['property_info']= property_info
+    env.globals['log']          = log
 
     # jinja2 compatibility with old versions
     env.globals['length']    = len

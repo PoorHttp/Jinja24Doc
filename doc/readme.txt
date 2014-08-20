@@ -123,18 +123,23 @@ looks like that:
     ((type, name, args, documentation),)    # all values are strings
 
 Of course, some items don't have all values, so on their place is None or
-another value, typical for their type. Next list is typical for load_module
+another value, typical for their type. Modules could have author, date and version,
+if it available. Submodules, do not have documentation. Dependences are modules,
+which is not import, but there is import some routines from that. And variables
+jave value instead of arguments. If you want to doing documentation for it, that is
+comment on one line before. Next list is typical for load_module
 function.
 
-    (('module', 'name', None, documentation),
-     ('submodule', 'name', None, ''),   # submodule don't have documentation
-     ('class', 'ClassName', None, documentation),
-     ('property', 'ClassName.name', info, documentation)),
-     ('descriptor', 'ClassName.name', args, documentation)),
-     ('method', 'ClassName.name', args, documentation)),
-     ('function', 'name', args, documentation),
-     ('variable', 'name', value, ''))   # variable have value instead of arguments
-                                        # and can't have documentation yet
+    (('module', 'name', ('author', 'date', 'version'), 'documentation'),
+     ('submodule', 'name', None, ''),
+     ('dependence', 'name', None, ''),
+     ('class', 'ClassName', None, 'documentation'),
+     ('property', 'ClassName.name', (READ, WRITE, DELETE), 'documentation')),
+     ('descriptor', 'ClassName.name', args, 'documentation')),
+     ('method', 'ClassName.name', args, 'documentation')),
+     ('staticmethod', 'ClassName.name', args, 'documentation')),
+     ('function', 'name', args, 'documentation'),
+     ('variable', 'name', value, 'documentation'))
 
 For load_text function is this typical list:
 

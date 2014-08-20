@@ -43,7 +43,7 @@
       {% elif type == 'property' %}
         <h4><code>{{ name }} {{ property_info(args) }}</code></h4>
         <div>{{ doc }}</div>
-      {% elif type in ('method', 'descriptor') %}
+      {% elif type in ('method', 'staticmethod', 'descriptor') %}
         <h4><code>{{ name }}{{ args }}</code></h4>
         <div>{{ doc }}</div>
       {% elif type == 'function' and name[0] != '_' %}

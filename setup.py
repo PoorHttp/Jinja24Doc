@@ -100,13 +100,13 @@ setup(
             "License :: OSI Approved :: BSD License",
             "Natural Language :: English",
             "Natural Language :: Czech",
-            "Natural Language :: English",
             "Operating System :: POSIX",
             "Programming Language :: Python :: 2",
             "Programming Language :: Python :: 3",
             "Topic :: Documentation",
             "Topic :: Software Development :: Documentation",
-            "Topic :: Text Processing :: Markup"
+            "Topic :: Text Processing :: Markup",
+            "Topic :: Utilities"
     ],
     install_requires    = ['jinja2 >= 2.6'],
     cmdclass            = {'build_scripts': X_build_scripts,

@@ -1,24 +1,24 @@
 {% set prev = 'none' %}
 {% for type, name, args, doc in api %}
-  {% if type != 'submodule' and prev == 'submodule' %}
-      </div><!-- submodules --!>
+  {% if type not in ('submodule', 'dependence') and prev in ('submodule', 'dependence') %}
+      </div><!-- /submodules -->
   {% endif%}
   {% if type == 'module' %}
     <h2 class="{{ type }}"><i>module</i> {{ name }}
-      <span class="links"> 
+      <span class="links">
         <a name="{{ name }}" href="#{{ name }}">link</a> |
         <a href="#">top</a></span></h2>
-  {% elif type == 'submodule' %}
-    {% if prev != type %}
+  {% elif type in ('submodule', 'dependence') %}
+    {% if prev not in ('submodule', 'dependence') %}
     <div class="submodules">
       <small>Module dependences:</small>
     {% else %},
     {% endif %}
       <span class="{{ type }}">{{ wiki(name) }}</span>
-  {% elif type == 'function' and name[0] != '_' %}
-    <h3 class="{{ type }}"><i>def</i> {{ name }}{{ args }}
+  {% elif type == 'function' and not (local_name(name)[0] == '_') %}
+    <h3 class="{{ type }}"><i>def</i> {{ name }}{{ args|truncate(end='...)') }}
       <span class="links">
-        <a name="{{ name }}" href="#{{ name }}">link</a> | 
+        <a name="{{ name }}" href="#{{ name }}">link</a> |
         <a href="#">top</a></span></h3>
     <div class="{{ type }}">{{ wiki(doc) }}</div>
   {% endif %}
