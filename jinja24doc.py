@@ -185,7 +185,7 @@ def load_module(module):                    # jinja function
                             defaults = ndefaults
 
                         doc.append((mtype,                                  # type
-                            _str(item.__name__) + '.' + _str(nm),           # name
+                            _str(item.__name__) + '.' + _str(it.__name__),  # name
                             formatargspec(args, vargs, kwords, defaults),   # args
                             getdoc(it) or ''))                              # doc
                     except:
