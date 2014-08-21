@@ -226,12 +226,12 @@ def load_module(module):                    # jinja function
         elif isinstance(item, re._pattern_type):
             if name[0:2] == '__' or not re.search("\n%s\s*=" % name, source):
                 continue
-            match = re.search("\n#\s*([^\n]*)\n%s\s*=", source)
+            match = re.search("\n#\s*([^\n]*)\n%s\s*=" % name, source)
             comment = match.groups()[0] if match else ''
             doc.append(('variable',                                     # type
                         name,                                           # name
                         "(%s, %s)" % (item.pattern, item.flags),        # value
-                        ''))                                            # no doc
+                        comment))                                       # doc
         else:
             if name[0:2] == '__' or not re.search("\n%s\s*=" % name, source):
                 if name in ('__author__', '__date__', '__version__'):
@@ -243,7 +243,7 @@ def load_module(module):                    # jinja function
             doc.append(('variable',                                     # type
                         name,                                           # name
                         repr(item),                                     # value
-                        comment))                                       # no doc
+                        comment))                                       # doc
     #endfor
 
     doc.append(('module',
