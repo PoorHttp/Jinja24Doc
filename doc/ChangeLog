@@ -1,3 +1,57 @@
+2014-08-22  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* setup.py: 1.2.0 release
+
+2014-08-22  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/_reference.html, templates/_simple.html,
+	templates/_simple_with_submodules.html,
+	templates/jinja24doc/_reference.html: escaped arguments in templates
+
+2014-08-22  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: generate args from doc for builtin functions
+
+2014-08-22  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: do not process builtin functions
+
+2014-08-22  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt, jinja24doc.py: support automatics links to RFC
+	documents
+
+2014-08-22  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: bug fix for pep links regexp
+
+2014-08-21  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: bugfix: comments for regexps
+
+2014-08-21  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py: use __name__ property instead of name from
+	getmebers
+
+2014-08-21  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt, jinja24doc.py, setup.py,
+	templates/_reference.html, templates/_simple.html,
+	templates/_simple_with_submodules.html, templates/blue.css,
+	templates/gray.css, templates/green.css, templates/inverse.css,
+	templates/jinja24doc/_reference.html, templates/red.css: static
+	methods, module dependeces, jinja log function and module info
+
+2014-04-29  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/ChangeLog, setup.py: public version
+
+2014-04-29  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/blue.css, templates/gray.css, templates/green.css,
+	templates/inverse.css, templates/red.css: style update
+
 2014-04-29  Ondrej Tuma <mcbig@zeropage.cz>
 
 	* doc/readme.txt, jinja24doc.py, templates/_reference.html,
