@@ -9,7 +9,7 @@ templates. Your or from jinja2doc package.
 It is more *powerful pydoc*, with style what you want. You can format
 your documentation string with some simple chars like in *AsciiDoc* and *Wiki*,
 and *highlight* your examples code. And of course it create automatic links to
-*PEP*.
+*PEP* and *RFC*.
 
 == Manual in few seconds ==
 Just create your {template.html} file, and add to them these lines:
@@ -57,8 +57,8 @@ load_module and load_text returns documentation list.
 Other functions works with string, they format it. Function wiki generate html
 string formated with base wiki syntax. It know headers, bold text, parameter
 padding, code block or paragraphs defined with double newline. Except for it,
-it can create links for PEP documentations and links to api definition. If
-you want to create api links, you must fill api regex variable by keywords
+it can create links for PEP and RFC documentations and links to api definition.
+If you want to create api links, you must fill api regex variable by keywords
 function first.
 
     #!jinja
