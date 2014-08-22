@@ -72,8 +72,8 @@ re_header3  = re.compile(r"===(.*?)===")                            # = head3 =
 re_header4  = re.compile(r"====(.*?)====")                          # = head4 =
 re_nlnl     = re.compile(r"(\n\s*\n)")                              # <br><br>
 
-re_pep3     = re.compile(r"(PEP )([0-9]{3})([\s.(]+)")              # pep link
-re_pep4     = re.compile(r"(PEP )([0-9]{4})([\s.(]+)")              # pep link
+re_pep3     = re.compile(r"\b(PEP )([0-9]{3})\b")              # pep link
+re_pep4     = re.compile(r"\b(PEP )([0-9]{4})\b")              # pep link
 re_link     = re.compile(r"((http|https|git|ftp)://[^\s<>]*)", re.I)
 
 re_notlink  = re.compile(r"(.*?)((<a .*?</a>)|$)", re.S)
@@ -499,9 +499,9 @@ def wiki(doc):    # jinja function
         doc = re_notlink.sub(_not_in_link, doc)
 
     doc = re_pep3.sub(          # pep with 3 numbers
-            r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>\3',doc)
+            r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>',doc)
     doc = re_pep4.sub(          # pep with 4 numbers
-            r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>\3', doc)
+            r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>', doc)
 
     return _nlstrip(doc)
 
@@ -587,9 +587,9 @@ def load_source(srcfile, code = 'python'):
             doc = re_notlink.sub(_not_in_link, doc)
 
         doc = re_pep3.sub(          # pep with 3 numbers
-                r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>\3',doc)
+                r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>',doc)
         doc = re_pep4.sub(          # pep with 4 numbers
-                r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>\3', doc)
+                r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>', doc)
     return doc
 
 
