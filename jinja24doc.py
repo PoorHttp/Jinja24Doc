@@ -206,24 +206,38 @@ def load_module(module):                    # jinja function
             if module.__name__ != item.__module__:
                 dependences.add(item.__module__)            # append to dependences
                 continue
-            if isbuiltin(item):
-                continue
-            args, vargs, kwords, defaults = getargspec(item)
-            if defaults:
-                ndefaults = []                  # transport functions to their names
-                for d in defaults:
-                    if isfunction(d):
-                        ndefaults.append(Fn(".".join((d.__module__, d.__name__))))
-                    elif ismethod(d):
-                        ndefaults.append(Fn(".".join((d.__objclass__, d.__name__))))
-                    else:
-                        ndefaults.append(d)
-                defaults = ndefaults
 
-            doc.append(('function',                                     # type
+            if not isbuiltin(item):
+                args, vargs, kwords, defaults = getargspec(item)
+                if defaults:
+                    ndefaults = []                  # transport functions to their names
+                    for d in defaults:
+                        if isfunction(d):
+                            ndefaults.append(Fn(".".join((d.__module__, d.__name__))))
+                        elif ismethod(d):
+                            ndefaults.append(Fn(".".join((d.__objclass__, d.__name__))))
+                        else:
+                            ndefaults.append(d)
+                    defaults = ndefaults
+
+                doc.append(('function',                                 # type
                         name,                                           # name
                         formatargspec(args, vargs, kwords, defaults),   # args
                         getdoc(item) or ''))                            # doc
+            else:
+                bdoc = getdoc(item) or ''
+                if bdoc.find(name) == 0:
+                    eol = bdoc.find('\n')
+                    args = bdoc[len(name):eol]
+                    bdoc = bdoc[eol:].strip()
+                else:
+                    args = ''
+
+                doc.append(('function',                                 # type
+                        name,                                           # name
+                        args,                                           # args
+                        bdoc))                                          # doc
+
         elif ismodule(item):
             doc.append(('submodule',name, None, ''))
         elif isinstance(item, re._pattern_type):
