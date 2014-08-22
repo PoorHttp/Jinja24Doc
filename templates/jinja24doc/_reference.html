@@ -16,7 +16,7 @@
     {% endif %}
       <span class="{{ type }}">{{ wiki(name) }}</span>
   {% elif type == 'function' and not (local_name(name)[0] == '_') %}
-    <h3 class="{{ type }}"><i>def</i> {{ name }}{{ args|truncate(end='...)') }}
+    <h3 class="{{ type }}"><i>def</i> {{ name }}{{ args|truncate(end='...)')|e }}
       <span class="links">
         <a name="{{ name }}" href="#{{ name }}">link</a> |
         <a href="#">top</a></span></h3>

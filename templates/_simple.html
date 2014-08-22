@@ -35,13 +35,13 @@
         <h3><small>class</small> {{name}}</h3>
         <div>{{ doc }}</div>
       {% elif type == 'property' %} 
-        <h4><code>{{ name }} {{ property_info(args) }}</code></h4>
+        <h4><code>{{ name }} {{ property_info(args)|e }}</code></h4>
         <div>{{ doc }}</div>
       {% elif type in ('method', 'staticmethod', 'descriptor') %}
         <h4><code>{{ name }}{{ args }}</code></h4>
         <div>{{ doc }}</div>
       {% elif type == 'function' and name[0] != '_' %}
-        <h3><code><small>def</small> {{ name }}{{ args }}</code></h3>
+        <h3><code><small>def</small> {{ name }}{{ args|e }}</code></h3>
         <div>{{ doc }}</div>
       {% elif type in ('h1', 'h2', 'h3', 'h4') %}
         <{{ type }}>{{ name }}</h3>

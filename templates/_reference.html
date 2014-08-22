@@ -31,28 +31,28 @@
         <a name="{{ name }}" href="#{{ name }}">link</a> |
         <a href="#">top</a></span></h3>
   {% elif type == 'property' %}
-    <h4 class="{{ type }}">{{ local_name(name) }} <small>({{ property_info(args) }})</small>
+    <h4 class="{{ type }}">{{ local_name(name) }} <small>({{ property_info(args)|e }})</small>
       <span class="links">
         <a name="{{ name }}"></a>
         <a href="#">top</a></span></h4>
   {% elif type in ('method', 'descriptor') and not (local_name(name)[:2] == '__' and name[-2:] != '__' ) %}
-    <h4 class="{{ type }}"><i>def</i> {{ local_name(name) }}{{ args|truncate(end='...)') }}
+    <h4 class="{{ type }}"><i>def</i> {{ local_name(name) }}{{ args|truncate(end='...)')|e }}
       <span class="links">
         <a name="{{ name }}" href="#{{ name }}">link</a> |
         <a href="#">top</a></span></h4>
   {% elif type == 'staticmethod' and not (local_name(name)[:2] == '__' and name[-2:] != '__' ) %}
     <h4 class="{{ type }}"><small>@staticmethod</small><br>
-      <i>def</i> {{ local_name(name) }}{{ args|truncate(end='...)') }}
+      <i>def</i> {{ local_name(name) }}{{ args|truncate(end='...)')|e }}
       <span class="links">
         <a name="{{ name }}" href="#{{ name }}">link</a> |
         <a href="#">top</a></span></h4>
   {% elif type == 'function' and not (local_name(name)[:2] == '__' and name[-2:] != '__' ) %}
-    <h3 class="{{ type }}"><i>def</i> {{ name }}{{ args|truncate(end='...)') }}
+    <h3 class="{{ type }}"><i>def</i> {{ name }}{{ args|truncate(end='...)')|e }}
       <span class="links">
         <a name="{{ name }}" href="#{{ name }}">link</a> |
         <a href="#">top</a></span></h3>
   {% elif type == 'variable' %}
-    <h4 class="{{ type }}">{{ name }} = {{ args|e|truncate }}
+    <h4 class="{{ type }}">{{ name }} = {{ args|e|truncate|e }}
       <span class="links">
         <a name="{{ name }}"></a>
         <a href="#">top</a></span></h4>
