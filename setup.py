@@ -55,7 +55,7 @@ class X_clean(clean):
 
 setup(
     name                = "jinja24doc",
-    version             = "1.1.0",
+    version             = "1.2.0",
     description         = "Jinja24Doc for Python",
     author              = "Ondrej Tuma",
     author_email        = "mcbig@zeropage.cz",
