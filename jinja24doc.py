@@ -14,7 +14,7 @@ __version__ = "1.2.0"
 from jinja2 import Environment, FileSystemLoader, Undefined
 from traceback import format_exception
 from inspect import getargspec, getdoc, getmembers, getsource, formatargspec, \
-        isfunction, isroutine, ismethod, isclass, ismodule, \
+        isfunction, isroutine, ismethod, isclass, ismodule, isbuiltin, \
         ismethoddescriptor, isgetsetdescriptor
 from operator import itemgetter
 
@@ -204,7 +204,9 @@ def load_module(module):                    # jinja function
 
         elif isfunction(item) or isroutine(item):           # module function
             if module.__name__ != item.__module__:
-                dependences.add(item.__module__)    # append to dependences
+                dependences.add(item.__module__)            # append to dependences
+                continue
+            if isbuiltin(item):
                 continue
             args, vargs, kwords, defaults = getargspec(item)
             if defaults:
