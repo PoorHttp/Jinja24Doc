@@ -197,8 +197,8 @@ which you plan to use jinja24doc.
 
     #!text
     ~$ wget https://pypi.python.org/packages/source/j/jinja24doc/jinja24doc-1.2.0.tar.gz
-    ~$ tar xzf jinja24doc-1.0.1.tar.gz
-    ~$ cd jinja24doc-1.0.1
+    ~$ tar xzf jinja24doc-1.2.0.tar.gz
+    ~$ cd jinja24doc-1.2.0
     ~$ python setup.py install
 
 ==== Source from git ====
