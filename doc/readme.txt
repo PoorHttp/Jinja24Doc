@@ -205,11 +205,11 @@ which you plan to use jinja24doc.
 
 
     #!text
-    ~$ git clone git://git.code.sf.net/p/poorhttp/jinja24doc jinja24doc
+    ~$ git clone git@github.com:PoorHttp/Jinja24Doc.git
     or
-    ~$ git clone http://git.code.sf.net/p/poorhttp/jinja24doc jinja24doc
-    
-    ~$ cd jinja24doc
+    ~$ git clone https://github.com/PoorHttp/Jinja24Doc.git
+
+    ~$ cd Jinja24Doc
     ~$ python setup.py install
 
 ==== Install from PyPI ====
@@ -225,10 +225,10 @@ automatically.
 
 For me, will be nice, if params padding will be do like <ul> - <li> html
 lists. But jinja2doc will be create as simple way to generate documentation
-easy, fast and miscellaneous. I write really fast, and as tool for generate
-documentation of Poor WSGI. After this work, i put some time to document and
-smooth this project, so if you want to do same improvement do it, and pleas
-send me it for another users via sf.net or to mail: mcbig at zeropage.cz.
+easy, fast and miscellaneous. I write it really fast, and as tool for generate
+documentation of Poor WSGI. After this work, I put some time to document and
+smooth this project, so if you want to do same improvement do it, and please
+send me it for another users via GitHub or to mail: mcbig at zeropage.cz.
 
 === Python 3 ===
 
