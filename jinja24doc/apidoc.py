@@ -21,7 +21,7 @@ _ordering   = { 'module'    : (0,0),
                 'function'  : (3,0),
                 'variable'  : (4,0)}
 
-
+re_notlink  = re.compile(r"(.*?)((<a .*?</a>)|$)", re.S)
 
 class G(object):
     """ Global variables class """
@@ -47,14 +47,39 @@ def _key_doc(a):
     return str(o[0])+a[1].replace('.',str(o[1]))
 
 
+def _keyword(obj):
+    groups = obj.groups()
+    key = groups[1]
+
+    args = G._api_keywords[key]
+
+    tmp = '<a href="%s#%s" title="%s">%s</a>' % \
+            (G._api_url, key, args, key )
+    return groups[0] + tmp + groups[2]
+
+
+def _not_in_link(obj):
+    groups = obj.groups()
+    if not groups[0]:
+        return groups[1]
+
+    tmp = G.re_docs.sub(_keyword, groups[0])
+    return tmp + groups[1]
+
+
+def linked_api(doc):
+    """ Function which is called by wiki or rst to append links to api. """
+    return re_notlink.sub(_not_in_link, doc) if not G.re_docs is None else doc
+
+
 def load_module(module):                    # jinja function
     """
-        get documentation of function, variables and classes from module
+    get documentation of function, variables and classes from module
 
-            #!jinja
-            {% set api = load_module('module') %}
-            {% for type, name, args, doc = api[0] %}
-                ...
+        #!jinja
+        {% set api = load_module('module') %}
+        {% for type, name, args, doc = api[0] %}
+            ...
     """
     try:
         ml = module.split('.')

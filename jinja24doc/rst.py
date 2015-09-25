@@ -3,23 +3,12 @@
 Library for reStrucuredText parsing, and generating simple HTML output.
 """
 
-from docutils import nodes, writers
+from docutils import nodes
+from docutils.parsers.rst import Parser
+from docutils.utils import new_document
+from docutils.frontend import OptionParser
 
-class DocWriter(writers.Writer):
-    supported = ('html',)
-    settings_spec = ('No options here.', '', ())
-    settings_defaults = {}
-
-    output = None
-
-    def __init__(self):
-        writers.Writer.__init__(self)
-
-    def translate(self):
-        visitor = SimpleHTMLTranslator(self.document)
-        self.document.walkabout(visitor)
-        self.output =  visitor.output()
-
+from apidoc import linked_api
 
 class SimpleHTMLTranslator(nodes.NodeVisitor, object):
     list_types = {'arabic': '1',
@@ -97,7 +86,7 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
             retval = retval.replace(key, val)
         for key, val in self.targets.items():
             retval = retval.replace(key, val)
-        return retval
+        return retval.strip()
 
     def visit_div(self, node):
         self.body.append('<div class="%s">' % node.tagname)
@@ -486,23 +475,24 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
     def visit_pending(self, node):
         raise nodes.SkipNode
 
-import sys
-import docutils.parsers.rst
-import docutils.utils
-import docutils.frontend
-from docutils.examples import html_parts, internals
-from docutils.writers import html4css1
+    def visit_problematic(self, node):
+        self.body.append('<span class="problematic">')
+    def depart_problematic(self, node):
+        self.body.append('</span>')
 
-settings = docutils.frontend.OptionParser(
-                    components=(docutils.parsers.rst.Parser,)
-                    ).get_default_values()
 
-with open('github.rst') as f:
-    src = f.read()
+def rst(doc):
+    settings = OptionParser(components=(Parser,)).get_default_values()
+    parser = Parser()
+    document = new_document('__doc__', settings)
+    parser.parse(doc, document)
 
-parser = docutils.parsers.rst.Parser()
-document = docutils.utils.new_document('Testing document', settings)
-parser.parse(src, document)
-w = DocWriter()
-with open('test.html', 'w+') as f:
-    w.write(document, f)
+    visitor = SimpleHTMLTranslator(document)
+    document.walkabout(visitor)
+    out = visitor.output()
+
+    if out.count('</p>') == 1:              # strip paragraph if is one
+        out = out[out.index('>')+1:-4]
+
+    # api links
+    return linked_api(doc)

@@ -7,6 +7,7 @@ import os
 
 from apidoc import G
 from wiki import wiki, load_text, load_source
+from rst import rst
 from apidoc import load_module, keywords
 
 
@@ -71,6 +72,7 @@ def _generate(fname, path):
                       #lstrip_blocks = True)     # add in 2.7
     env.globals['load_module']  = load_module
     env.globals['wiki']     = wiki
+    env.globals['rst']      = rst
     env.globals['keywords'] = keywords
     env.globals['load_text']    = load_text
     env.globals['load_source']  = load_source

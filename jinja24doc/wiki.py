@@ -5,7 +5,7 @@ import re
 import os
 import sys
 
-from apidoc import G
+from apidoc import linked_api, G
 from misc import uni
 
 _python_keywords = [
@@ -47,8 +47,6 @@ re_pep4     = re.compile(r"\b(PEP )([0-9]{4})\b")               # pep link
 re_rfc      = re.compile(r"\b(RFC )([0-9]+)\b")                 # rfc link
 re_link     = re.compile(r"((http|https|git|ftp)://[^\s<>]*)", re.I)
 
-re_notlink  = re.compile(r"(.*?)((<a .*?</a>)|$)", re.S)
-
 re_preauto  = re.compile(r"\n\s*\n( {4}.*?)(\n?)((\n\S)|$)", re.S)  # <pre>
 re_notpre   = re.compile(r'(.*?)((<pre class="\w*">.*?</pre>)|$)', re.S) # 3 groups !
 #        r"(^.*?<pre>)|(</pre>.*?<pre>)|(</pre>.*?$)|(^.*?$)", re.S)
@@ -80,25 +78,6 @@ def _not_in_pre(obj):
     tmp = re_header2.sub(r"<h2>\1</h2>", tmp)
     tmp = re_param.sub(r'<br>\1<code class="param">\2</code>', tmp)
     return re_nlnl.sub(r'<br><br>\n\n', tmp)+groups[1]
-
-def _keyword(obj):
-    groups = obj.groups()
-    key = groups[1]
-
-    args = G._api_keywords[key]
-
-    tmp = '<a href="%s#%s" title="%s">%s</a>' % \
-            (G._api_url, key, args, key )
-    return groups[0] + tmp + groups[2]
-
-
-def _not_in_link(obj):
-    groups = obj.groups()
-    if not groups[0]:
-        return groups[1]
-
-    tmp = G.re_docs.sub(_keyword, groups[0])
-    return tmp + groups[1]
 
 
 
@@ -259,8 +238,7 @@ def wiki(doc):    # jinja function
     # links
     doc = re_link.sub(r'<a href="\1">\1</a>', doc)
 
-    if not G.re_docs is None:     # api keywords
-        doc = re_notlink.sub(_not_in_link, doc)
+    doc = linked_api(doc)               # api keywords
 
     doc = re_pep3.sub(          # pep with 3 numbers
             r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>',doc)
@@ -270,6 +248,7 @@ def wiki(doc):    # jinja function
             r'<a href="http://www.faqs.org/rfcs/rfc\2/">\1\2</a>', doc)
 
     return _nlstrip(doc)
+
 
 def load_text(textfile):    # jinja function
     """
@@ -350,8 +329,7 @@ def load_source(srcfile, code = 'python'):
         # links
         doc = re_link.sub(r'<a href="\1">\1</a>', doc)
 
-        if not G.re_docs is None:     # api keywords
-            doc = re_notlink.sub(_not_in_link, doc)
+        doc = linked_api(doc)       # api keywords
 
         doc = re_pep3.sub(          # pep with 3 numbers
                 r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>',doc)
