@@ -1,3 +1,4 @@
+{%- set formater = formater if formater is defined else rst %}
 {%- include "_header.html" %}
       <menu class="sidebar">
     {% for type, name, args, doc in api %}
@@ -24,7 +25,7 @@
       <small>Module dependences:</small>
     {% else %},
     {% endif %}
-      <span class="{{ type }}">{{ wiki(name) }}</span>
+      <span class="{{ type }}">{{ formater(name) }}</span>
   {% elif type == 'class' %}
     <h3 class="{{ type }}"><i>class</i> {{ name }}
       <span class="links">
@@ -60,7 +61,7 @@
   {% set type = 'dontwant' %}
   {% endif %}
   {% if type not in ('dontwant', 'submodule', 'dependence') %}
-    <div class="{{ type }}">{{ wiki(doc) }}</div>
+    <div class="{{ type }}">{{ formater(doc) }}</div>
   {% endif %}
   {% set prev = type %}
 {% endfor %}
