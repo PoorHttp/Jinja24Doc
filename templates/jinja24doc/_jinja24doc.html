@@ -4,9 +4,13 @@
 
 {#      need api for keywords yea?     #}
 {% set api = load_module('jinja24doc') %}
-
+{% set api = api + load_module('wiki') %}
+{% set api = api + load_module('main') %}
+{% set api = api + load_module('misc') %}
+{% set api = api + load_module('apidoc') %}
 {% do keywords(api, 'jinja24doc_api.html', types = ('variable','function')) %}
 
+{#% do keywords(api, 'jinja24doc_api.html') %#}
+
 {% include "_text.html" %}
-      
 {% include "_footer.html" %}

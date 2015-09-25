@@ -1,6 +1,10 @@
 {% set page = 'api' %}{% include "_header.html" %}
 
 {% set api = load_module('jinja24doc') %}
+{% set api = api + load_module('wiki') %}
+{% set api = api + load_module('main') %}
+{% set api = api + load_module('misc') %}
+{% set api = api + load_module('apidoc') %}
 
 {% do keywords(api) %}
       <menu class="sidebar">

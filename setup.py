@@ -1,6 +1,11 @@
 #!/usr/bin/python
 
+#try:
+#    can't use setuptools yet, becouse i found data file in absolute path
+#    from setuptools import setup
+#except:
 from distutils.core import setup
+
 from distutils.command.build_scripts import build_scripts
 from distutils.command.build import build
 from distutils.command.clean import clean
@@ -19,21 +24,24 @@ class X_build_scripts(build_scripts):
 
 class X_build(build):
     def run(self):
-        import jinja24doc
-        jinja24doc.paths = ('templates/jinja24doc', 'doc')
+        from jinja24doc.apidoc import G
+        from jinja24doc.main import _generate
+        import sys
+        sys.path.insert(0, 'jinja24doc')
+        G.paths = ('templates/jinja24doc', 'doc')
         log.info("creating documentation")
         def _jinja24doc(tname, oname):
-            jinja24doc.re_docs = None
-            jinja24doc._api_url = ''
-            jinja24doc._api_keywords = {}
-            jinja24doc._modules = []
+            G.re_docs = None
+            G._api_url = ''
+            G._api_keywords = {}
+            G._modules = []
             log.info('jinja24doc processing %s ...' % oname)
-            data = jinja24doc._generate(tname, jinja24doc.paths)
+            data = _generate(tname, G.paths)
             if not isinstance(data, str):
                 data = data.encode('utf-8')
             with open(oname, 'w') as f:
                 f.write(data)
-        
+
         self.mkpath('build/_html_')
         _jinja24doc('_jinja24doc.html',     'build/_html_/index.html')
         _jinja24doc('_jinja24doc_api.html', 'build/_html_/jinja24doc_api.html')
@@ -54,12 +62,13 @@ class X_clean(clean):
 
 
 setup(
-    name                = "jinja24doc",
+    name                = "Jinja24Doc",
     version             = "1.2.0",
     description         = "Jinja24Doc for Python",
     author              = "Ondrej Tuma",
     author_email        = "mcbig@zeropage.cz",
     url                 = "http://poorhttp.zeropage.cz/jinja24doc.html",
+    packages            = ['jinja24doc'],
     scripts             = ['build/_scripts_/jinja24doc'],
     data_files          = [
                 ('share/doc/jinja24doc',
@@ -109,6 +118,7 @@ setup(
             "Topic :: Utilities"
     ],
     install_requires    = ['jinja2 >= 2.6'],
+    test_suite          = 'tests',
     cmdclass            = {'build_scripts': X_build_scripts,
                            'build': X_build,
                            'clean': X_clean },
