@@ -495,4 +495,4 @@ def rst(doc):
         out = out[out.index('>')+1:-4]
 
     # api links
-    return linked_api(doc)
+    return linked_api(out)
