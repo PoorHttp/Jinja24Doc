@@ -267,6 +267,11 @@ pre > tt {
     color: #666;
 }
 
+.code {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
 code {
     font-size: 11pt;
     color: #000;

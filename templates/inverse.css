@@ -245,22 +245,36 @@ pre {
     border: 1px dotted gray;
     border-radius: 6px 6px 6px;
     overflow: auto;
+    color: #fff;
 }
 pre > b {
     color: #E55A58;
 }
-pre > u {
-    color: #306900;
+pre > u, pre > var {
+    color: #62C411;
     text-decoration: none;
 }
 pre > i {
     color: #0095ff;
     font-style: normal;
 }
-pre > em {
-    color: #4545FD;
+pre > i > b {
+    color: #CA8400;
+    font-weight: normal;
+}
+pre > em, pre > kbd {
+    color: #A5A5FF;
     font-style: normal;
 }
+pre > tt {
+    color: #999;
+}
+
+.code {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
 code {
     font-size: 11pt;
     color: #fff;
