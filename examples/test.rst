@@ -20,19 +20,33 @@ code blocks with syntax
 .......................
 .. code-block:: python
 
-    @decorator(*args):
-    def function(param, **kwargs):
-        """ __doc__ for function """
-        if param is None:
-            raise Exception("Param can't be None")
-        assert (isinstance(param, int))
-        value = param * 2       # some work
-        return value
+    # simple python exmple in code-block (python)
+    from cool import notcool
+
+    class Object(object):
+       ''' Class documentation '''
+        none = None
+        true = True
+        false = False
+        n = int(10)
+        s = str('text')
+
+        def __init__(self):
+            raise RuntimeError('This is singleton\n') # raise the exception
 
     try:
-        function()
+        obj = Object()
     except Exception as e:
         print(e)
+
+    class Foo(Object):
+        @staticmethod
+        def info():
+            return "This is foo \xc4\x8d"
+
+    for i in range(100):
+        if i > 10 and i < 50:
+            print (i*i)
 
 code blocks with line numbers
 .............................

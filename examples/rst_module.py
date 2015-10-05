@@ -19,7 +19,7 @@ check_number or none function.
         s = str('text')
 
         def __init__(self):
-            raise RuntimeError('This is singleton') # raise the exception
+            raise RuntimeError('This is singleton\\n') # raise the exception
 
     try:
         obj = Object()
@@ -29,7 +29,7 @@ check_number or none function.
     class Foo(Object):
         @staticmethod
         def info():
-            return "This is foo"
+            return "This is foo \u010d"
 
     for i in range(100):
         if i > 10 and i < 50:

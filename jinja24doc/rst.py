@@ -144,6 +144,8 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
                 self.body.append('<b>')
             elif 'function' in classes or 'class' in classes:
                 self.body.append('<em>')
+            elif 'escape' in classes:
+                self.body.append('<i><b>')
             elif 'string' in classes:
                 self.body.append('<i>')
             elif 'comment' in classes:
@@ -166,6 +168,8 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
                 self.body.append('</b>')
             elif 'function' in classes or 'class' in classes:
                 self.body.append('</em>')
+            elif 'escape' in classes:
+                self.body.append('</b></i>')
             elif 'string' in classes:
                 self.body.append('</i>')
             elif 'comment' in classes:

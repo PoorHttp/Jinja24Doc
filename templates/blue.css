@@ -255,6 +255,10 @@ pre > i {
     color: #005089;
     font-style: normal;
 }
+pre > i > b {
+    color: #CA8400;
+    font-weight: normal;
+}
 pre > em, pre > kbd {
     color: #0000B0;
     font-style: normal;
