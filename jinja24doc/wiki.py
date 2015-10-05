@@ -4,16 +4,18 @@ from jinja2 import Undefined
 import re
 import os
 import sys
+import __builtin__
 
 from apidoc import linked_api, G
 from misc import uni
 
-_python_keywords = [
-                'False', 'None', 'True', 'and', 'as', 'assert', 'break',
-                'class', 'continue', 'def', 'del', 'elif', 'else', 'except',
-                'finally', 'for', 'from', 'global', 'if', 'import', 'in',
-                'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise',
-                'return', 'try', 'while', 'with', 'yield']
+_python_keywords = (
+                'as', 'assert', 'break', 'class', 'continue', 'def', 'del',
+                'elif', 'else', 'except', 'finally', 'for', 'from', 'global',
+                'if', 'import', 'lambda', 'nonlocal', 'pass', 'raise', 'return',
+                'try', 'while', 'with', 'yield', 'print')   # print is keyword in rst...
+_operators      = ('in', 'is', 'and', 'or', 'not')
+_builtin        = tuple(i for i in dir(__builtin__) if i[0] != '_')
 
 _jinja_keywords = [
                 '#}', '%}', 'Trueset', 'as', 'block', 'call', 'context', 'elif',
@@ -86,16 +88,21 @@ def _python(obj):
     tmp = obj.group()
     if tmp[0] in ('"','\'','#'):
         return "<i>%s</i>" % tmp
-    if tmp[0] in ('@','0','1','2','3','4','5','6','7','8','9'):
+    if tmp[0] in ('0','1','2','3','4','5','6','7','8','9'):
         return "<u>%s</u>" % tmp
+    if tmp[0] == '@':
+        return "<var>%s</var>" % tmp
     if tmp[:4] == "def ":
         return "<b>def</b> <em>%s</em>" % tmp[4:]
     if tmp[:6] == "class ":
         return "<b>class</b> <em>%s</em>" % tmp[6:]
     if tmp in _python_keywords:
         return "<b>%s</b>" % tmp
+    if tmp in _operators:
+        return "<tt>%s</tt>" % tmp
+    if tmp in _builtin:
+        return "<kbd>%s</kbd>" % tmp
     return tmp
-
 
 def _jinja(obj):
     """ Highlight python syntax on Match object with one group """

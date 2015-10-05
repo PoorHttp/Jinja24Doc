@@ -247,7 +247,7 @@ pre {
 pre > b {
     color: #b02c29;
 }
-pre > u {
+pre > u, pre > var {
     color: #306900;
     text-decoration: none;
 }
@@ -255,10 +255,14 @@ pre > i {
     color: #005089;
     font-style: normal;
 }
-pre > em {
+pre > em, pre > kbd {
     color: #0000B0;
     font-style: normal;
 }
+pre > tt {
+    color: #666;
+}
+
 code {
     font-size: 11pt;
     color: #000;

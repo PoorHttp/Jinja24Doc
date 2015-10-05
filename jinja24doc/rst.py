@@ -8,7 +8,10 @@ from docutils.parsers.rst import Parser
 from docutils.utils import new_document
 from docutils.frontend import OptionParser
 
+import re
+
 from apidoc import linked_api
+from wiki import re_source, re_python, _python
 
 class SimpleHTMLTranslator(nodes.NodeVisitor, object):
     list_types = {'arabic': '1',
@@ -33,9 +36,9 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
     admonitions = ( 'attention', 'caution', 'danger', 'error', 'hint',
                     'important', 'note', 'tip', 'warning')
 
-    def __init__(self, document):
+    def __init__(self, document, section_level = 0):
         nodes.NodeVisitor.__init__(self, document)
-        self.section_level = 0
+        self.section_level = section_level
         self.auto_footnote = 0
         self.used_footnote = 0
         self.auto_anonyms = 0
@@ -130,7 +133,7 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
     def depart_literal_block(self, node):
         self.body.append('\n</pre>\n')
     def visit_doctest_block(self, node):
-        self.body.append('<pre>\n')
+        self.body.append('<pre class="doctest">\n')
     def depart_doctest_block(self, node):
         self.body.append('\n</pre>\n')
 
@@ -481,18 +484,28 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
         self.body.append('</span>')
 
 
-def rst(doc):
+def doctest_code(obj):
+    tmp = obj.groups()
+    if tmp[0] == 'doctest':
+        source = re_python.sub(_python, tmp[1])
+    else:
+        source = tmp[1]
+    return '<pre class="%s">%s</pre>' % (tmp[0], source)
+
+
+def rst(doc, name = '__doc__', section_level = 2):
     settings = OptionParser(components=(Parser,)).get_default_values()
     parser = Parser()
-    document = new_document('__doc__', settings)
+    document = new_document(name, settings)
     parser.parse(doc, document)
 
-    visitor = SimpleHTMLTranslator(document)
+    visitor = SimpleHTMLTranslator(document, section_level)
     document.walkabout(visitor)
     out = visitor.output()
 
-    if out.count('</p>') == 1:              # strip paragraph if is one
-        out = out[out.index('>')+1:-4]
+    out = re_source.sub(doctest_code, out)
 
-    # api links
+    if out.startswith('<p') and out.endswith('</p>') and out.count('</p>') == 1:
+        out = out[out.index('>')+1:-4] # strip paragraph if is one
+
     return linked_api(out)
