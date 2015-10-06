@@ -5,6 +5,9 @@ from traceback import format_exception
 import sys
 import os
 
+from sys import path as python_path
+from os import path
+
 from misc import usage
 from apidoc import G
 from wiki import wiki, load_wiki, load_text, load_source

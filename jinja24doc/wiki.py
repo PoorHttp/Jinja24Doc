@@ -5,7 +5,11 @@ from inspect import stack
 import re
 import os
 import sys
-import __builtin__
+
+if sys.version_info[0] == 2:
+    import __builtin__ as builtins
+else:
+    import builtins
 
 from apidoc import linked_api, G
 from misc import uni, usage
@@ -16,7 +20,7 @@ _python_keywords = (
                 'if', 'import', 'lambda', 'nonlocal', 'pass', 'raise', 'return',
                 'try', 'while', 'with', 'yield', 'print')   # print is keyword in rst...
 _operators      = ('in', 'is', 'and', 'or', 'not')
-_builtin        = tuple(i for i in dir(__builtin__) if i[0] != '_')
+_builtin        = tuple(i for i in dir(builtins) if i[0] != '_')
 
 _jinja_keywords = [
                 '#}', '%}', 'Trueset', 'as', 'block', 'call', 'context', 'elif',

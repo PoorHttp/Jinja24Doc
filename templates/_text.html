@@ -5,7 +5,7 @@
         {% elif type == 'h3' %}<h3><a href="#{{ id }}">{{ name }}</a></h3>
         {% endif %}
     {% endfor %}
-      </menu><!-- /sidebar -->
+      </menu>{# /sidebar #}
 
     <div class="content">
     {% for type, name, args, doc in sections %}
@@ -13,5 +13,5 @@
         {{ doc }}
       {% endif %}
     {% endfor %}
-    </div><!-- /content -->
+    </div>{# /content #}
 {% include "_footer.html" -%}

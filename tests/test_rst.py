@@ -16,7 +16,8 @@ def test_header():
     ======
     Text
     """
-    assert '<a name="header"></a><h1>Header</h1>\n<p>Text</p>' == rst(cleandoc(test_header.__doc__))
+    assert '<a name="header"></a><h1>Header</h1>\n<p>Text</p>' == \
+            rst(cleandoc(test_header.__doc__), section_level = 0)
 
 def test_file():
     with open ('examples/test.rst') as src:

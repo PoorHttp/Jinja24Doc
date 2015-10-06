@@ -4,6 +4,9 @@ from shutil import copyfile
 
 import pytest
 
+python_path.insert(0, path.abspath(
+        path.join(path.dirname(__file__), path.pardir) ))
+
 from jinja24doc.apidoc import G
 from jinja24doc.main import _generate
 
