@@ -1,10 +1,11 @@
 {% set page = 'jinja24doc' %}{% include "_header.html" %}
 
-{% set sects = load_text("readme.txt") %}
+{% set sects = load_wiki("readme.txt") %}
 
 {#      need api for keywords yea?     #}
 {% set api = load_module('jinja24doc') %}
 {% set api = api + load_module('wiki') %}
+{% set api = api + load_module('rst') %}
 {% set api = api + load_module('main') %}
 {% set api = api + load_module('misc') %}
 {% set api = api + load_module('apidoc') %}

@@ -1,5 +1,3 @@
-import pytest
-
 from jinja24doc.apidoc import load_module, keywords
 
 def test_load_module():

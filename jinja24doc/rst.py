@@ -9,9 +9,12 @@ from docutils.utils import new_document
 from docutils.frontend import OptionParser
 
 import re
+import os
+import sys
 
-from apidoc import linked_api
+from apidoc import linked_api, G
 from wiki import re_source, re_python, _python
+from misc import uni, usage
 
 class SimpleHTMLTranslator(nodes.NodeVisitor, object):
     list_types = {'arabic': '1',
@@ -39,6 +42,7 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
     def __init__(self, document, section_level = 0):
         nodes.NodeVisitor.__init__(self, document)
         self.section_level = section_level
+        self.sections = []
         self.auto_footnote = 0
         self.used_footnote = 0
         self.auto_anonyms = 0
@@ -50,6 +54,10 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
         self.substitutions = {}
         self.targets = {}
         self.references = {}
+
+        self.link = ''
+        self.top = ''
+        self.system_message = False
 
         for admonition in self.admonitions:
             self.__setattr__('visit_%s' % admonition, self.visit_admonition)
@@ -129,6 +137,10 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
         self.body.append('</code>')
     def visit_literal_block(self, node):
         cls = ' class="%s"' % ' '.join(node['classes']) if node['classes'] else ''
+        if node['ids']:
+            tkey = '<target refname="%s">' % node['names'][0]
+            self.targets[tkey] = '<a href="#%s">' % node['ids'][0]
+            self.body.append('<a name="%s"></a>' % node['ids'][0])
         self.body.append('<pre%s>\n' % cls)
     def depart_literal_block(self, node):
         self.body.append('\n</pre>\n')
@@ -362,6 +374,7 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
         target = '<target refname="%s">' % node['names'][0]
         self.targets[target] = '<a href="#%s">' % ids
         self.body.append('<a name="%s"></a>' % ids)
+        self.sections.append((self.section_level, node['names'][0], ids))
     def depart_section(self, node):
         self.section_level -= 1
 
@@ -371,9 +384,23 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
                 self.body.append('<h%d>' % self.section_level)
             else:
                 self.body.append('<div class="h%d">' % self.section_level)
+            lvl, name, ids = self.sections[-1]
+            self.sections[-1] = (lvl, node.astext(), ids)   # update section name
         else:
             self.body.append('<div class="title">')
     def depart_title(self, node):
+        if node.parent.tagname == 'section':
+            if self.section_level != 1 and (self.link or self.top):
+                last_section = self.sections[-1]
+                self.body.append('<span class="links">')
+                if self.link:
+                    self.body.append('<a href="#%s">%s</a>' % (last_section[2], self.link))
+                if self.link and self.top:
+                    self.body.append(' | ')
+                if self.top:
+                    self.body.append('<a href="#">%s</a>' % self.top)
+                self.body.append('</span>')
+
         if self.section_level < 7 and node.parent.tagname == 'section':
             self.body.append('</h%d>\n' % self.section_level)
         else:
@@ -402,13 +429,28 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
         self.body.append('</dd>\n')
 
     def visit_system_message(self, node):
+        if not self.system_message:
+            raise nodes.SkipNode
         self.body.append('<fieldset>\n')
         self.body.append('<legend>System message</legend>\n')
     def depart_system_message(self, node):
         self.body.append('</fieldset>\n\n')
 
     def visit_image(self, node):
-        self.body.append(str(node).replace('uri', 'src').replace('<image', '<img'))
+        sys.stderr.write('%s\n' % node.attributes)
+        attrs = 'src="%s"' % node['uri']
+        if 'alt' in node:
+            attrs += ' alt="%s"' % node['alt']
+        if 'width' in node:
+            attrs += ' width="%s"' % node['width']
+        if 'height' in node:
+            attrs += ' height="%s"' % node['height']
+        if node['ids']:
+            tkey = '<target refname="%s">' % node['names'][0]
+            self.targets[tkey] = '<a href="#%s">' % node['ids'][0]
+            self.body.append('<a name="%s"></a>' % node['ids'][0])
+        self.body.append("<img %s>" % attrs)
+        #self.body.append(str(node).replace('uri', 'src').replace('<image', '<img'))
     def depart_image(self, node):
         pass
 
@@ -488,7 +530,7 @@ class SimpleHTMLTranslator(nodes.NodeVisitor, object):
         self.body.append('</span>')
 
 
-def doctest_code(obj):
+def _doctest_code(obj):
     tmp = obj.groups()
     if tmp[0] == 'doctest':
         source = re_python.sub(_python, tmp[1])
@@ -498,6 +540,11 @@ def doctest_code(obj):
 
 
 def rst(doc, name = '__doc__', section_level = 2):
+    """
+    Call rst docutil parser for doc and return it with html representation of
+    reStructuredText formating. For more details see
+    http://docutils.sourceforge.net/rst.html.
+    """
     settings = OptionParser(components=(Parser,)).get_default_values()
     parser = Parser()
     document = new_document(name, settings)
@@ -507,9 +554,55 @@ def rst(doc, name = '__doc__', section_level = 2):
     document.walkabout(visitor)
     out = visitor.output()
 
-    out = re_source.sub(doctest_code, out)
+    out = re_source.sub(_doctest_code, out)
 
     if out.startswith('<p') and out.endswith('</p>') and out.count('</p>') == 1:
         out = out[out.index('>')+1:-4] # strip paragraph if is one
 
     return linked_api(out)
+
+
+def load_rst(rstfile, link = 'link', top = 'top'):
+    """
+    Load rst file and create docs list of headers and text.
+        rstfile - string, reStructured source file name (readme.rst)
+        link - link label for headers. If is empty, link href will be hidden.
+        top - top label for headers. If is empty, top href will be hidden.
+
+        #!jinja
+        {% set sections = load_rst('readme.rst', '', '') %}
+        {% type, filename, _none_, text = sections[-1] %}
+    """
+
+    x_rstfile = ''
+    for path in G.paths:
+        if os.access(path+'/'+rstfile, os.R_OK):
+            x_rstfile = path+'/'+rstfile
+            break
+    if not x_rstfile:
+        usage('Access denied to text file %s' % rstfile)
+
+    with open (x_rstfile, 'r') as f:
+        doc = f.read()
+
+    settings = OptionParser(components=(Parser,)).get_default_values()
+    parser = Parser()
+    document = new_document(rstfile, settings)
+    parser.parse(doc, document)
+
+    visitor = SimpleHTMLTranslator(document, 0)
+    visitor.link = link
+    visitor.top = top
+    document.walkabout(visitor)
+    out = visitor.output()
+
+    out = re_source.sub(_doctest_code, out)
+
+    if out.startswith('<p') and out.endswith('</p>') and out.count('</p>') == 1:
+        out = out[out.index('>')+1:-4] # strip paragraph if is one
+
+    out = linked_api(out)
+
+    retval = list(('h%d' % lvl, uni(name), id, '') for lvl, name, id in visitor.sections)
+    retval.append(('text', 'rstfile', None, uni(out)))
+    return retval

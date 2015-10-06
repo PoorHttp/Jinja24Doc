@@ -3,7 +3,7 @@ Jinja24Doc reStructuredText test
 
 Paragraph
 ---------
-So this is sime Jinja24Doc reStructuredText test. First, we test some text
+So this is some Jinja24Doc reStructuredText test. First, we test some text
 paragraphs with base formating like *emphasis*, **strong**, `interpreted text`,
 ``monospaced text`` and normal external hyperlink to `Jinja24Doc
 <http://jinja24doc.zeropage.cz>`_
@@ -13,6 +13,25 @@ Lists
 Sometime, there will be lists in documentation:
     * first
     * second
+
+Images
+------
+.. image:: http://docutils.sourceforge.net/rst.png
+    :alt: reStructuredText logo
+    :name: reStructuredText logo
+
+Now there are some simple image
+
+.. image:: image.png
+
+and next, here is link to `reStructuredText logo`_ image :)
+
+And some included |C| image :)
+
+.. |C| image:: http://smileys.emoticonsonly.com/emoticons/c/cool-1037.gif
+   :height: 11
+   :width: 11
+   :alt: C
 
 Codes
 -----
@@ -42,7 +61,7 @@ code blocks with syntax
     class Foo(Object):
         @staticmethod
         def info():
-            return "This is foo \xc4\x8d"
+            return "This is foo \u010d"
 
     for i in range(100):
         if i > 10 and i < 50:
@@ -50,8 +69,11 @@ code blocks with syntax
 
 code blocks with line numbers
 .............................
+This is `Simple code`_ :).
+
 .. code::
     :number-lines:
+    :name: Simple code
 
     This code block text formated in pre with
     numer of each lines. So that is really cool

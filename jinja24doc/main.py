@@ -5,9 +5,10 @@ from traceback import format_exception
 import sys
 import os
 
+from misc import usage
 from apidoc import G
-from wiki import wiki, load_text, load_source
-from rst import rst
+from wiki import wiki, load_wiki, load_text, load_source
+from rst import rst, load_rst
 from apidoc import load_module, keywords
 
 
@@ -55,16 +56,6 @@ def _truncate(string, length = 255, killwords = True, end='...'):
     return string
 
 
-
-def _usage(err = None):
-    sys.stderr.write("Usage: %s [-v] template [path]\n" % sys.argv[0])
-    sys.stderr.write("    -v            verbose mode\n")
-    sys.stderr.write("    template      jinja2 template\n")
-    sys.stderr.write("    path          list of path separates by colon where tempates are\n")
-    sys.stderr.write("Error:\n    %s\n" % err)
-    sys.exit(1)
-
-
 def _generate(fname, path):
     env = Environment(loader=FileSystemLoader(path),
                       trim_blocks = True,
@@ -74,7 +65,9 @@ def _generate(fname, path):
     env.globals['wiki']     = wiki
     env.globals['rst']      = rst
     env.globals['keywords'] = keywords
+    env.globals['load_wiki']    = load_wiki
     env.globals['load_text']    = load_text
+    env.globals['load_rst']     = load_rst
     env.globals['load_source']  = load_source
     env.globals['local_name']   = local_name
     env.globals['property_info']= property_info
@@ -90,12 +83,12 @@ def _generate(fname, path):
 
 def main():
     if len(sys.argv) < 2:
-        _usage('Not enough arguments')
+        usage('Not enough arguments')
     verbose = False
 
     if sys.argv[1] == '-v':         # verbose mode is set on
         if len(sys.argv) < 3:
-            _usage('Not enough arguments')
+            usage('Not enough arguments')
         verbose = True
 
         fname = sys.argv[2]
@@ -123,7 +116,7 @@ def main():
             break
 
     if not x_fname:
-        _usage('Access denied to template %s' % fname)
+        usage('Access denied to template %s' % fname)
 
     sys.path.insert(0, os.getcwd())
     try:
@@ -138,4 +131,4 @@ def main():
                                  sys.exc_value,
                                  sys.exc_traceback)
         traceback = ''.join(traceback)
-        _usage("Exception: %s" % traceback)
+        usage("Exception: %s" % traceback)

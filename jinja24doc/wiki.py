@@ -1,5 +1,6 @@
 
 from jinja2 import Undefined
+from inspect import stack
 
 import re
 import os
@@ -7,7 +8,7 @@ import sys
 import __builtin__
 
 from apidoc import linked_api, G
-from misc import uni
+from misc import uni, usage
 
 _python_keywords = (
                 'as', 'assert', 'break', 'class', 'continue', 'def', 'del',
@@ -30,9 +31,9 @@ re_gt       = re.compile(r">")
 re_amp      = re.compile(r"&(?!amp;)")
 
 # TODO: not work on multi type on same line :(
-re_bold     = re.compile(r"\*(.*?)\*")                              # * bold *
-re_italic   = re.compile(r"\s/(.*?)/\b")                            # / italic /
-re_code     = re.compile(r"{(.*?)}", re.S)                          # { code }
+re_bold     = re.compile(r"\*(.+)\*")                       # * bold *
+re_italic   = re.compile(r"/(.+)/")                         # / italic /
+re_code     = re.compile(r"{(.+)}", re.S)                   # { code }
 
 re_section1 = re.compile(r"^(={1})([^=]+)(={1}\s*)")
 re_section2 = re.compile(r"^(={2})(.*?)(={2}\s*)")
@@ -72,8 +73,8 @@ def _not_in_pre(obj):
 
     tmp = groups[0]
 
-    tmp = re_bold.sub(r"<b>\1</b>", tmp)
     tmp = re_italic.sub(r"<i>\1</i>", tmp)
+    tmp = re_bold.sub(r"<b>\1</b>", tmp)
     tmp = re_code.sub(r"<code>\1</code>", tmp)
     tmp = re_header4.sub(r"<h4>\1</h4>", tmp)
     tmp = re_header3.sub(r"<h3>\1</h3>", tmp)
@@ -172,7 +173,7 @@ def _nlstrip(s):
         s = s[:-4].strip()
     return s
 
-def wiki(doc):    # jinja function
+def wiki(doc, name = '__doc__', section_level = 2):    # jinja function
     """ Call some regular expressions on doc, and return it with html
         interpretation of wiki formating. If you want to create links to know
         api for your module, just call keywords function after gets full api
@@ -257,14 +258,24 @@ def wiki(doc):    # jinja function
     return _nlstrip(doc)
 
 
-def load_text(textfile):    # jinja function
+def load_text(textfile):    # deprecated alias for load_wiki
+    sys.stderr.write("[W] Using deprecated function load_text in\n")
+    for s in stack()[1:]:
+        sys.stderr.write("  File %s, line %s, in %s\n" % s[1:4])
+        sys.stderr.write(s[4][0])
+    sys.stderr.flush()
+    return load_wiki(textfile)
+
+def load_wiki(textfile, link = 'link', top = 'top'):    # jinja function
     """
     Load file and create docs list of headers and texts.
-    textfile - string, text file name (manual.txt)
+        textfile - string, text file name (manual.txt)
+        link - link label for headers. If is empty, link href will be hidden.
+        top - top label for headers. If is empty, top href will be hidden.
 
         #!jinja
-        {% set sections = load_text('file.txt') %}
-        {% type, name, _none_, text = sections[0] %}
+        {% set sections = load_wiki('file.txt', '', '') %}
+        {% type, filename, _none_, text = sections[-1] %}
     """
     doc = []
     tmp = ''
@@ -274,15 +285,17 @@ def load_text(textfile):    # jinja function
             x_textfile = path+'/'+textfile
             break
     if not x_textfile:
-        _usage('Access denied to text file %s' % textfile)
+        usage('Access denied to text file %s' % textfile)
 
+    out = ''
     with open (x_textfile, 'r') as f:
         for line in f:
             match = re_section4.search(line) or re_section3.search(line) or \
                     re_section2.search(line) or re_section1.search(line)
             if match:
                 if tmp:                     # add block before header to doc
-                    doc.append(('text', '', None, uni(tmp)))
+                    #doc.append(('text', '', None, wiki(uni(tmp))))
+                    out += wiki(uni(tmp))
                     tmp = ''
                 name = match.groups()[1].strip()
                 if match.re == re_section1:
@@ -296,11 +309,23 @@ def load_text(textfile):    # jinja function
                 else:
                     raise RuntimeError("No match regex")
 
-                doc.append((type, uni(name), None, ''))
+                id = name.lower().replace(' ', '-')
+                doc.append((type, uni(name), id, ''))
+                out += '<%s>%s' % (type, name)
+                if type != 'h1' and (link or top):
+                    out += '<span class="links">'
+                    if link:
+                        out += '<a href="#%s">%s</a>' % (id, link)
+                        out += ' | ' if link and top else ''
+                        out += '<a href="#">%s</a>' % top
+                    out += '</span>'
+                out += '</%s>\n' % type
             else:
                 tmp += line
         #endfor
-    doc.append(('text', '', None, uni(tmp)))
+    out += wiki(uni(tmp))
+    #doc.append(('text', '', None, wiki(uni(tmp))))
+    doc.append(('text', textfile, None, out))
     return doc
 
 
@@ -318,7 +343,7 @@ def load_source(srcfile, code = 'python'):
             x_srcfile = path+'/'+srcfile
             break
     if not x_srcfile:
-        _usage('Access denied to text file %s' % srcfile)
+        usage('Access denied to text file %s' % srcfile)
 
     doc = ''
     with open (x_srcfile, 'r') as f:

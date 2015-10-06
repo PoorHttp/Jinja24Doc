@@ -25,7 +25,7 @@
       <small>Module dependences:</small>
     {% else %},
     {% endif %}
-      <span class="{{ type }}">{{ formater(name) }}</span>
+      <span class="{{ type }}">{{ name }}</span>
   {% elif type == 'class' %}
     <h3 class="{{ type }}"><i>class</i> {{ name }}
       <span class="links">
@@ -61,7 +61,7 @@
   {% set type = 'dontwant' %}
   {% endif %}
   {% if type not in ('dontwant', 'submodule', 'dependence') %}
-    <div class="{{ type }}">{{ formater(doc) }}</div>
+    <div class="{{ type }}">{{ formater(doc, name) }}</div>
   {% endif %}
   {% set prev = type %}
 {% endfor %}
