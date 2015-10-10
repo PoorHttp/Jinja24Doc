@@ -56,7 +56,7 @@ class TestRst():
     def test_text(self):
         jinja24doc('test_rst.html')
 
-    def test_invalid(self):
+    def _test_invalid(self):
         jinja24doc('test_rst_invalid.html')
 
     def test_module(self):
@@ -64,3 +64,11 @@ class TestRst():
 
     def test_module_linked(self):
         jinja24doc('test_module_rst_linked.html')
+
+if __name__ == "__main__":
+    for c in (TestWiki, TestRst):
+        o = c()
+        for m in dir(o):
+            if m.startswith('test_'):
+                print ('%s::%s' % (c.__name__, m))
+                getattr(o, m)()

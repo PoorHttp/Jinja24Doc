@@ -8,6 +8,7 @@ import sys
 
 if sys.version_info[0] == 2:
     import __builtin__ as builtins
+    from io import open
 else:
     import builtins
 
@@ -270,7 +271,7 @@ def load_text(textfile):    # deprecated alias for load_wiki
     sys.stderr.flush()
     return load_wiki(textfile)
 
-def load_wiki(textfile, link = 'link', top = 'top'):    # jinja function
+def load_wiki(textfile, link = 'link', top = 'top', encoding = 'utf-8'):    # jinja function
     """
     Load file and create docs list of headers and texts.
         textfile - string, text file name (manual.txt)
@@ -292,7 +293,7 @@ def load_wiki(textfile, link = 'link', top = 'top'):    # jinja function
         usage('Access denied to text file %s' % textfile)
 
     out = ''
-    with open (x_textfile, 'r') as f:
+    with open (x_textfile, 'r', encoding = encoding) as f:
         for line in f:
             match = re_section4.search(line) or re_section3.search(line) or \
                     re_section2.search(line) or re_section1.search(line)
@@ -333,7 +334,7 @@ def load_wiki(textfile, link = 'link', top = 'top'):    # jinja function
     return doc
 
 
-def load_source(srcfile, code = 'python'):
+def load_source(srcfile, code = 'python', encoding = 'utf-8'):
     """
     Load source and format them as code
 
@@ -350,7 +351,7 @@ def load_source(srcfile, code = 'python'):
         usage('Access denied to text file %s' % srcfile)
 
     doc = ''
-    with open (x_srcfile, 'r') as f:
+    with open (x_srcfile, 'r', encoding = encoding) as f:
         class Obj:
             def groups(self):
                 doc = uni(f.read())

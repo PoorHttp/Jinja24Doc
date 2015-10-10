@@ -85,19 +85,19 @@ Doctest code is not highlited by default from rst, but,
 Jinja24Doc can do that. For examle see the last code, but in doctest
 mode:
 
->>> @decorator(*args):
->>> def function(param, **kwargs):
->>>     """ __doc__ for function """
->>>     if param is None:
->>>         raise Exception("Param can't be None")
->>>     assert (isinstance(param, int))
->>>     value = param * 2       # some work
->>>     return value
->>>
+>>> @decorator(\*args):
+    def function(param, \*\*kwargs):
+        """ __doc__ for function """
+        if param is None:
+            raise Exception("Param can't be None")
+        assert (isinstance(param, int))
+        value = param * 2       # some work
+        return value
+None
 >>>  try:
->>>     function()
->>>  except Exception as e:
->>>     print(e)
+       function()
+     except Exception as e:
+        print(e)
 Exception: Param can't be None
 
 Indent block
@@ -108,3 +108,15 @@ Indent block
 
 And this is process as normal text and as python documentation of module for
 example now. :)
+
+Links
+-----
+Python_ is my favorite programing language and Vim_ is my favorite text exitor.
+Now, i have projects on `GitHub`__ and on `SourceForge`__ too. My person blog is
+`Zeropage <http://zeropage.cz>`_.
+
+.. _Python: http://www.python.org
+.. _Vim: http://www.vim.org
+
+__ http://github.com
+__ http://sf.net
