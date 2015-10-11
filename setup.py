@@ -117,7 +117,7 @@ setup(
             "Topic :: Text Processing :: Markup",
             "Topic :: Utilities"
     ],
-    install_requires    = ['jinja2 >= 2.6'],
+    install_requires    = ['jinja2 >= 2.6', 'distutils-tinyhtmlwriter'],
     test_suite          = 'tests',
     cmdclass            = {'build_scripts': X_build_scripts,
                            'build': X_build,
