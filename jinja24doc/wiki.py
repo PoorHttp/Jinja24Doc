@@ -12,8 +12,8 @@ if sys.version_info[0] == 2:
 else:
     import builtins
 
-from apidoc import linked_api, G
-from misc import uni, usage
+from jinja24doc.apidoc import linked_api, G
+from jinja24doc.misc import uni, usage
 
 _python_keywords = (
                 'as', 'assert', 'break', 'class', 'continue', 'def', 'del',

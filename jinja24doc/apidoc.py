@@ -8,7 +8,7 @@ from operator import itemgetter
 import sys
 import re
 
-from misc import uni
+from jinja24doc.misc import uni
 
 _ordering   = { 'module'    : (0,0),
                 'submodule' : (1,0),

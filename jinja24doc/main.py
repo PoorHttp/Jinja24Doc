@@ -8,11 +8,11 @@ import os
 from sys import path as python_path
 from os import path
 
-from misc import usage
-from apidoc import G
-from wiki import wiki, load_wiki, load_text, load_source
-from rst import rst, load_rst
-from apidoc import load_module, keywords
+from jinja24doc.misc import usage
+from jinja24doc.apidoc import G
+from jinja24doc.wiki import wiki, load_wiki, load_text, load_source
+from jinja24doc.rst import rst, load_rst
+from jinja24doc.apidoc import load_module, keywords
 
 
 

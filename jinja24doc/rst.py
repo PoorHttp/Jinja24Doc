@@ -13,9 +13,9 @@ if version_info[0] == 2:
 import re
 import os
 
-from apidoc import linked_api, G
-from wiki import re_source, re_python, _python
-from misc import uni, usage
+from jinja24doc.apidoc import linked_api, G
+from jinja24doc.wiki import re_source, re_python, _python
+from jinja24doc.misc import uni, usage
 
 
 def _doctest_code(obj):

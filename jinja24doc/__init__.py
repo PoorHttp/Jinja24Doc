@@ -10,4 +10,4 @@ __author__  = "Ondrej Tuma (McBig) <mcbig@zeropage.cz>"
 __date__    = "21 August 2014"
 __version__ = "1.2.0"
 
-from main import main
+from jinja24doc.main import main
