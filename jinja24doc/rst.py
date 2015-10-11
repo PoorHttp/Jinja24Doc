@@ -3,7 +3,7 @@
 Library for reStrucuredText parsing, and generating simple HTML output.
 """
 
-from docutils.core import publish_string, publish_file
+from docutils.core import publish_parts
 from docutils_tinyhtml import Writer
 
 from sys import version_info
@@ -34,14 +34,15 @@ def rst(doc, title = '__doc__', section_level = 2):
     http://docutils.sourceforge.net/rst.html.
     """
     writer = Writer()
-    html = publish_string(source=doc,
+    parts = publish_parts(source=doc,
                           writer=writer,
                           writer_name='html',
                           settings_overrides={
                                 'link': 'link', 'top': 'top', 'title': title,
                                 'section-leverl': section_level})
 
-    out = writer.visitor.generate_body()
+    out = parts['body'] + parts['html_line'] + \
+          parts['html_footnotes'] + parts['html_citations']
 
     out = re_source.sub(_doctest_code, out)
 
@@ -75,13 +76,14 @@ def load_rst(rstfile, link = 'link', top = 'top', encoding = 'utf-8'):
         doc = f.read()
 
     writer = Writer()
-    html = publish_string(source=doc,
+    parts = publish_parts(source=doc,
                           source_path=x_rstfile,
                           writer=writer,
                           writer_name='html',
                           settings_overrides={'link': link, 'top': top})
 
-    out = writer.visitor.generate_body()
+    out = parts['body'] + parts['html_line'] + \
+          parts['html_footnotes'] + parts['html_citations']
 
     out = re_source.sub(_doctest_code, out)
 
@@ -90,6 +92,6 @@ def load_rst(rstfile, link = 'link', top = 'top', encoding = 'utf-8'):
 
     out = linked_api(out)
 
-    retval = list(('h%d' % lvl, uni(name), id, '') for lvl, name, id in writer.visitor.sections)
+    retval = list(('h%d' % lvl, uni(name), id, '') for lvl, name, id in parts['sections'])
     retval.append(('text', 'rstfile', None, uni(out)))
     return retval
