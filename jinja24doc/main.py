@@ -62,8 +62,8 @@ def _truncate(string, length = 255, killwords = True, end='...'):
 def _generate(fname, path):
     env = Environment(loader=FileSystemLoader(path),
                       trim_blocks = True,
-                      extensions=['jinja2.ext.do'])
-                      #lstrip_blocks = True)     # add in 2.7
+                      extensions=['jinja2.ext.do'],
+                      lstrip_blocks = True)     # add in 2.7
     env.globals['load_module']  = load_module
     env.globals['wiki']     = wiki
     env.globals['rst']      = rst
@@ -97,16 +97,12 @@ def main():
         fname = sys.argv[2]
 
         if len(sys.argv) > 3:
-            G.paths = sys.argv[3].split(':')
-        else:
-            G.paths = []
+            G.paths = sys.argv[3].split(':') + G.paths
     else:                           # not verbose option
         fname = sys.argv[1]
 
         if len(sys.argv) > 2:
-            G.paths = sys.argv[2].split(':')
-        else:
-            G.paths = []
+            G.paths = sys.argv[2].split(':') + G.paths
 
     G.paths.insert(0, '.')
 

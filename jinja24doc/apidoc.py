@@ -25,7 +25,7 @@ re_notlink  = re.compile(r"(.*?)((<a .*?</a>)|$)", re.S)
 
 class G(object):
     """ Global variables class """
-    paths   = None
+    paths   = ['/usr/local/share/jinja24doc/templates']
     re_docs = None
     _api_url        = ''
     _api_keywords   = {}
