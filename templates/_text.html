@@ -1,17 +1,19 @@
-{%- include "_header.html" %}
+{% include "_header.html" %}
+
       <menu class="sidebar">
-    {% for type, name, id, doc in sections %}
+      {% for type, name, id, doc in sections %}
         {% if type == 'h2' %}<h2><a href="#{{ id }}">{{ name }}</a></h2>
         {% elif type == 'h3' %}<h3><a href="#{{ id }}">{{ name }}</a></h3>
         {% endif %}
-    {% endfor %}
-      </menu>{# /sidebar #}
+      {% endfor %}
+      </menu>
 
-    <div class="content">
-    {% for type, name, args, doc in sections %}
-      {% if type == 'text' %}
+      <div class="content">
+      {% for type, name, args, doc in sections %}
+        {% if type == 'text' %}
         {{ doc }}
-      {% endif %}
-    {% endfor %}
-    </div>{# /content #}
+        {% endif %}
+      {% endfor %}
+      </div>
+
 {% include "_footer.html" -%}

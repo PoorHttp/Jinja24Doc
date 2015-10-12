@@ -14,14 +14,18 @@
 
       <div class="header">
         <h1>{{ title }}</h1>
-{%- if description is defined %}        <small>{{ description }}.</small>{% endif %}
+      {% if description is defined %}
+        <small>{{ description }}.</small>
+      {% endif %}
         <div class="pannel">
-{% if menu is defined -%}
+        {% if menu is defined %}
           <menu class="main">
-          {%- for item in menu %}
-            <span class="item {{ 'selected' if item.selected }}"><a href="{{ item.link }}" title="{{ item.title }}" >{{ item.label }}</a></span>
-          {%- endfor %}
+          {% for item in menu %}
+            {% set m_title = ' title="' + item.title + '"' if item.title else '' %}
+            <span class="item {{ 'selected' if item.selected }}"><a href="{{ item.link }}"{{ m_title }}>{{ item.label }}</a></span>
+          {% endfor %}
           </menu>
-{% endif %}
-        </div><!-- /panel -->
-      </div><!-- /header -->
+        {% endif %}
+        </div>
+      </div>
+
