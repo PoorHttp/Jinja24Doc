@@ -64,9 +64,9 @@
       {% set type = 'dontwant' %}
       {% endif %}
       {% if type not in ('dontwant', 'submodule', 'dependence') %}
-        <div class="{{ type }}">
-          {{ formater(doc, name)|replace('\n', '\n          ') }}
-        </div>
+<div class="{{ type }}">
+{{ formater(doc, name) }}
+</div>
       {% endif %}
       {% set prev = type %}
     {% endfor %}

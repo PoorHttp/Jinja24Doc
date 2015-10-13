@@ -267,7 +267,7 @@ pre > tt {
     color: #666;
 }
 
-.code {
+.code, .doctest {
     padding-left: 0.5em;
     padding-right: 0.5em;
 }
