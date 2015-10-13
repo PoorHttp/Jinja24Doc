@@ -56,7 +56,7 @@ class TestRst():
     def test_text(self):
         jinja24doc('test_rst.html')
 
-    def _test_invalid(self):
+    def test_invalid(self):
         jinja24doc('test_rst_invalid.html')
 
     def test_module(self):

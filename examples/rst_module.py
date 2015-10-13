@@ -49,6 +49,12 @@ And some doctest
 >>> from os import path
 >>> print(path.devnull)
 /dev/null
+
+Headers in documentation
+------------------------
+
+ * Title of document (h1) is skiped
+ * Other headers start on 2, which could be h1, so typical on h3
 """
 
 def none():

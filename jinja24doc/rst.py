@@ -39,12 +39,12 @@ def rst(doc, title = '__doc__', section_level = 2):
                           writer_name='html',
                           settings_overrides={
                                 'link': 'link', 'top': 'top', 'title': title,
-                                'section-leverl': section_level})
+                                'initial_header_level': section_level})
 
     out = parts['body'] + parts['html_line'] + \
           parts['html_footnotes'] + parts['html_citations']
 
-    out = re_source.sub(_doctest_code, out)
+    out = re_source.sub(_doctest_code, out.strip())
 
     if out.startswith('<p') and out.endswith('</p>') and out.count('</p>') == 1:
         out = out[out.index('>')+1:-4] # strip paragraph if is one
@@ -80,7 +80,8 @@ def load_rst(rstfile, link = 'link', top = 'top', encoding = 'utf-8'):
                           source_path=x_rstfile,
                           writer=writer,
                           writer_name='html',
-                          settings_overrides={'link': link, 'top': top})
+                          settings_overrides={'link': link, 'top': top,
+                                              'no_system_messages': True})
 
     out = parts['body'] + parts['html_line'] + \
           parts['html_footnotes'] + parts['html_citations']
