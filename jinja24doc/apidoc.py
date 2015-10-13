@@ -1,9 +1,10 @@
 """ module api documentation reader """
 
 from inspect import getargspec, getdoc, getmembers, getsource, formatargspec, \
-        isfunction, isroutine, ismethod, isclass, ismodule, isbuiltin, \
-        ismethoddescriptor, isgetsetdescriptor
+    isfunction, isroutine, ismethod, isclass, ismodule, isbuiltin, \
+    ismethoddescriptor, isgetsetdescriptor
 from operator import itemgetter
+from os import path
 
 import sys
 import re
@@ -21,11 +22,15 @@ _ordering   = { 'module'    : (0,0),
                 'function'  : (3,0),
                 'variable'  : (4,0)}
 
-re_notlink  = re.compile(r"(.*?)((<a .*?</a>)|$)", re.S)
+re_notlink = re.compile(r"(.*?)((<a .*?</a>)|$)", re.S)
+TEMPLATES = "/share/jinja24doc/templates/"
+
 
 class G(object):
     """ Global variables class """
-    paths   = ['/usr/local/share/jinja24doc/templates']
+    paths = ['/usr/local%s' % TEMPLATES,
+             path.abspath(path.join(path.dirname(__file__),
+                                    path.pardir+TEMPLATES))]
     re_docs = None
     _api_url        = ''
     _api_keywords   = {}
