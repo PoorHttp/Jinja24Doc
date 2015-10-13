@@ -3,9 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {%- if description is defined %}    <meta name="description" content="{{ description }}">{% endif %}
-    {%- if author is defined %}    <meta name="author" content="{{ content }}">{% endif %}
-
+    <meta name="generator" content="Jinja24Doc">
+  {% if description is defined %}
+    <meta name="description" content="{{ description }}">
+  {% endif %}
+  {% if author is defined %}
+    <meta name="author" content="{{ author }}">
+  {% endif %}
     <title>{{ title }}</title>
     <link href="style.css" rel="stylesheet">
   </head>
