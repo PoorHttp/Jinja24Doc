@@ -5,15 +5,11 @@ from traceback import format_exception
 import sys
 import os
 
-from sys import path as python_path
-from os import path
-
 from jinja24doc.misc import usage
 from jinja24doc.apidoc import G
 from jinja24doc.wiki import wiki, load_wiki, load_text, load_source
 from jinja24doc.rst import rst, load_rst
 from jinja24doc.apidoc import load_module, keywords
-
 
 
 def local_name(name):
@@ -27,18 +23,22 @@ def local_name(name):
     return name[dot+1:]
 
 
-def property_info(info, delimiter = ' | '):
+def property_info(info, delimiter=' | '):
     """
     Returns property info from tupple, where there is flags if property is
     writable,  readable and deletable.
 
         #!jinja
-        {{ property_info(info) }}       {# return someone like this: WRITE | READ | DELETE #}
+        {# return someone like this: WRITE | READ | DELETE #}
+        {{ property_info(info) }}
     """
     rv = []
-    if info[0]: rv.append('READ')
-    if info[1]: rv.append('WRITE')
-    if info[2]: rv.append('DELETE')
+    if info[0]:
+        rv.append('READ')
+    if info[1]:
+        rv.append('WRITE')
+    if info[2]:
+        rv.append('DELETE')
     return delimiter.join(rv)
 
 
@@ -52,7 +52,7 @@ def log(message):
     sys.stderr.write("%s\n" % message)
 
 
-def _truncate(string, length = 255, killwords = True, end='...'):
+def _truncate(string, length=255, killwords=True, end='...'):
     """ Only True yet """
     if len(string) > length:
         return string[:length] + end
@@ -61,27 +61,28 @@ def _truncate(string, length = 255, killwords = True, end='...'):
 
 def _generate(fname, path):
     env = Environment(loader=FileSystemLoader(path),
-                      trim_blocks = True,
+                      trim_blocks=True,
                       extensions=['jinja2.ext.do'],
-                      lstrip_blocks = True)     # add in 2.7
-    env.globals['load_module']  = load_module
-    env.globals['wiki']     = wiki
-    env.globals['rst']      = rst
+                      lstrip_blocks=True)     # add in 2.7
+
+    env.globals['load_module'] = load_module
+    env.globals['wiki'] = wiki
+    env.globals['rst'] = rst
     env.globals['keywords'] = keywords
-    env.globals['load_wiki']    = load_wiki
-    env.globals['load_text']    = load_text
-    env.globals['load_rst']     = load_rst
-    env.globals['load_source']  = load_source
-    env.globals['local_name']   = local_name
-    env.globals['property_info']= property_info
-    env.globals['log']          = log
+    env.globals['load_wiki'] = load_wiki
+    env.globals['load_text'] = load_text
+    env.globals['load_rst'] = load_rst
+    env.globals['load_source'] = load_source
+    env.globals['local_name'] = local_name
+    env.globals['property_info'] = property_info
+    env.globals['log'] = log
 
     # jinja2 compatibility with old versions
-    env.globals['length']    = len
-    env.globals['truncate']  = _truncate
+    env.globals['length'] = len
+    env.globals['truncate'] = _truncate
 
     temp = env.get_template(fname)
-    return temp.render(filename = fname)
+    return temp.render(filename=fname)
 
 
 def main():
@@ -127,7 +128,7 @@ def main():
         sys.exit(e.code)
     except:
         traceback = format_exception(sys.exc_type,
-                                 sys.exc_value,
-                                 sys.exc_traceback)
+                                     sys.exc_value,
+                                     sys.exc_traceback)
         traceback = ''.join(traceback)
         usage("Exception: %s" % traceback)

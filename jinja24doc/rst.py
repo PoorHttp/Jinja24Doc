@@ -10,7 +10,6 @@ from sys import version_info
 if version_info[0] == 2:
     from io import open
 
-import re
 import os
 
 from jinja24doc.apidoc import linked_api, G
@@ -27,7 +26,7 @@ def _doctest_code(obj):
     return '<pre class="%s">%s</pre>' % (tmp[0], source)
 
 
-def rst(doc, title = '__doc__', section_level = 2):
+def rst(doc, title='__doc__', section_level=2):
     """
     Call rst docutil parser for doc and return it with html representation of
     reStructuredText formating. For more details see
@@ -38,21 +37,22 @@ def rst(doc, title = '__doc__', section_level = 2):
                           writer=writer,
                           writer_name='html',
                           settings_overrides={
-                                'link': 'link', 'top': 'top', 'title': title,
-                                'initial_header_level': section_level})
+                              'link': 'link', 'top': 'top', 'title': title,
+                              'initial_header_level': section_level})
 
     out = parts['body'] + parts['html_line'] + \
-          parts['html_footnotes'] + parts['html_citations']
+        parts['html_footnotes'] + parts['html_citations']
 
     out = re_source.sub(_doctest_code, out.strip())
 
-    if out.startswith('<p') and out.endswith('</p>') and out.count('</p>') == 1:
-        out = out[out.index('>')+1:-4] # strip paragraph if is one
+    if out.startswith('<p') and out.endswith('</p>') and \
+            out.count('</p>') == 1:     # strip paragraph if is one
+        out = out[out.index('>')+1:-4]
 
     return linked_api(out)
 
 
-def load_rst(rstfile, link = 'link', top = 'top', encoding = 'utf-8'):
+def load_rst(rstfile, link='link', top='top', encoding='utf-8'):
     """
     Load rst file and create docs list of headers and text.
         rstfile - string, reStructured source file name (readme.rst)
@@ -72,7 +72,7 @@ def load_rst(rstfile, link = 'link', top = 'top', encoding = 'utf-8'):
     if not x_rstfile:
         usage('Access denied to text file %s' % rstfile)
 
-    with open(x_rstfile, 'r', encoding = encoding) as f:
+    with open(x_rstfile, 'r', encoding=encoding) as f:
         doc = f.read()
 
     writer = Writer()
@@ -84,15 +84,17 @@ def load_rst(rstfile, link = 'link', top = 'top', encoding = 'utf-8'):
                                               'no_system_messages': True})
 
     out = parts['body'] + parts['html_line'] + \
-          parts['html_footnotes'] + parts['html_citations']
+        parts['html_footnotes'] + parts['html_citations']
 
     out = re_source.sub(_doctest_code, out)
 
-    if out.startswith('<p') and out.endswith('</p>') and out.count('</p>') == 1:
-        out = out[out.index('>')+1:-4] # strip paragraph if is one
+    if out.startswith('<p') and out.endswith('</p>') and \
+            out.count('</p>') == 1:     # strip paragraph if is one
+        out = out[out.index('>')+1:-4]
 
     out = linked_api(out)
 
-    retval = list(('h%d' % lvl, uni(name), id, '') for lvl, name, id in parts['sections'])
+    retval = list(('h%d' % lvl, uni(name), id, '')
+                  for lvl, name, id in parts['sections'])
     retval.append(('text', 'rstfile', None, uni(out)))
     return retval

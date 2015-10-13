@@ -16,55 +16,58 @@ from jinja24doc.apidoc import linked_api, G
 from jinja24doc.misc import uni, usage
 
 _python_keywords = (
-                'as', 'assert', 'break', 'class', 'continue', 'def', 'del',
-                'elif', 'else', 'except', 'finally', 'for', 'from', 'global',
-                'if', 'import', 'lambda', 'nonlocal', 'pass', 'raise', 'return',
-                'try', 'while', 'with', 'yield', 'print')   # print is keyword in rst...
-_operators      = ('in', 'is', 'and', 'or', 'not')
-_builtin        = tuple(i for i in dir(builtins) if i[0] != '_')
+    'as', 'assert', 'break', 'class', 'continue', 'def', 'del',
+    'elif', 'else', 'except', 'finally', 'for', 'from', 'global',
+    'if', 'import', 'lambda', 'nonlocal', 'pass', 'raise', 'return',
+    'try', 'while', 'with', 'yield', 'print')   # print is keyword in rst...
+_operators = ('in', 'is', 'and', 'or', 'not')
+_builtin = tuple(i for i in dir(builtins) if i[0] != '_')
 
 _jinja_keywords = [
-                '#}', '%}', 'Trueset', 'as', 'block', 'call', 'context', 'elif',
-                'else', 'endblock', 'endcall', 'endfilter', 'endfor', 'endif',
-                'endmacro', 'endraw', 'extends', 'filter', 'for', 'from', 'if',
-                'ignore', 'import', 'in', 'include', 'is', 'macro', 'missing',
-                'not', 'raw', 'recursive', 'set', 'scoped', 'with', '{#', '{%',
-                '{{', '}}']
+    '#}', '%}', 'Trueset', 'as', 'block', 'call', 'context', 'elif',
+    'else', 'endblock', 'endcall', 'endfilter', 'endfor', 'endif',
+    'endmacro', 'endraw', 'extends', 'filter', 'for', 'from', 'if',
+    'ignore', 'import', 'in', 'include', 'is', 'macro', 'missing',
+    'not', 'raw', 'recursive', 'set', 'scoped', 'with', '{#', '{%',
+    '{{', '}}']
 
-re_lt       = re.compile(r"<")
-re_gt       = re.compile(r">")
-re_amp      = re.compile(r"&(?!amp;)")
+re_lt = re.compile(r"<")
+re_gt = re.compile(r">")
+re_amp = re.compile(r"&(?!amp;)")
 
 # TODO: not work on multi type on same line :(
-re_bold     = re.compile(r"\*(.+)\*")                       # * bold *
-re_italic   = re.compile(r"/(.+)/")                         # / italic /
-re_code     = re.compile(r"{(.+)}", re.S)                   # { code }
+re_bold = re.compile(r"\*(.+)\*")                       # * bold *
+re_italic = re.compile(r"/(.+)/")                       # / italic /
+re_code = re.compile(r"{(.+)}", re.S)                   # { code }
 
 re_section1 = re.compile(r"^(={1})([^=]+)(={1}\s*)")
 re_section2 = re.compile(r"^(={2})(.*?)(={2}\s*)")
 re_section3 = re.compile(r"^(={3})(.*?)(={3}\s*)")
 re_section4 = re.compile(r"^(={4})(.*?)(={4}\s*)")
 
-re_header2  = re.compile(r"==(.*?)==")                              # = head3 =
-re_header3  = re.compile(r"===(.*?)===")                            # = head3 =
-re_header4  = re.compile(r"====(.*?)====")                          # = head4 =
-re_nlnl     = re.compile(r"(\n\s*\n)")                              # <br><br>
+re_header2 = re.compile(r"==(.*?)==")                   # = head3 =
+re_header3 = re.compile(r"===(.*?)===")                 # = head3 =
+re_header4 = re.compile(r"====(.*?)====")               # = head4 =
+re_nlnl = re.compile(r"(\n\s*\n)")                      # <br><br>
 
-re_pep3     = re.compile(r"\b(PEP )([0-9]{3})\b")               # pep link
-re_pep4     = re.compile(r"\b(PEP )([0-9]{4})\b")               # pep link
-re_rfc      = re.compile(r"\b(RFC )([0-9]+)\b")                 # rfc link
-re_link     = re.compile(r"((http|https|git|ftp)://[^\s<>]*)", re.I)
+re_pep3 = re.compile(r"\b(PEP )([0-9]{3})\b")           # pep link
+re_pep4 = re.compile(r"\b(PEP )([0-9]{4})\b")           # pep link
+re_rfc = re.compile(r"\b(RFC )([0-9]+)\b")              # rfc link
+re_link = re.compile(r"((http|https|git|ftp)://[^\s<>]*)", re.I)
 
-re_preauto  = re.compile(r"\n\s*\n( {4}.*?)(\n?)((\n\S)|$)", re.S)  # <pre>
-re_notpre   = re.compile(r'(.*?)((<pre class="\w*">.*?</pre>)|$)', re.S) # 3 groups !
+re_preauto = re.compile(r"\n\s*\n( {4}.*?)(\n?)((\n\S)|$)", re.S)  # <pre>
+# 3 groups
+re_notpre = re.compile(r'(.*?)((<pre class="\w*">.*?</pre>)|$)', re.S)
 #        r"(^.*?<pre>)|(</pre>.*?<pre>)|(</pre>.*?$)|(^.*?$)", re.S)
-re_param    = re.compile(r"(^|\n) {4}(\S*\s*)")
+re_param = re.compile(r"(^|\n) {4}(\S*\s*)")
 
-re_source   = re.compile(r'<pre class="(\w*)">(.*?)</pre>', re.S)
+re_source = re.compile(r'<pre class="(\w*)">(.*?)</pre>', re.S)
 
-re_python   = re.compile(r"(\bdef \w+\b|\bclass \w+\b|\b\w+\b|\"[^\"]*\"|'[^\']*'|#.*|@[\w\.]+)")
-re_jinja    = re.compile(r"(\b\w+\b|{{|}}|{%|%}|\".*\"|'[^\']*'|{#.*#})")
-re_ini      = re.compile(r"(\n\s*\w+\b|\n\s*\[.*\]|#.*)", re.M)
+re_python = re.compile(
+    r"(\bdef \w+\b|\bclass \w+\b|\b\w+\b|\"[^\"]*\"|'[^\']*'|#.*|@[\w\.]+)")
+re_jinja = re.compile(r"(\b\w+\b|{{|}}|{%|%}|\".*\"|'[^\']*'|{#.*#})")
+re_ini = re.compile(r"(\n\s*\w+\b|\n\s*\[.*\]|#.*)", re.M)
+
 
 def _not_in_pre(obj):
     """ Do params blocks in code and put double enter if is in doc.
@@ -88,13 +91,12 @@ def _not_in_pre(obj):
     return re_nlnl.sub(r'<br><br>\n\n', tmp)+groups[1]
 
 
-
 def _python(obj):
     """ Highlight python syntax on Match object with one group """
     tmp = obj.group()
-    if tmp[0] in ('"','\'','#'):
+    if tmp[0] in ('"', '\'', '#'):
         return "<i>%s</i>" % tmp
-    if tmp[0] in ('0','1','2','3','4','5','6','7','8','9'):
+    if tmp[0] in ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'):
         return "<u>%s</u>" % tmp
     if tmp[0] == '@':
         return "<var>%s</var>" % tmp
@@ -110,12 +112,13 @@ def _python(obj):
         return "<kbd>%s</kbd>" % tmp
     return tmp
 
+
 def _jinja(obj):
     """ Highlight python syntax on Match object with one group """
     tmp = obj.group()
-    if tmp[0] in ('"','\''):
+    if tmp[0] in ('"', '\''):
         return "<i>%s</i>" % tmp
-    if tmp[0] in ('0','1','2','3','4','5','6','7','8','9'):
+    if tmp[0] in ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'):
         return "<u>%s</u>" % tmp
     if tmp[0:2] in ('{#'):
         return "<i>%s</i>" % tmp
@@ -145,8 +148,8 @@ def _code(obj):
         source = re_ini.sub(_ini, tmp[1])
     else:
         source = tmp[1]
-
     return '<pre class="%s">%s</pre>' % (tmp[0], source)
+
 
 def _pre(obj):
     """ Create pre tag with specific code type. """
@@ -178,7 +181,8 @@ def _nlstrip(s):
         s = s[:-4].strip()
     return s
 
-def wiki(doc, name = '__doc__', section_level = 2):    # jinja function
+
+def wiki(doc, name='__doc__', section_level=2):    # jinja function
     """ Call some regular expressions on doc, and return it with html
         interpretation of wiki formating. If you want to create links to know
         api for your module, just call keywords function after gets full api
@@ -242,7 +246,7 @@ def wiki(doc, name = '__doc__', section_level = 2):    # jinja function
 
     # main tags (pre, code and br)
     doc = re_preauto.sub(_pre, doc)
-    #sys.stdout.write("doc: %s\n" % doc)
+    # sys.stdout.write("doc: %s\n" % doc)
     doc = re_notpre.sub(_not_in_pre, doc)
 
     # highlighting in pre tags
@@ -254,11 +258,11 @@ def wiki(doc, name = '__doc__', section_level = 2):    # jinja function
     doc = linked_api(doc)               # api keywords
 
     doc = re_pep3.sub(          # pep with 3 numbers
-            r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>',doc)
+        r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>', doc)
     doc = re_pep4.sub(          # pep with 4 numbers
-            r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>', doc)
+        r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>', doc)
     doc = re_rfc.sub(           # rfc
-            r'<a href="http://www.faqs.org/rfcs/rfc\2/">\1\2</a>', doc)
+        r'<a href="http://www.faqs.org/rfcs/rfc\2/">\1\2</a>', doc)
 
     return _nlstrip(doc)
 
@@ -271,7 +275,9 @@ def load_text(textfile):    # deprecated alias for load_wiki
     sys.stderr.flush()
     return load_wiki(textfile)
 
-def load_wiki(textfile, link = 'link', top = 'top', encoding = 'utf-8'):    # jinja function
+
+# jinja function
+def load_wiki(textfile, link='link', top='top', encoding='utf-8'):
     """
     Load file and create docs list of headers and texts.
         textfile - string, text file name (manual.txt)
@@ -293,13 +299,13 @@ def load_wiki(textfile, link = 'link', top = 'top', encoding = 'utf-8'):    # ji
         usage('Access denied to text file %s' % textfile)
 
     out = ''
-    with open (x_textfile, 'r', encoding = encoding) as f:
+    with open(x_textfile, 'r', encoding=encoding) as f:
         for line in f:
-            match = re_section4.search(line) or re_section3.search(line) or \
-                    re_section2.search(line) or re_section1.search(line)
+            match = re_section4.search(line) or re_section3.search(line) \
+                or re_section2.search(line) or re_section1.search(line)
             if match:
                 if tmp:                     # add block before header to doc
-                    #doc.append(('text', '', None, wiki(uni(tmp))))
+                    # doc.append(('text', '', None, wiki(uni(tmp))))
                     out += wiki(uni(tmp))
                     tmp = ''
                 name = match.groups()[1].strip()
@@ -327,14 +333,14 @@ def load_wiki(textfile, link = 'link', top = 'top', encoding = 'utf-8'):    # ji
                 out += '</%s>\n' % type
             else:
                 tmp += line
-        #endfor
+        # endfor
     out += wiki(uni(tmp))
-    #doc.append(('text', '', None, wiki(uni(tmp))))
+    # doc.append(('text', '', None, wiki(uni(tmp))))
     doc.append(('text', textfile, None, out))
     return doc
 
 
-def load_source(srcfile, code = 'python', encoding = 'utf-8'):
+def load_source(srcfile, code='python', encoding='utf-8'):
     """
     Load source and format them as code
 
@@ -351,7 +357,7 @@ def load_source(srcfile, code = 'python', encoding = 'utf-8'):
         usage('Access denied to text file %s' % srcfile)
 
     doc = ''
-    with open (x_srcfile, 'r', encoding = encoding) as f:
+    with open(x_srcfile, 'r', encoding=encoding) as f:
         class Obj:
             def groups(self):
                 doc = uni(f.read())
@@ -369,9 +375,9 @@ def load_source(srcfile, code = 'python', encoding = 'utf-8'):
         doc = linked_api(doc)       # api keywords
 
         doc = re_pep3.sub(          # pep with 3 numbers
-                r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>',doc)
+            r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>', doc)
         doc = re_pep4.sub(          # pep with 4 numbers
-                r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>', doc)
+            r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>', doc)
         doc = re_rfc.sub(           # rfc
-                r'<a href="http://www.faqs.org/rfcs/rfc\2/">\1\2</a>', doc)
+            r'<a href="http://www.faqs.org/rfcs/rfc\2/">\1\2</a>', doc)
     return doc
