@@ -27,7 +27,7 @@ def _doctest_code(obj):
     return '<pre class="%s">%s</pre>' % (tmp[0], source)
 
 
-def rst(doc, title='__doc__', section_level=2):
+def rst(doc, link='link', top='top', title='__doc__', section_level=2):
     """
     Call rst docutil parser for doc and return it with html representation of
     reStructuredText formating. For more details see
@@ -38,7 +38,7 @@ def rst(doc, title='__doc__', section_level=2):
                           writer=writer,
                           writer_name='html',
                           settings_overrides={
-                              'link': 'link', 'top': 'top', 'title': title,
+                              'link': link, 'top': top, 'title': title,
                               'initial_header_level': section_level})
 
     out = parts['body'] + parts['html_line'] + \

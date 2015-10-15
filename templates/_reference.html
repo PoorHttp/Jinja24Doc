@@ -1,11 +1,27 @@
 {% set formater = formater if formater is defined else rst %}
+{% if top is not defined or top or link is not defined or link %}
+  {% set link = link if link is defined else 'link' %}
+  {% set top = top if top is defined else 'top' %}
+  {% macro links(name) -%}
+    <span class="links">
+            <a name="{{ name }}"></a>
+    {% if link %}
+            <a href="#{{ name }}">{{ link }}</a>{{ ' | ' if top else '</span>'}}
+    {% endif %}
+    {% if top %}
+            <a href="#">{{ top }}</a></span>
+    {% endif %}
+  {% endmacro %}
+{% else %}
+  {% macro links(name) %}<a name="{{ name }}"></a>{% endmacro %}
+{% endif  %}
 {% include "_header.html" %}
 
       <menu class="sidebar">
       {% for type, name, args, doc in api %}
       {% if type == 'module' %}
         <h2><a href="#{{ name }}">{{ name }}</a></h2>
-      {% elif (type == 'function' or type == 'class') and name[0] != '_' %}
+      {% elif type in ('function', 'class') and name[0] != '_' %}
         <h3><a href="#{{ name }}">{{ name }}</a></h3>
       {% endif %}
       {% endfor %}
@@ -19,9 +35,7 @@
       {% endif%}
       {% if type == 'module' %}
         <h2 class="{{ type }}"><i>module</i> {{ name }}
-          <span class="links">
-          <a name="{{ name }}" href="#{{ name }}">link</a> |
-          <a href="#">top</a></span></h2>
+          {{ links(name) }}</h2>
       {% elif type in ('submodule', 'dependence') %}
         {% if prev not in ('submodule', 'dependence') %}
         <div class="submodules">
@@ -31,41 +45,29 @@
           <span class="{{ type }}">{{ name }}</span>
       {% elif type == 'class' %}
         <h3 class="{{ type }}"><i>class</i> {{ name }}
-          <span class="links">
-            <a name="{{ name }}" href="#{{ name }}">link</a> |
-            <a href="#">top</a></span></h3>
+          {{ links(name) }}</h3>
       {% elif type == 'property' %}
         <h4 class="{{ type }}">{{ local_name(name) }} <small>({{ property_info(args)|e }})</small>
-          <span class="links">
-            <a name="{{ name }}"></a>
-            <a href="#">top</a></span></h4>
+          {{ links(name) }}</h4>
       {% elif type in ('method', 'descriptor') and not (local_name(name)[:2] == '__' and name[-2:] != '__' ) %}
         <h4 class="{{ type }}"><i>def</i> {{ local_name(name) }}{{ args|truncate(end='...)')|e }}
-          <span class="links">
-            <a name="{{ name }}" href="#{{ name }}">link</a> |
-            <a href="#">top</a></span></h4>
+          {{ links(name) }}</h4>
       {% elif type == 'staticmethod' and not (local_name(name)[:2] == '__' and name[-2:] != '__' ) %}
         <h4 class="{{ type }}"><small>@staticmethod</small><br>
           <i>def</i> {{ local_name(name) }}{{ args|truncate(end='...)')|e }}
-          <span class="links">
-            <a name="{{ name }}" href="#{{ name }}">link</a> |
-            <a href="#">top</a></span></h4>
+          {{ links(name) }}</h4>
       {% elif type == 'function' and not (local_name(name)[:2] == '__' and name[-2:] != '__' ) %}
         <h3 class="{{ type }}"><i>def</i> {{ name }}{{ args|truncate(end='...)')|e }}
-          <span class="links">
-            <a name="{{ name }}" href="#{{ name }}">link</a> |
-            <a href="#">top</a></span></h3>
+          {{ links(name) }}</h3>
       {% elif type == 'variable' %}
         <h4 class="{{ type }}">{{ name }} = {{ args|e|truncate|e }}
-          <span class="links">
-            <a name="{{ name }}"></a>
-            <a href="#">top</a></span></h4>
+          {{ links(name) }}</h4>
       {% else %}
       {% set type = 'dontwant' %}
       {% endif %}
       {% if type not in ('dontwant', 'submodule', 'dependence') %}
 <div class="{{ type }}">
-{{ formater(doc, name) }}
+{{ formater(doc, link, top, name) }}
 </div>
       {% endif %}
       {% set prev = type %}

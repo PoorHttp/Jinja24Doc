@@ -182,7 +182,8 @@ def _nlstrip(s):
     return s
 
 
-def wiki(doc, name='__doc__', section_level=2):    # jinja function
+# jinja function
+def wiki(doc, link='link', top='top', name='__doc__', section_level=2):
     """ Call some regular expressions on doc, and return it with html
         interpretation of wiki formating. If you want to create links to know
         api for your module, just call keywords function after gets full api
