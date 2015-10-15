@@ -1,4 +1,14 @@
+{% if title is not defined %}
+  {% for type, name, args, doc in sections %}
+    {% if type == 'text' %}
+      {% set title = name %}
+      {% include "_header.html" %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% else %}
 {% include "_header.html" %}
+{% endif %}
 
       <menu class="sidebar">
       {% for type, name, id, doc in sections %}

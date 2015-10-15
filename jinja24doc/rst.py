@@ -15,6 +15,7 @@ import os
 from jinja24doc.apidoc import linked_api, G
 from jinja24doc.wiki import re_source, re_python, _python
 from jinja24doc.misc import uni, usage
+from jinja24doc import misc
 
 
 def _doctest_code(obj):
@@ -52,7 +53,7 @@ def rst(doc, title='__doc__', section_level=2):
     return linked_api(out)
 
 
-def load_rst(rstfile, link='link', top='top', encoding='utf-8'):
+def load_rst(rstfile, link='link', top='top', encoding=misc.encoding):
     """
     Load rst file and create docs list of headers and text.
         rstfile - string, reStructured source file name (readme.rst)
@@ -83,8 +84,10 @@ def load_rst(rstfile, link='link', top='top', encoding='utf-8'):
                           settings_overrides={'link': link, 'top': top,
                                               'no_system_messages': True})
 
-    out = parts['body'] + parts['html_line'] + \
-        parts['html_footnotes'] + parts['html_citations']
+    out = parts['body']
+    if parts['html_footnotes'] or parts['html_citations']:
+        out = parts['html_line'] + \
+            parts['html_footnotes'] + parts['html_citations']
 
     out = re_source.sub(_doctest_code, out)
 
@@ -96,5 +99,6 @@ def load_rst(rstfile, link='link', top='top', encoding='utf-8'):
 
     retval = list(('h%d' % lvl, uni(name), id, '')
                   for lvl, name, id in parts['sections'])
-    retval.append(('text', 'rstfile', None, uni(out)))
+    # TODO: append '(author, date, verstion)' from rst if exist like in module
+    retval.append(('text', parts['title'], None, uni(out)))
     return retval

@@ -1,15 +1,72 @@
 
 from jinja2 import Environment, FileSystemLoader
+
 from traceback import format_exception
+from argparse import ArgumentParser
 
 import sys
 import os
 
+from jinja24doc import misc
 from jinja24doc.misc import usage
 from jinja24doc.apidoc import G
 from jinja24doc.wiki import wiki, load_wiki, load_text, load_source
 from jinja24doc.rst import rst, load_rst
 from jinja24doc.apidoc import load_module, keywords
+
+
+def parse_args(doc):
+    parser = ArgumentParser(
+        description=doc,
+        usage="%(prog)s [options] SOURCE [PATH[:PATH]]")
+    misc.parser = parser
+
+    parser.add_argument(
+        "source", type=str,
+        help="python module or reStructured text file",
+        metavar="SOURCE")
+    parser.add_argument(
+        "path", type=str, nargs='?', metavar="PATH[:PATH]",
+        help="template paths separated by colon")
+    parser.add_argument(
+        "-O", "--output", type=str, metavar="FILE",
+        help="write html to output file insead of stdout")
+    parser.add_argument(
+        "--encoding", default="utf-8", type=str, metavar="STRING",
+        help="write html to output file insead of stdout")
+    parser.add_argument(
+        "--stylesheet",  default="style.css", type=str, metavar="FILE[,FILE]",
+        help="stylesheet file name (default style.css)")
+    parser.add_argument(
+        "--embed-stylesheet", action="store_true",
+        help="embed the stylesheet(s) in the output HTML file "
+             "(default: False)")
+    parser.add_argument(
+        "--system-message", action="store_true",
+        help="output system messages to output html (default: False)")
+    link_group = parser.add_mutually_exclusive_group()
+    link_group.add_argument(
+        "--link", default="link", type=str, metavar="STRING",
+        help="the `link' string (default: `link')")
+    link_group.add_argument(
+        "--no-link", action="store_const", const='', dest='link',
+        help="don't create the `link' link for sections.")
+    top_group = parser.add_mutually_exclusive_group()
+    top_group.add_argument(
+        "--top", default="top", type=str, metavar="STRING",
+        help="the `top' string (default: `top')")
+    top_group.add_argument(
+        "--no-top", action="store_const", const='', dest='top',
+        help="don't create the `top' link for sections.")
+    parser.add_argument(
+        "-v", "--verbose", action="store_true",
+        help="verbose mode")
+    parser.add_argument(
+        '--version', action='version', version='%(prog)s 2.0')
+    args = parser.parse_args()
+    misc.encoding = args.encoding
+    G.paths = args.path.split(':') + G.paths
+    return args
 
 
 def local_name(name):
@@ -59,10 +116,10 @@ def _truncate(string, length=255, killwords=True, end='...'):
     return string
 
 
-def _generate(fname, path):
+def prepare_environment(path):
     env = Environment(loader=FileSystemLoader(path),
                       trim_blocks=True,
-                      extensions=['jinja2.ext.do'],
+                      extensions=['jinja2.ext.do', 'jinja2.ext.loopcontrols'],
                       lstrip_blocks=True)     # add in 2.7
 
     env.globals['load_module'] = load_module
@@ -76,13 +133,16 @@ def _generate(fname, path):
     env.globals['local_name'] = local_name
     env.globals['property_info'] = property_info
     env.globals['log'] = log
-
     # jinja2 compatibility with old versions
-    env.globals['length'] = len
-    env.globals['truncate'] = _truncate
+    # env.globals['length'] = len
+    # env.globals['truncate'] = _truncate
+    return env
 
+
+def generate(fname, path, **kwargs):
+    env = prepare_environment(path)
     temp = env.get_template(fname)
-    return temp.render(filename=fname)
+    return temp.render(**kwargs)
 
 
 def main():
@@ -120,7 +180,7 @@ def main():
 
     sys.path.insert(0, os.getcwd())
     try:
-        data = _generate(fname, G.paths)
+        data = generate(fname, G.paths)
         if not isinstance(data, str):
             data = data.encode('utf-8')
         sys.stdout.write(data)

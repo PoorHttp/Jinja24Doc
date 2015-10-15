@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
-#try:
-#    can't use setuptools yet, becouse i found data file in absolute path
+# try:
+#   can't use setuptools yet, becouse i found data file in absolute path
 #    from setuptools import setup
-#except:
+# except:
 from distutils.core import setup
 
 from distutils.command.build_scripts import build_scripts
@@ -15,6 +15,7 @@ from distutils import log
 from os import path
 from shutil import copyfile
 
+
 class X_build_scripts(build_scripts):
     def run(self):
         self.mkpath('build/_scripts_')
@@ -25,18 +26,19 @@ class X_build_scripts(build_scripts):
 class X_build(build):
     def run(self):
         from jinja24doc.apidoc import G
-        from jinja24doc.main import _generate
+        from jinja24doc.main import generate
         import sys
         sys.path.insert(0, 'jinja24doc')
         G.paths = ('templates/jinja24doc', 'doc')
         log.info("creating documentation")
+
         def _jinja24doc(tname, oname):
             G.re_docs = None
             G._api_url = ''
             G._api_keywords = {}
             G._modules = []
             log.info('jinja24doc processing %s ...' % oname)
-            data = _generate(tname, G.paths)
+            data = generate(tname, G.paths)
             if not isinstance(data, str):
                 data = data.encode('utf-8')
             with open(oname, 'w') as f:
