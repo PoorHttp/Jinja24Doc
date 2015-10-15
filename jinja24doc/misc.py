@@ -1,8 +1,13 @@
+# -*- coding: utf-8 -*-
 import sys
 
 parser = None
 encoding = 'utf-8'
 unicode_exist = True
+
+__version__ = "1.2.99"
+__author__ = "Ondřej Tůma"
+__date__ = "Oct 15 2015"
 
 try:
     unicode()

@@ -8,7 +8,7 @@ import sys
 import os
 
 from jinja24doc import misc
-from jinja24doc.misc import usage
+from jinja24doc.misc import usage, __version__
 from jinja24doc.apidoc import G
 from jinja24doc.wiki import wiki, load_wiki, load_text, load_source
 from jinja24doc.rst import rst, load_rst
@@ -62,7 +62,7 @@ def parse_args(doc):
         "-v", "--verbose", action="store_true",
         help="verbose mode")
     parser.add_argument(
-        '--version', action='version', version='%(prog)s 2.0')
+        '--version', action='version', version='%%(prog)s %s' % __version__)
     args = parser.parse_args()
     misc.encoding = args.encoding
     G.paths = args.path.split(':') + G.paths

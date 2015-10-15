@@ -27,7 +27,8 @@ def _doctest_code(obj):
     return '<pre class="%s">%s</pre>' % (tmp[0], source)
 
 
-def rst(doc, link='link', top='top', title='__doc__', section_level=2):
+def rst(doc, link='link', top='top', title='__doc__', section_level=2,
+        system_message=False):
     """
     Call rst docutil parser for doc and return it with html representation of
     reStructuredText formating. For more details see
@@ -39,7 +40,8 @@ def rst(doc, link='link', top='top', title='__doc__', section_level=2):
                           writer_name='html',
                           settings_overrides={
                               'link': link, 'top': top, 'title': title,
-                              'initial_header_level': section_level})
+                              'initial_header_level': section_level,
+                              'no_system_messages': not system_message})
 
     out = parts['body'] + parts['html_line'] + \
         parts['html_footnotes'] + parts['html_citations']
@@ -53,7 +55,8 @@ def rst(doc, link='link', top='top', title='__doc__', section_level=2):
     return linked_api(out)
 
 
-def load_rst(rstfile, link='link', top='top', encoding=misc.encoding):
+def load_rst(rstfile, link='link', top='top', encoding=misc.encoding,
+             system_message=False):
     """
     Load rst file and create docs list of headers and text.
         rstfile - string, reStructured source file name (readme.rst)
@@ -81,8 +84,9 @@ def load_rst(rstfile, link='link', top='top', encoding=misc.encoding):
                           source_path=x_rstfile,
                           writer=writer,
                           writer_name='html',
-                          settings_overrides={'link': link, 'top': top,
-                                              'no_system_messages': True})
+                          settings_overrides={
+                              'link': link, 'top': top,
+                              'no_system_messages': not system_message})
 
     out = parts['body']
     if parts['html_footnotes'] or parts['html_citations']:

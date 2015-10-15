@@ -1,4 +1,5 @@
 {% set formater = formater if formater is defined else rst %}
+{% set system_message = system_message if system_message is defined else False %}
 {% if top is not defined or top or link is not defined or link %}
   {% set link = link if link is defined else 'link' %}
   {% set top = top if top is defined else 'top' %}
@@ -67,7 +68,7 @@
       {% endif %}
       {% if type not in ('dontwant', 'submodule', 'dependence') %}
 <div class="{{ type }}">
-{{ formater(doc, link, top, name) }}
+{{ formater(doc, link, top, name, system_message) }}
 </div>
       {% endif %}
       {% set prev = type %}
