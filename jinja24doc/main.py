@@ -59,6 +59,9 @@ def parse_args(doc):
         "--no-top", action="store_const", const='', dest='top',
         help="don't create the `top' link for sections.")
     parser.add_argument(
+        "--traceback", action="store_true",
+        help="Enable Python tracebacks.")
+    parser.add_argument(
         "-v", "--verbose", action="store_true",
         help="verbose mode")
     parser.add_argument(
