@@ -1,8 +1,13 @@
 
 from jinja2 import Environment, FileSystemLoader
 
-from traceback import format_exception
+from traceback import format_exception, format_exc
 from argparse import ArgumentParser
+from sys import path as python_path, version_info, stderr
+from os import path
+
+if version_info[0] == 2:
+    from io import open         # python3x compatible open
 
 import sys
 import os
@@ -15,9 +20,9 @@ from jinja24doc.rst import rst, load_rst
 from jinja24doc.apidoc import load_module, keywords
 
 
-def parse_args(doc):
+def parse_args(description):
     parser = ArgumentParser(
-        description=doc,
+        description=description,
         usage="%(prog)s [options] SOURCE [PATH[:PATH]]")
     misc.parser = parser
 
@@ -66,10 +71,7 @@ def parse_args(doc):
         help="verbose mode")
     parser.add_argument(
         '--version', action='version', version='%%(prog)s %s' % __version__)
-    args = parser.parse_args()
-    misc.encoding = args.encoding
-    G.paths = args.path.split(':') + G.paths
-    return args
+    return parser.parse_args()
 
 
 def local_name(name):
@@ -171,9 +173,9 @@ def main():
     G.paths.insert(0, '.')
 
     x_fname = None
-    for path in G.paths:
-        if os.access(path+'/'+fname, os.R_OK):
-            x_fname = path+'/'+fname
+    for it in G.paths:
+        if os.access(it+'/'+fname, os.R_OK):
+            x_fname = it+'/'+fname
             if verbose:
                 sys.stderr.write('jinja24doc processing %s ...\n' % x_fname)
             break
@@ -195,3 +197,92 @@ def main():
                                      sys.exc_traceback)
         traceback = ''.join(traceback)
         usage("Exception: %s" % traceback)
+
+
+def verbose(args):
+    if args.verbose:
+        stderr.write("%s proccessing %s " % (misc.parser.prog, args.source))
+        if args.output:
+            stderr.write("-> %s\n" % args.output)
+        else:
+            stderr.write("...\n")
+    # endif verbose
+
+
+def embed_stylesheet(args, stylesheets):
+    embed_stylesheet = ''
+    for stylesheet in stylesheets:
+        try:
+            with open(stylesheet, 'rt', encoding=args.encoding) as css:
+                embed_stylesheet += '<style source="%s">\n      ' % \
+                                    stylesheet
+                embed_stylesheet += css.read().replace('\n', "\n      ")
+                embed_stylesheet += "</style>\n"
+        except BaseException as e:
+            usage("Can't read stylesheet %s:\n\t%s" % (stylesheet, e))
+    return embed_stylesheet
+# enddef
+
+
+def process(source, **kwargs):
+    if source[-1] == '/':
+            source = source[:-1]
+    file_name, ext = path.splitext(path.basename(source))
+
+    if path.isdir(source) or ext == '.py':
+        python_path.insert(0, path.abspath(path.dirname(source)))
+        kwargs.update({'title': file_name,
+                       'module': file_name})
+        output = generate("module.html", G.paths, **kwargs)
+    elif ext in ('.wiki', '.txt'):
+        G.paths.insert(0, path.abspath(path.dirname(source)))
+        kwargs['source'] = path.basename(source)
+        output = generate("text.html", G.paths, ** kwargs)
+    else:
+        usage('Unsuported source %s' % source)
+    return output
+
+
+def run(description='', formater=None):
+    args = parse_args(description)
+    try:
+        misc.encoding = args.encoding
+        if args.path:
+            G.paths = args.path.split(':') + G.paths
+
+        source = args.source
+        stylesheets = args.stylesheet.split(',')
+        verbose()
+
+        kwargs = {
+            'link': args.link,
+            'top': args.top,
+            'encoding': args.encoding,
+            'system_message': args.system_message,
+            'formater': wiki
+        }
+
+        if formater:
+            kwargs['formater'] = formater
+
+        if args.embed_stylesheet:
+            kwargs['embed_stylesheet'] = embed_stylesheet(args, stylesheets)
+        else:
+            kwargs['stylesheets'] = stylesheets
+
+        process(source, kwargs)
+
+        if args.output:
+            with open(args.output, 'w+', encoding=args.encoding) as o:
+                o.write(process(source, **kwargs))
+        else:
+            print(process(source, **kwargs))
+
+    except SystemExit as e:
+        pass
+    except BaseException as e:
+        usage('Error while proccessing %s' % e)
+    finally:
+        if args.traceback:
+            stderr.write(format_exc())
+# enddef

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Example module with wiki formated __doc__
 ==========================================
@@ -57,6 +58,7 @@ Headers in documentation
  * Other headers start on 2, which could be h1, so typical on h3
 """
 
+
 def none():
     """ Function return None
 
@@ -65,29 +67,42 @@ def none():
     """
     return None
 
+
 def check_number(val):
-    """ Functin check number:
-            val - input value
-            return True or False
+    """Functin check number:
 
-        .. code-block:: python
-            :number-lines:
+    val - input value
+    return True or False
 
-            from os import sys
+    .. code-block:: python
+        :number-lines:
 
-            sys.stdout.write("Testing check number:\\n")
-            sys.stdout.write("\\t12\\t:%s\\n" % check_number(12))          # True
-            sys.stdout.write("\\t3.14\\t:%s\\n" % check_number(3.14))      # True
-            sys.stdout.write("\\tFalse\\t:%s\\n" % check_number(False))    # False
-            sys.stdout.write("\\tNone\\t:%s\\n" % check_number(None))      # False
-            sys.stdout.write("\\t10**10\\t:%s\\n" % check_number(10**10))  # True
-            sys.stdout.flush()
+        from os import sys
+
+        sys.stdout.write("Testing check number:\\n")
+        sys.stdout.write("\\t12\\t:%s\\n" % check_number(12))          # True
+        sys.stdout.write("\\t3.14\\t:%s\\n" % check_number(3.14))      # True
+        sys.stdout.write("\\tFalse\\t:%s\\n" % check_number(False))    # False
+        sys.stdout.write("\\tNone\\t:%s\\n" % check_number(None))      # False
+        sys.stdout.write("\\t10**10\\t:%s\\n" % check_number(10**10))  # True
+        sys.stdout.flush()
     """
     pass
 
+
 class Object(object):
-    """ Empty class """
+    """ Empty class
+
+    Example code:
+
+    >>> print 'simple text'
+    >>> print 'text with number 3'
+    >>> print 'text with float 3.13'
+    >>> print u'Unicode Text'
+    >>> print u'Ondřej Tůma'
+    """
     pass
+
 
 class Point(Object):
     """ Point class """
@@ -95,7 +110,7 @@ class Point(Object):
         """ Set x and y values """
         pass
 
-    def draw(self, color = "black"):
+    def draw(self, color="black"):
         """ draw point with defined color
             color - color for drawing, default is black
         """
@@ -113,8 +128,7 @@ class Point(Object):
         pass
 
 # module name
-module_name = "wiki module"
+module_name = "rst module"
 
 # defalt point at 0,0
-zero = Point(0,0)
-
+zero = Point(0, 0)

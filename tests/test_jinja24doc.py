@@ -2,6 +2,7 @@ from sys import path as python_path
 from os import path, makedirs
 from shutil import copyfile
 
+from mock import patch
 import pytest
 
 python_path.insert(0, path.abspath(
@@ -21,7 +22,8 @@ G.paths = (get_pathfor('templates'), EXAMPLES)
 python_path.insert(0, EXAMPLES)
 
 
-def jinja24doc(name):
+@patch('jinja24doc.apidoc.sys.stderr')
+def jinja24doc(name, mock):
     G.re_docs = None
     G._api_url = ''
     G._api_keywords = {}
@@ -31,6 +33,9 @@ def jinja24doc(name):
         data = data.encode('utf-8')
     with open('%s/out/%s' % (EXAMPLES, name), 'w') as f:
         f.write(data)
+    for it in mock.method_calls:
+        print (it)
+    assert len(mock.method_calls) == 0
 
 
 @pytest.fixture(autouse=True)

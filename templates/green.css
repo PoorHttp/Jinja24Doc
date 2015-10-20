@@ -177,7 +177,8 @@ h3 > .links {
     line-height: 2em;
 }
 h3.function {
-    margin: 2em 0 0 0;
+    margin: 2em 0 0 8em;
+    text-indent: -8em;
     padding-bottom: 0;
     color: #b02c29;
     font-family: monospace;
@@ -190,7 +191,7 @@ h3.class {
     padding: 0.1em 0em 0.1em 0.5em;
     background-color: #ddd;
     border-radius: 3px 3px 3px;
-    color: #b02c29;
+    color: #293CB1;
     font-size: 130%;
 }
 h3.variable {
@@ -199,10 +200,15 @@ h3.variable {
 }
 
 h4.method, h4.staticmethod {
-    margin: 2em 0 0 0;
+    margin: 2em 0 0 8em;
+    text-indent: -8em;
     padding-left: 2em;
     font-family: monospace;
     font-size: 130%;
+}
+h4.method > i, h4.staticmethod > i {
+    font-size: 90%;
+    color: #333
 }
 
 h4.property {
@@ -238,7 +244,7 @@ div.method, div.staticmethod, div.property {
 pre {
     font-size: 10pt;
     margin: 0.5em 0 1.5em 0;
-    padding: 0.5em 0 0.5em 0;
+    padding: 0.5em;
     background-color: #ddd;
     border: 1px dotted gray;
     border-radius: 6px 6px 6px;
@@ -289,4 +295,18 @@ code.param {
 }
 .submodules > .submodule {
     padding: 0 0 0 0.3em;
+}
+
+
+th, td {
+    vertical-align: top;
+}
+table {
+    margin-top: 1em;
+}
+td * {
+    margin-top: 0;
+}
+.citations td:first-child {
+    white-space: nowrap;
 }

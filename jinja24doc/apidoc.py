@@ -94,6 +94,7 @@ def load_module(module):                    # jinja function
             module = module.__getattribute__(it)
     except Exception as e:
         sys.stderr.write(repr(e)+'\n')
+        print sys.stderr
         return []
 
     if '__file__' in module.__dict__:
