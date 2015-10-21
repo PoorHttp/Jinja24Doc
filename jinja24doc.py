@@ -1,6 +1,8 @@
 #!/usr/bin/python
+"""Jinja24doc command tool for template processing """
 
-from jinja24doc import main
+from jinja24doc.main import jinja_cmdline
 
-if __name__ == '__main__':
-    main()
+description = ("Generates documentation output from jinja templates.")
+
+jinja_cmdline(description=description)

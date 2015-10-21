@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
-import sys
+from sys import stderr
 
 parser = None
 encoding = 'utf-8'
 unicode_exist = True
-
-__version__ = "1.2.99"
-__author__ = "Ondřej Tůma"
-__date__ = "Oct 15 2015"
 
 try:
     unicode()
@@ -23,17 +19,18 @@ def uni(text):
 
 
 def usage(err=None):
-    if parser:
-        if err:
-            parser.error(err)
-        else:
-            parser.print_usage(sys.stderr)
-            parser.exit()
+    if err:
+        parser.error(err)
+    else:
+        parser.print_usage(stderr)
+        parser.exit()
 
-    sys.stderr.write("Usage: %s [-v] template [path]\n" % sys.argv[0])
-    sys.stderr.write("    -v            verbose mode\n")
-    sys.stderr.write("    template      jinja2 template\n")
-    sys.stderr.write("    path          list of path separates by colon where "
-                     "tempates are\n")
-    sys.stderr.write("Error:\n    %s\n" % err)
-    sys.exit(1)
+
+def log(message):
+    """
+    Write message to stderr.
+
+        #!jinja
+        {% do log('some debug message') %}
+    """
+    stderr.write("%s\n" % message)

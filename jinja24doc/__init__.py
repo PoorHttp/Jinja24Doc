@@ -6,8 +6,6 @@
     templates. Your or from jinja2doc package.
 """
 
-__author__  = "Ondrej Tuma (McBig) <mcbig@zeropage.cz>"
-__date__    = "21 August 2014"
-__version__ = "1.2.0"
-
-from jinja24doc.main import main
+__author__ = "Ondrej Tuma (McBig) <mcbig@zeropage.cz>"
+__date__ = "20 Oct 2015"
+__version__ = "1.2.99"

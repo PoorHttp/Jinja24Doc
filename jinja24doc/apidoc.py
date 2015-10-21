@@ -94,7 +94,6 @@ def load_module(module):                    # jinja function
             module = module.__getattribute__(it)
     except Exception as e:
         sys.stderr.write(repr(e)+'\n')
-        print sys.stderr
         return []
 
     if '__file__' in module.__dict__:
@@ -296,3 +295,33 @@ def keywords(api, api_url="",                 # jinja function
                            for type, name, args, doc in api)
 
     return ''
+
+
+def local_name(name):
+    """
+    Returns striped name from its parent (module or class).
+
+        #!jinja
+        {{ local_name('MyClass.__init__') }} {# put __init__ to document #}
+    """
+    dot = name.rfind('.')
+    return name[dot+1:]
+
+
+def property_info(info, delimiter=' | '):
+    """
+    Returns property info from tupple, where there is flags if property is
+    writable,  readable and deletable.
+
+        #!jinja
+        {# return someone like this: WRITE | READ | DELETE #}
+        {{ property_info(info) }}
+    """
+    rv = []
+    if info[0]:
+        rv.append('READ')
+    if info[1]:
+        rv.append('WRITE')
+    if info[2]:
+        rv.append('DELETE')
+    return delimiter.join(rv)

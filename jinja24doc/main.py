@@ -1,7 +1,7 @@
 
 from jinja2 import Environment, FileSystemLoader
 
-from traceback import format_exception, format_exc
+from traceback import format_exc
 from argparse import ArgumentParser
 from sys import path as python_path, version_info, stderr
 from os import path
@@ -9,15 +9,14 @@ from os import path
 if version_info[0] == 2:
     from io import open         # python3x compatible open
 
-import sys
 import os
 
-from jinja24doc import misc
-from jinja24doc.misc import usage, __version__
+from jinja24doc import misc, __version__
+from jinja24doc.misc import usage, log
 from jinja24doc.apidoc import G
 from jinja24doc.wiki import wiki, load_wiki, load_text, load_source
 from jinja24doc.rst import rst, load_rst
-from jinja24doc.apidoc import load_module, keywords
+from jinja24doc.apidoc import load_module, keywords, local_name, property_info
 
 
 def parse_args(description):
@@ -74,53 +73,6 @@ def parse_args(description):
     return parser.parse_args()
 
 
-def local_name(name):
-    """
-    Returns striped name from its parent (module or class).
-
-        #!jinja
-        {{ local_name('MyClass.__init__') }} {# put __init__ to document #}
-    """
-    dot = name.rfind('.')
-    return name[dot+1:]
-
-
-def property_info(info, delimiter=' | '):
-    """
-    Returns property info from tupple, where there is flags if property is
-    writable,  readable and deletable.
-
-        #!jinja
-        {# return someone like this: WRITE | READ | DELETE #}
-        {{ property_info(info) }}
-    """
-    rv = []
-    if info[0]:
-        rv.append('READ')
-    if info[1]:
-        rv.append('WRITE')
-    if info[2]:
-        rv.append('DELETE')
-    return delimiter.join(rv)
-
-
-def log(message):
-    """
-    Write message to stderr.
-
-        #!jinja
-        {% do log('some debug message') %}
-    """
-    sys.stderr.write("%s\n" % message)
-
-
-def _truncate(string, length=255, killwords=True, end='...'):
-    """ Only True yet """
-    if len(string) > length:
-        return string[:length] + end
-    return string
-
-
 def prepare_environment(path):
     env = Environment(loader=FileSystemLoader(path),
                       trim_blocks=True,
@@ -138,9 +90,6 @@ def prepare_environment(path):
     env.globals['local_name'] = local_name
     env.globals['property_info'] = property_info
     env.globals['log'] = log
-    # jinja2 compatibility with old versions
-    # env.globals['length'] = len
-    # env.globals['truncate'] = _truncate
     return env
 
 
@@ -150,53 +99,42 @@ def generate(fname, path, **kwargs):
     return temp.render(**kwargs)
 
 
-def main():
-    if len(sys.argv) < 2:
-        usage('Not enough arguments')
-    verbose = False
-
-    if sys.argv[1] == '-v':         # verbose mode is set on
-        if len(sys.argv) < 3:
-            usage('Not enough arguments')
-        verbose = True
-
-        fname = sys.argv[2]
-
-        if len(sys.argv) > 3:
-            G.paths = sys.argv[3].split(':') + G.paths
-    else:                           # not verbose option
-        fname = sys.argv[1]
-
-        if len(sys.argv) > 2:
-            G.paths = sys.argv[2].split(':') + G.paths
-
-    G.paths.insert(0, '.')
-
-    x_fname = None
-    for it in G.paths:
-        if os.access(it+'/'+fname, os.R_OK):
-            x_fname = it+'/'+fname
-            if verbose:
-                sys.stderr.write('jinja24doc processing %s ...\n' % x_fname)
-            break
-
-    if not x_fname:
-        usage('Access denied to template %s' % fname)
-
-    sys.path.insert(0, os.getcwd())
+def jinja_cmdline(description=''):
+    args = parse_args(description)
     try:
-        data = generate(fname, G.paths)
-        if not isinstance(data, str):
-            data = data.encode('utf-8')
-        sys.stdout.write(data)
+        if args.path:
+            G.paths = args.path.split(':') + G.paths
+        G.paths.insert(0, '.')
+        python_path.insert(0, os.getcwd())
+
+        source = args.source
+        # TODO: styles
+        verbose(args)
+
+        kwargs = {
+            'link': args.link,
+            'top': args.top,
+            'encoding': args.encoding,
+            'system_message': args.system_message
+        }
+
+        output = generate(source, G.paths, **kwargs)
+
+        if args.output:
+            with open(args.output, 'w+', encoding=args.encoding) as o:
+                o.write(output)
+        else:
+            if not isinstance(output, str):
+                output = output.encode('utf-8')
+            print(output)
     except SystemExit as e:
-        sys.exit(e.code)
-    except:
-        traceback = format_exception(sys.exc_type,
-                                     sys.exc_value,
-                                     sys.exc_traceback)
-        traceback = ''.join(traceback)
-        usage("Exception: %s" % traceback)
+        pass
+    except BaseException as e:
+        usage('Error while proccessing %s' % e)
+    finally:
+        if args.traceback:
+            stderr.write(format_exc())
+# enddef
 
 
 def verbose(args):
@@ -243,7 +181,7 @@ def process(source, **kwargs):
     return output
 
 
-def run(description='', formater=None):
+def auto_cmdline(description='', formater=None):
     args = parse_args(description)
     try:
         misc.encoding = args.encoding
