@@ -25,6 +25,7 @@ def log(message):
 class Context(Wiki, Rst):
 
     def __init__(self, paths, encoding='utf-8'):
+        super(Context, self).__init__()
         if isinstance(paths, str):
             paths = list(it.strip() for it in paths.split(':'))
         if isinstance(paths, tuple):

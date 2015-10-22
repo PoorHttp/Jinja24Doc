@@ -73,12 +73,14 @@ def key_doc(a):
 
 
 class ApiDoc(object):
-    re_docs = None
-    api_url = ''
-    api_keywords = {}
-    modules = []
-    paths = []
-    encoding = 'utf-8'
+
+    def __init__(self):
+        self.re_docs = None
+        self.api_url = ''
+        self.api_keywords = {}
+        self.paths = []
+        self.modules = []
+        self.encoding = 'utf-8'
 
     def _keyword(self, obj):
         groups = obj.groups()
