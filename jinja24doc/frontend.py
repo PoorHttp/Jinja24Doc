@@ -1,6 +1,4 @@
 
-from jinja2 import Environment, FileSystemLoader
-
 from traceback import format_exc
 from argparse import ArgumentParser
 from sys import path as python_path, version_info, stderr
@@ -11,19 +9,14 @@ if version_info[0] == 2:
 
 import os
 
-from jinja24doc import misc, __version__
-from jinja24doc.misc import usage, log
-from jinja24doc.apidoc import G
-from jinja24doc.wiki import wiki, load_wiki, load_text, load_source
-from jinja24doc.rst import rst, load_rst
-from jinja24doc.apidoc import load_module, keywords, local_name, property_info
+from jinja24doc import __version__, CriticalExit
+from jinja24doc.context import Context
 
 
-def parse_args(description):
+def build_parser(description):
     parser = ArgumentParser(
         description=description,
         usage="%(prog)s [options] SOURCE [PATH[:PATH]]")
-    misc.parser = parser
 
     parser.add_argument(
         "source", type=str,
@@ -70,76 +63,12 @@ def parse_args(description):
         help="verbose mode")
     parser.add_argument(
         '--version', action='version', version='%%(prog)s %s' % __version__)
-    return parser.parse_args()
+    return parser
 
 
-def prepare_environment(path):
-    env = Environment(loader=FileSystemLoader(path),
-                      trim_blocks=True,
-                      extensions=['jinja2.ext.do', 'jinja2.ext.loopcontrols'],
-                      lstrip_blocks=True)     # add in 2.7
-
-    env.globals['load_module'] = load_module
-    env.globals['wiki'] = wiki
-    env.globals['rst'] = rst
-    env.globals['keywords'] = keywords
-    env.globals['load_wiki'] = load_wiki
-    env.globals['load_text'] = load_text
-    env.globals['load_rst'] = load_rst
-    env.globals['load_source'] = load_source
-    env.globals['local_name'] = local_name
-    env.globals['property_info'] = property_info
-    env.globals['log'] = log
-    return env
-
-
-def generate(fname, path, **kwargs):
-    env = prepare_environment(path)
-    temp = env.get_template(fname)
-    return temp.render(**kwargs)
-
-
-def jinja_cmdline(description=''):
-    args = parse_args(description)
-    try:
-        if args.path:
-            G.paths = args.path.split(':') + G.paths
-        G.paths.insert(0, '.')
-        python_path.insert(0, os.getcwd())
-
-        source = args.source
-        # TODO: styles
-        verbose(args)
-
-        kwargs = {
-            'link': args.link,
-            'top': args.top,
-            'encoding': args.encoding,
-            'system_message': args.system_message
-        }
-
-        output = generate(source, G.paths, **kwargs)
-
-        if args.output:
-            with open(args.output, 'w+', encoding=args.encoding) as o:
-                o.write(output)
-        else:
-            if not isinstance(output, str):
-                output = output.encode('utf-8')
-            print(output)
-    except SystemExit as e:
-        pass
-    except BaseException as e:
-        usage('Error while proccessing %s' % e)
-    finally:
-        if args.traceback:
-            stderr.write(format_exc())
-# enddef
-
-
-def verbose(args):
+def verbose(args, parser):
     if args.verbose:
-        stderr.write("%s proccessing %s " % (misc.parser.prog, args.source))
+        stderr.write("%s proccessing %s " % (parser.prog, args.source))
         if args.output:
             stderr.write("-> %s\n" % args.output)
         else:
@@ -157,12 +86,13 @@ def embed_stylesheet(args, stylesheets):
                 embed_stylesheet += css.read().replace('\n', "\n      ")
                 embed_stylesheet += "</style>\n"
         except BaseException as e:
-            usage("Can't read stylesheet %s:\n\t%s" % (stylesheet, e))
+            raise CriticalExit("Can't read stylesheet %s:\n\t%s" %
+                               (stylesheet, e))
     return embed_stylesheet
 # enddef
 
 
-def process(source, **kwargs):
+def process(ctx, source, **kwargs):
     if source[-1] == '/':
             source = source[:-1]
     file_name, ext = path.splitext(path.basename(source))
@@ -171,22 +101,59 @@ def process(source, **kwargs):
         python_path.insert(0, path.abspath(path.dirname(source)))
         kwargs.update({'title': file_name,
                        'module': file_name})
-        output = generate("module.html", G.paths, **kwargs)
+        output = ctx.generate("module.html", **kwargs)
     elif ext in ('.wiki', '.txt'):
-        G.paths.insert(0, path.abspath(path.dirname(source)))
+        ctx.paths.insert(0, path.abspath(path.dirname(source)))
         kwargs['source'] = path.basename(source)
-        output = generate("text.html", G.paths, ** kwargs)
+        output = ctx.generate("text.html", ** kwargs)
     else:
-        usage('Unsuported source %s' % source)
+        raise CriticalExit('Unsuported source %s' % source)
     return output
 
 
-def auto_cmdline(description='', formater=None):
-    args = parse_args(description)
+def jinja_cmdline(description=''):
+    parser = build_parser(description)
+    args = parser.parse_args()
     try:
-        misc.encoding = args.encoding
-        if args.path:
-            G.paths = args.path.split(':') + G.paths
+        ctx = Context(args.path, args.encoding)
+        python_path.insert(0, os.getcwd())
+
+        source = args.source
+        # TODO: styles
+        verbose(args, parser)
+
+        kwargs = {
+            'link': args.link,
+            'top': args.top,
+            'system_message': args.system_message
+        }
+
+        output = ctx.generate(source, **kwargs)
+
+        if args.output:
+            with open(args.output, 'w+', encoding=args.encoding) as o:
+                o.write(output)
+        else:
+            if not isinstance(output, str):
+                output = output.encode('utf-8')
+            print(output)
+    except CriticalExit as e:
+        parser.error(e.message)
+    except SystemExit as e:
+        pass
+    except BaseException as e:
+        parser.error('Error while proccessing %s' % e)
+    finally:
+        if args.traceback:
+            stderr.write(format_exc())
+# enddef
+
+
+def auto_cmdline(description='', formater='rst'):
+    parser = build_parser(description)
+    args = parser.parse_args()
+    try:
+        ctx = Context(args.path, args.encoding)
 
         source = args.source
         stylesheets = args.stylesheet.split(',')
@@ -195,31 +162,29 @@ def auto_cmdline(description='', formater=None):
         kwargs = {
             'link': args.link,
             'top': args.top,
-            'encoding': args.encoding,
             'system_message': args.system_message,
-            'formater': wiki
+            'formater': getattr(ctx, formater)
         }
-
-        if formater:
-            kwargs['formater'] = formater
 
         if args.embed_stylesheet:
             kwargs['embed_stylesheet'] = embed_stylesheet(args, stylesheets)
         else:
             kwargs['stylesheets'] = stylesheets
 
-        process(source, kwargs)
+        process(ctx, source, kwargs)
 
         if args.output:
             with open(args.output, 'w+', encoding=args.encoding) as o:
                 o.write(process(source, **kwargs))
         else:
-            print(process(source, **kwargs))
+            print(process(ctx, source, **kwargs))
 
+    except CriticalExit as e:
+        parser.error(e.message)
     except SystemExit as e:
         pass
     except BaseException as e:
-        usage('Error while proccessing %s' % e)
+        parser.error('Error while proccessing %s' % e)
     finally:
         if args.traceback:
             stderr.write(format_exc())

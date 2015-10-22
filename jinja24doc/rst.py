@@ -12,10 +12,9 @@ if version_info[0] == 2:
 
 import os
 
-from jinja24doc.apidoc import linked_api, G
+from jinja24doc.apidoc import ApiDoc
 from jinja24doc.wiki import re_source, re_python, _python
-from jinja24doc.misc import uni, usage
-from jinja24doc import misc
+from jinja24doc import CriticalExit
 
 
 def _doctest_code(obj):
@@ -27,82 +26,84 @@ def _doctest_code(obj):
     return '<pre class="%s">%s</pre>' % (tmp[0], source)
 
 
-def rst(doc, link='link', top='top', title='__doc__', section_level=2,
-        system_message=False):
-    """
-    Call rst docutil parser for doc and return it with html representation of
-    reStructuredText formating. For more details see
-    http://docutils.sourceforge.net/rst.html.
-    """
-    writer = Writer()
-    parts = publish_parts(source=doc,
-                          writer=writer,
-                          writer_name='html',
-                          settings_overrides={
-                              'link': link, 'top': top, 'title': title,
-                              'initial_header_level': section_level,
-                              'no_system_messages': not system_message})
+class Rst(ApiDoc):
 
-    out = parts['body'] + parts['html_line'] + \
-        parts['html_footnotes'] + parts['html_citations']
+    def rst(self, doc, link='link', top='top', title='__doc__',
+            section_level=2, system_message=False):
+        """
+        Call rst docutil parser for doc and return it with html representation
+        of reStructuredText formating. For more details see
+        http://docutils.sourceforge.net/rst.html.
+        """
+        writer = Writer()
+        parts = publish_parts(source=doc,
+                              writer=writer,
+                              writer_name='html',
+                              settings_overrides={
+                                  'link': link, 'top': top, 'title': title,
+                                  'initial_header_level': section_level,
+                                  'no_system_messages': not system_message})
 
-    out = re_source.sub(_doctest_code, out.strip())
-
-    if out.startswith('<p') and out.endswith('</p>') and \
-            out.count('</p>') == 1:     # strip paragraph if is one
-        out = out[out.index('>')+1:-4]
-
-    return linked_api(out)
-
-
-def load_rst(rstfile, link='link', top='top', encoding=misc.encoding,
-             system_message=False):
-    """
-    Load rst file and create docs list of headers and text.
-        rstfile - string, reStructured source file name (readme.rst)
-        link - link label for headers. If is empty, link href will be hidden.
-        top - top label for headers. If is empty, top href will be hidden.
-
-        #!jinja
-        {% set sections = load_rst('readme.rst', '', '') %}
-        {% type, filename, _none_, text = sections[-1] %}
-    """
-
-    x_rstfile = ''
-    for path in G.paths:
-        if os.access(path+'/'+rstfile, os.R_OK):
-            x_rstfile = path+'/'+rstfile
-            break
-    if not x_rstfile:
-        usage('Access denied to text file %s' % rstfile)
-
-    with open(x_rstfile, 'r', encoding=encoding) as f:
-        doc = f.read()
-
-    writer = Writer()
-    parts = publish_parts(source=doc,
-                          source_path=x_rstfile,
-                          writer=writer,
-                          writer_name='html',
-                          settings_overrides={
-                              'link': link, 'top': top,
-                              'no_system_messages': not system_message})
-
-    out = parts['body']
-    if parts['html_footnotes'] or parts['html_citations']:
-        out = parts['html_line'] + \
+        out = parts['body'] + parts['html_line'] + \
             parts['html_footnotes'] + parts['html_citations']
 
-    out = re_source.sub(_doctest_code, out)
+        out = re_source.sub(_doctest_code, out.strip())
 
-    if out.startswith('<p') and out.endswith('</p>') and \
-            out.count('</p>') == 1:     # strip paragraph if is one
-        out = out[out.index('>')+1:-4]
+        if out.startswith('<p') and out.endswith('</p>') and \
+                out.count('</p>') == 1:     # strip paragraph if is one
+            out = out[out.index('>')+1:-4]
+        return self.linked_api(out)
 
-    out = linked_api(out)
+    def load_rst(self, rstfile, link='link', top='top', system_message=False):
+        """
+        Load rst file and create docs list of headers and text.
+            rstfile - string, reStructured source file name (readme.rst)
+            link - link label for headers. If is empty, link href will be
+                hidden.
+            top - top label for headers. If is empty, top href will be hidden.
 
-    retval = list(('h%d' % lvl, uni(name), id, '')
-                  for lvl, name, id in parts['sections'])
-    # TODO: append '(author, date, verstion)' from rst if exist like in module
-    retval.append(('text', parts['title'], None, uni(out)))
-    return retval
+            #!jinja
+            {% set sections = load_rst('readme.rst', '', '') %}
+            {% type, filename, _none_, text = sections[-1] %}
+        """
+
+        x_rstfile = ''
+        for path in self.paths:
+            if os.access(path+'/'+rstfile, os.R_OK):
+                x_rstfile = path+'/'+rstfile
+                break
+        if not x_rstfile:
+            raise CriticalExit('Access denied to text file %s' % rstfile)
+
+        with open(x_rstfile, 'r', encoding=self.encoding) as f:
+            doc = f.read()
+
+        writer = Writer()
+        parts = publish_parts(source=doc,
+                              source_path=x_rstfile,
+                              writer=writer,
+                              writer_name='html',
+                              settings_overrides={
+                                  'link': link, 'top': top,
+                                  'no_system_messages': not system_message})
+
+        out = parts['body']
+        if parts['html_footnotes'] or parts['html_citations']:
+            out = parts['html_line'] + \
+                parts['html_footnotes'] + parts['html_citations']
+
+        out = re_source.sub(_doctest_code, out)
+
+        if out.startswith('<p') and out.endswith('</p>') and \
+                out.count('</p>') == 1:     # strip paragraph if is one
+            out = out[out.index('>')+1:-4]
+
+        out = self.linked_api(out)
+
+        retval = list(('h%d' % lvl, self.uni(name), id, '')
+                      for lvl, name, id in parts['sections'])
+        # TODO: append '(author, date, verstion)' from rst if exist like in
+        # module
+        retval.append(('text', parts['title'], None, self.uni(out)))
+        return retval
+# endclass

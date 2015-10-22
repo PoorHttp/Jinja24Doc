@@ -12,8 +12,8 @@ if sys.version_info[0] == 2:
 else:
     import builtins
 
-from jinja24doc.apidoc import linked_api, G
-from jinja24doc.misc import uni, usage
+from jinja24doc.apidoc import ApiDoc
+from jinja24doc import CriticalExit
 
 _python_keywords = (
     'as', 'assert', 'break', 'class', 'continue', 'def', 'del',
@@ -182,199 +182,82 @@ def _nlstrip(s):
     return s
 
 
-# jinja function
-def wiki(doc, link='link', top='top', name='__doc__', section_level=2,
-         system_message=False):
-    """ Call some regular expressions on doc, and return it with html
-        interpretation of wiki formating. If you want to create links to know
-        api for your module, just call keywords function after gets full api
-        documentation list.
+class Wiki(ApiDoc):
+    # jinja function
+    def wiki(self, doc, link='link', top='top', name='__doc__',
+             section_level=2, system_message=False):
+        """ Call some regular expressions on doc, and return it with html
+            interpretation of wiki formating. If you want to create links to
+            know api for your module, just call keywords function after gets
+            full api documentation list.
 
-            #!jinja
-            {{ wiki(string) }}
-            {{ wiki('= header 1 =') }}          {# <h1> header 1 </h1> #}
-            {{ wiki('= header 2 =') }}          {# <h2> header 2 </h2> #}
-            {{ wiki('= header 3 =') }}          {# <h3> header 3 </h3> #}
-            {{ wiki('= header 4 =') }}          {# <h4> header 4 </h4> #}
-            {{ wiki('* bold text *') }}         {# <b> bold text </b> #}
-            {{ wiki('/ italic text /') }}       {# <i> iatlic text </i> #}
-            {{ wiki('{ code text }') }}         {# <code> code text </code> #}
+                #!jinja
+                {{ wiki(string) }}
+                {{ wiki('= header 1 =') }}      {# <h1> header 1 </h1> #}
+                {{ wiki('= header 2 =') }}      {# <h2> header 2 </h2> #}
+                {{ wiki('= header 3 =') }}      {# <h3> header 3 </h3> #}
+                {{ wiki('= header 4 =') }}      {# <h4> header 4 </h4> #}
+                {{ wiki('* bold text *') }}     {# <b> bold text </b> #}
+                {{ wiki('/ italic text /') }}   {# <i> iatlic text </i> #}
+                {{ wiki('{ code text }') }}     {# <code> code text </code> #}
 
-        Formated pre code type could be python (/default if not set/),
-        jinja, ini or text. Text type stops highlighting. Code type
-        must be on first line with hashbang prefix like in example:
+            Formated pre code type could be python (/default if not set/),
+            jinja, ini or text. Text type stops highlighting. Code type
+            must be on first line with hashbang prefix like in example:
 
-            #!text
-            #!python
-            # simple python example
-            from poorwsgi import *
+                #!text
+                #!python
+                # simple python example
+                from poorwsgi import *
 
-            @app.route('/')                         # uri /
-            def root(req):
-                return 'Hello world %s' % 1234      # return text
+                @app.route('/')                         # uri /
+                def root(req):
+                    return 'Hello world %s' % 1234      # return text
 
-        Looks that:
+            Looks that:
 
-            #!python
-            # simple python example
-            from poorwsgi import *
+                #!python
+                # simple python example
+                from poorwsgi import *
 
-            @app.route('/')                         # uri /
-            def root(req):
-                return 'Hello world %s' % 1234      # return text
+                @app.route('/')                         # uri /
+                def root(req):
+                    return 'Hello world %s' % 1234      # return text
 
-        Parameters padding:
+            Parameters padding:
 
-            #!text
+                #!text
+                This is some text, which could be little bit long. Never mind
+                if text is on next line.
+                    parameter - some text for parameter
+                    parameter - some text for parameter
+
+            Looks that:
+
             This is some text, which could be little bit long. Never mind if
             text is on next line.
                 parameter - some text for parameter
                 parameter - some text for parameter
+        """
+        if isinstance(doc, Undefined):      # template error
+            return doc
 
-        Looks that:
+        doc = re_amp.sub(r"&amp;", doc)
+        doc = re_gt.sub(r"&gt;", doc)
+        doc = re_lt.sub(r"&lt;", doc)
 
-        This is some text, which could be little bit long. Never mind if
-        text is on next line.
-            parameter - some text for parameter
-            parameter - some text for parameter
-
-    """
-    if isinstance(doc, Undefined):      # template error
-        return doc
-
-    doc = re_amp.sub(r"&amp;", doc)
-    doc = re_gt.sub(r"&gt;", doc)
-    doc = re_lt.sub(r"&lt;", doc)
-
-    # main tags (pre, code and br)
-    doc = re_preauto.sub(_pre, doc)
-    # sys.stdout.write("doc: %s\n" % doc)
-    doc = re_notpre.sub(_not_in_pre, doc)
-
-    # highlighting in pre tags
-    doc = re_source.sub(_code, doc)
-
-    # links
-    doc = re_link.sub(r'<a href="\1">\1</a>', doc)
-
-    doc = linked_api(doc)               # api keywords
-
-    doc = re_pep3.sub(          # pep with 3 numbers
-        r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>', doc)
-    doc = re_pep4.sub(          # pep with 4 numbers
-        r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>', doc)
-    doc = re_rfc.sub(           # rfc
-        r'<a href="http://www.faqs.org/rfcs/rfc\2/">\1\2</a>', doc)
-
-    return _nlstrip(doc)
-
-
-def load_text(textfile):    # deprecated alias for load_wiki
-    sys.stderr.write("[W] Using deprecated function load_text in\n")
-    for s in stack()[1:]:
-        sys.stderr.write("  File %s, line %s, in %s\n" % s[1:4])
-        sys.stderr.write(s[4][0])
-    sys.stderr.flush()
-    return load_wiki(textfile)
-
-
-# jinja function
-def load_wiki(textfile, link='link', top='top', encoding='utf-8'):
-    """
-    Load file and create docs list of headers and texts.
-        textfile - string, text file name (manual.txt)
-        link - link label for headers. If is empty, link href will be hidden.
-        top - top label for headers. If is empty, top href will be hidden.
-
-        #!jinja
-        {% set sections = load_wiki('file.txt', '', '') %}
-        {% type, filename, _none_, text = sections[-1] %}
-    """
-    doc = []
-    tmp = ''
-    x_textfile = ''
-    for path in G.paths:
-        if os.access(path+'/'+textfile, os.R_OK):
-            x_textfile = path+'/'+textfile
-            break
-    if not x_textfile:
-        usage('Access denied to text file %s' % textfile)
-
-    out = ''
-    with open(x_textfile, 'r', encoding=encoding) as f:
-        for line in f:
-            match = re_section4.search(line) or re_section3.search(line) \
-                or re_section2.search(line) or re_section1.search(line)
-            if match:
-                if tmp:                     # add block before header to doc
-                    # doc.append(('text', '', None, wiki(uni(tmp))))
-                    out += wiki(uni(tmp))
-                    tmp = ''
-                name = match.groups()[1].strip()
-                if match.re == re_section1:
-                    type = 'h1'
-                elif match.re == re_section2:
-                    type = 'h2'
-                elif match.re == re_section3:
-                    type = 'h3'
-                elif match.re == re_section4:
-                    type = 'h4'
-                else:
-                    raise RuntimeError("No match regex")
-
-                id = name.lower().replace(' ', '-')
-                doc.append((type, uni(name), id, ''))
-                out += '<%s>%s' % (type, name)
-                if type != 'h1' and (link or top):
-                    out += '<span class="links">'
-                    if link:
-                        out += '<a href="#%s">%s</a>' % (id, link)
-                        out += ' | ' if link and top else ''
-                        out += '<a href="#">%s</a>' % top
-                    out += '</span>'
-                out += '</%s>\n' % type
-            else:
-                tmp += line
-        # endfor
-    out += wiki(uni(tmp))
-    # doc.append(('text', '', None, wiki(uni(tmp))))
-    doc.append(('text', textfile, None, out))
-    return doc
-
-
-def load_source(srcfile, code='python', encoding='utf-8'):
-    """
-    Load source and format them as code
-
-        #!jinja
-        {{ load_source('example.py') }}
-        {{ load_source('example.ini', 'ini') }}
-    """
-    x_srcfile = ''
-    for path in G.paths:
-        if os.access(path+'/'+srcfile, os.R_OK):
-            x_srcfile = path+'/'+srcfile
-            break
-    if not x_srcfile:
-        usage('Access denied to text file %s' % srcfile)
-
-    doc = ''
-    with open(x_srcfile, 'r', encoding=encoding) as f:
-        class Obj:
-            def groups(self):
-                doc = uni(f.read())
-                doc = re_amp.sub(r"&amp;", doc)
-                doc = re_gt.sub(r"&gt;", doc)
-                doc = re_lt.sub(r"&lt;", doc)
-                return (code, doc)
+        # main tags (pre, code and br)
+        doc = re_preauto.sub(_pre, doc)
+        # sys.stdout.write("doc: %s\n" % doc)
+        doc = re_notpre.sub(_not_in_pre, doc)
 
         # highlighting in pre tags
-        doc = _code(Obj())
+        doc = re_source.sub(_code, doc)
 
         # links
         doc = re_link.sub(r'<a href="\1">\1</a>', doc)
 
-        doc = linked_api(doc)       # api keywords
+        doc = self.linked_api(doc)   # api keywords
 
         doc = re_pep3.sub(          # pep with 3 numbers
             r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>', doc)
@@ -382,4 +265,123 @@ def load_source(srcfile, code='python', encoding='utf-8'):
             r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>', doc)
         doc = re_rfc.sub(           # rfc
             r'<a href="http://www.faqs.org/rfcs/rfc\2/">\1\2</a>', doc)
-    return doc
+
+        return _nlstrip(doc)
+
+    def load_text(self, textfile):    # deprecated alias for load_wiki
+        sys.stderr.write("[W] Using deprecated function load_text in\n")
+        for s in stack()[1:]:
+            sys.stderr.write("  File %s, line %s, in %s\n" % s[1:4])
+            sys.stderr.write(s[4][0])
+        sys.stderr.flush()
+        return self.load_wiki(textfile)
+
+    # jinja function
+    def load_wiki(self, textfile, link='link', top='top'):
+        """
+        Load file and create docs list of headers and texts.
+            ctx - context object, which you can't use
+            textfile - string, text file name (manual.txt)
+            link - link label for headers. If is empty, link href will be
+                hidden.
+            top - top label for headers. If is empty, top href will be hidden.
+
+            #!jinja
+            {% set sections = load_wiki('file.txt', '', '') %}
+            {% type, filename, _none_, text = sections[-1] %}
+        """
+        doc = []
+        tmp = ''
+        x_textfile = ''
+        for path in self.paths:
+            if os.access(path+'/'+textfile, os.R_OK):
+                x_textfile = path+'/'+textfile
+                break
+        if not x_textfile:
+            raise CriticalExit('Access denied to text file %s' % textfile)
+
+        out = ''
+        with open(x_textfile, 'r', encoding=self.encoding) as f:
+            for line in f:
+                match = re_section4.search(line) or re_section3.search(line) \
+                    or re_section2.search(line) or re_section1.search(line)
+                if match:
+                    if tmp:                  # add block before header to doc
+                        # doc.append(('text', '', None, wiki(self.uni(tmp))))
+                        out += self.wiki(self.uni(tmp))
+                        tmp = ''
+                    name = match.groups()[1].strip()
+                    if match.re == re_section1:
+                        type = 'h1'
+                    elif match.re == re_section2:
+                        type = 'h2'
+                    elif match.re == re_section3:
+                        type = 'h3'
+                    elif match.re == re_section4:
+                        type = 'h4'
+                    else:
+                        raise RuntimeError("No match regex")
+
+                    id = name.lower().replace(' ', '-')
+                    doc.append((type, self.uni(name), id, ''))
+                    out += '<%s>%s' % (type, name)
+                    if type != 'h1' and (link or top):
+                        out += '<span class="links">'
+                        if link:
+                            out += '<a href="#%s">%s</a>' % (id, link)
+                            out += ' | ' if link and top else ''
+                            out += '<a href="#">%s</a>' % top
+                        out += '</span>'
+                    out += '</%s>\n' % type
+                else:
+                    tmp += line
+            # endfor
+        out += self.wiki(self.uni(tmp))
+        # doc.append(('text', '', None, wiki(self.uni(tmp))))
+        doc.append(('text', textfile, None, out))
+        return doc
+
+    def load_source(self, srcfile, code='python'):
+        """
+        Load source and format them as code
+
+            #!jinja
+            {{ load_source('example.py') }}
+            {{ load_source('example.ini', 'ini') }}
+        """
+        x_srcfile = ''
+        for path in self.paths:
+            if os.access(path+'/'+srcfile, os.R_OK):
+                x_srcfile = path+'/'+srcfile
+                break
+        if not x_srcfile:
+            raise CriticalExit('Access denied to text file %s' % srcfile)
+
+        doc = ''
+        with open(x_srcfile, 'r', encoding=self.encoding) as f:
+            class Obj:
+                def groups(self):
+                    doc = self.uni(f.read())
+                    doc = re_amp.sub(r"&amp;", doc)
+                    doc = re_gt.sub(r"&gt;", doc)
+                    doc = re_lt.sub(r"&lt;", doc)
+                    return (code, doc)
+
+            # highlighting in pre tags
+            doc = _code(Obj())
+
+            # links
+            doc = re_link.sub(r'<a href="\1">\1</a>', doc)
+
+            doc = self.linked_api(doc)       # api keywords
+
+            doc = re_pep3.sub(          # pep with 3 numbers
+                r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>',
+                doc)
+            doc = re_pep4.sub(          # pep with 4 numbers
+                r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>',
+                doc)
+            doc = re_rfc.sub(           # rfc
+                r'<a href="http://www.faqs.org/rfcs/rfc\2/">\1\2</a>', doc)
+        return doc
+# endclass

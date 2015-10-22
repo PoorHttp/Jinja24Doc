@@ -8,8 +8,7 @@ import pytest
 python_path.insert(0, path.abspath(
     path.join(path.dirname(__file__), path.pardir)))
 
-from jinja24doc.apidoc import G
-from jinja24doc.main import generate
+from jinja24doc.context import Context
 
 
 def get_pathfor(arg):
@@ -17,25 +16,30 @@ def get_pathfor(arg):
                                    path.pardir+'/'+arg))
 
 EXAMPLES = get_pathfor('examples')
-G.paths = (get_pathfor('templates'), EXAMPLES)
-
 python_path.insert(0, EXAMPLES)
 
 
-@patch('jinja24doc.apidoc.sys.stderr')
-def jinja24doc(name, mock):
-    G.re_docs = None
-    G._api_url = ''
-    G._api_keywords = {}
-    G._modules = []
-    data = generate('%s' % name, G.paths)
+def _jinja24doc(name):
+    ctx = Context((get_pathfor('templates'), EXAMPLES))
+    data = ctx.generate('%s' % name)
     if not isinstance(data, str):
         data = data.encode('utf-8')
     with open('%s/out/%s' % (EXAMPLES, name), 'w') as f:
         f.write(data)
+
+
+@patch('jinja24doc.apidoc.sys.stderr')
+def jinja24doc(name, mock):
+    _jinja24doc(name)
     for it in mock.method_calls:
         print (it)
     assert len(mock.method_calls) == 0
+
+
+@patch('jinja24doc.apidoc.sys.stderr')
+def negative_jinja24doc(name, mock):
+    _jinja24doc(name)
+    assert len(mock.method_calls) > 0
 
 
 @pytest.fixture(autouse=True)
@@ -67,7 +71,7 @@ class TestRst():
         jinja24doc('test_rst.html')
 
     def test_invalid(self):
-        jinja24doc('test_rst_invalid.html')
+        negative_jinja24doc('test_rst_invalid.html')
 
     def test_module(self):
         jinja24doc('test_module_rst.html')
