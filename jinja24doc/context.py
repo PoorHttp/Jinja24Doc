@@ -30,7 +30,7 @@ class Context(Wiki, Rst):
             paths = list(it.strip() for it in paths.split(':'))
         if isinstance(paths, tuple):
             paths = list(paths)
-        assert isinstance(paths, list)
+        assert isinstance(paths, list), "Paths is %s" % paths.__class__
         paths.insert(0, getcwd())
         self.paths = paths + ['/usr/local%s' % TEMPLATES,
                               path.abspath(path.join(path.dirname(__file__),

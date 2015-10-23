@@ -13,7 +13,6 @@ else:
     import builtins
 
 from jinja24doc.apidoc import ApiDoc
-from jinja24doc import CriticalExit
 
 _python_keywords = (
     'as', 'assert', 'break', 'class', 'continue', 'def', 'del',
@@ -298,7 +297,7 @@ class Wiki(ApiDoc):
                 x_textfile = path+'/'+textfile
                 break
         if not x_textfile:
-            raise CriticalExit('Access denied to text file %s' % textfile)
+            raise SystemExit('Access denied to text file %s' % textfile)
 
         out = ''
         with open(x_textfile, 'r', encoding=self.encoding) as f:
@@ -355,7 +354,7 @@ class Wiki(ApiDoc):
                 x_srcfile = path+'/'+srcfile
                 break
         if not x_srcfile:
-            raise CriticalExit('Access denied to text file %s' % srcfile)
+            raise SystemExit('Access denied to text file %s' % srcfile)
 
         doc = ''
         with open(x_srcfile, 'r', encoding=self.encoding) as f:

@@ -14,7 +14,6 @@ import os
 
 from jinja24doc.apidoc import ApiDoc
 from jinja24doc.wiki import re_source, re_python, _python
-from jinja24doc import CriticalExit
 
 
 def _doctest_code(obj):
@@ -73,7 +72,7 @@ class Rst(ApiDoc):
                 x_rstfile = path+'/'+rstfile
                 break
         if not x_rstfile:
-            raise CriticalExit('Access denied to text file %s' % rstfile)
+            raise SystemExit('Access denied to text file %s' % rstfile)
 
         with open(x_rstfile, 'r', encoding=self.encoding) as f:
             doc = f.read()

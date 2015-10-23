@@ -9,7 +9,7 @@ if version_info[0] == 2:
 
 import os
 
-from jinja24doc import __version__, CriticalExit
+from jinja24doc import __version__
 from jinja24doc.context import Context
 
 
@@ -23,7 +23,7 @@ def build_parser(description):
         help="python module or reStructured text file",
         metavar="SOURCE")
     parser.add_argument(
-        "path", type=str, nargs='?', metavar="PATH[:PATH]",
+        "path", default="", type=str, nargs='?', metavar="PATH[:PATH]",
         help="template paths separated by colon")
     parser.add_argument(
         "-O", "--output", type=str, metavar="FILE",
@@ -86,13 +86,13 @@ def embed_stylesheet(args, stylesheets):
                 embed_stylesheet += css.read().replace('\n', "\n      ")
                 embed_stylesheet += "</style>\n"
         except BaseException as e:
-            raise CriticalExit("Can't read stylesheet %s:\n\t%s" %
-                               (stylesheet, e))
+            raise SystemExit("Can't read stylesheet %s:\n\t%s" %
+                             (stylesheet, e))
     return embed_stylesheet
 # enddef
 
 
-def process(ctx, source, **kwargs):
+def process(ctx, source, file_types, **kwargs):
     if source[-1] == '/':
             source = source[:-1]
     file_name, ext = path.splitext(path.basename(source))
@@ -102,12 +102,12 @@ def process(ctx, source, **kwargs):
         kwargs.update({'title': file_name,
                        'module': file_name})
         output = ctx.generate("module.html", **kwargs)
-    elif ext in ('.wiki', '.txt'):
+    elif ext in (file_types):
         ctx.paths.insert(0, path.abspath(path.dirname(source)))
         kwargs['source'] = path.basename(source)
         output = ctx.generate("text.html", ** kwargs)
     else:
-        raise CriticalExit('Unsuported source %s' % source)
+        raise SystemExit("Unsupport file type `%s'." % source)
     return output
 
 
@@ -125,7 +125,8 @@ def jinja_cmdline(description=''):
         kwargs = {
             'link': args.link,
             'top': args.top,
-            'system_message': args.system_message
+            'system_message': args.system_message,
+            'encoding': args.encoding
         }
 
         output = ctx.generate(source, **kwargs)
@@ -137,10 +138,8 @@ def jinja_cmdline(description=''):
             if not isinstance(output, str):
                 output = output.encode('utf-8')
             print(output)
-    except CriticalExit as e:
-        parser.error(e.message)
     except SystemExit as e:
-        pass
+        parser.error(e.message)
     except BaseException as e:
         parser.error('Error while proccessing %s' % e)
     finally:
@@ -149,7 +148,7 @@ def jinja_cmdline(description=''):
 # enddef
 
 
-def auto_cmdline(description='', formater='rst'):
+def auto_cmdline(description='', formater='rst', file_types=['.txt']):
     parser = build_parser(description)
     args = parser.parse_args()
     try:
@@ -157,12 +156,13 @@ def auto_cmdline(description='', formater='rst'):
 
         source = args.source
         stylesheets = args.stylesheet.split(',')
-        verbose()
+        verbose(args, parser)
 
         kwargs = {
             'link': args.link,
             'top': args.top,
             'system_message': args.system_message,
+            'encoding': args.encoding,
             'formater': getattr(ctx, formater)
         }
 
@@ -171,21 +171,21 @@ def auto_cmdline(description='', formater='rst'):
         else:
             kwargs['stylesheets'] = stylesheets
 
-        process(ctx, source, kwargs)
+        output = process(ctx, source, file_types, **kwargs)
 
         if args.output:
             with open(args.output, 'w+', encoding=args.encoding) as o:
-                o.write(process(source, **kwargs))
+                o.write(output)
         else:
-            print(process(ctx, source, **kwargs))
-
-    except CriticalExit as e:
-        parser.error(e.message)
+            if not isinstance(output, str):
+                output = output.encode('utf-8')
+            print(output)
     except SystemExit as e:
-        pass
+        parser.error(e.message)
     except BaseException as e:
         parser.error('Error while proccessing %s' % e)
     finally:
         if args.traceback:
+            stderr.write(str(args))
             stderr.write(format_exc())
 # enddef

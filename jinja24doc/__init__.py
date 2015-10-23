@@ -10,7 +10,3 @@
 __author__ = "Ondřej Tůma (McBig) <mcbig@zeropage.cz>"
 __date__ = "20 Oct 2015"
 __version__ = "1.2.99"
-
-
-class CriticalExit(SystemExit):
-    pass
