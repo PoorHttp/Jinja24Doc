@@ -28,6 +28,9 @@ ordering = {'module':       (0, 0),
 
 re_notlink = re.compile(r"(.*?)((<a .*?</a>)|$)", re.S)
 
+re_pep = re.compile(r"\bPEP ([0-9]{1,4})\b")            # pep link
+re_rfc = re.compile(r"\b(RFC )([0-9]+)\b")              # rfc link
+
 
 class Fn:
     def __init__(self, name):
@@ -70,6 +73,18 @@ def key_doc(a):
     """Return string sortable item via ordering keys."""
     o = ordering[a[0]]
     return str(o[0])+a[1].replace('.', str(o[1]))
+
+
+def _pep(obj):
+    return '<a href="http://www.python.org/dev/peps/pep-{0:04}/">PEP {0}</a>'.\
+        format(int(obj.groups()[0]))
+
+
+def pep_rfc(doc):
+    doc = re_pep.sub(_pep, doc)
+    doc = re_rfc.sub(           # rfc
+        r'<a href="http://www.faqs.org/rfcs/rfc\2/">\1\2</a>', doc)
+    return doc
 
 
 class ApiDoc(object):

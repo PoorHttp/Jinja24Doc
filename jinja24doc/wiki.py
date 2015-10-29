@@ -12,7 +12,7 @@ if sys.version_info[0] == 2:
 else:
     import builtins
 
-from jinja24doc.apidoc import ApiDoc
+from jinja24doc.apidoc import ApiDoc, pep_rfc
 
 _python_keywords = (
     'as', 'assert', 'break', 'class', 'continue', 'def', 'del',
@@ -49,9 +49,7 @@ re_header3 = re.compile(r"===(.*?)===")                 # = head3 =
 re_header4 = re.compile(r"====(.*?)====")               # = head4 =
 re_nlnl = re.compile(r"(\n\s*\n)")                      # <br><br>
 
-re_pep3 = re.compile(r"\b(PEP )([0-9]{3})\b")           # pep link
-re_pep4 = re.compile(r"\b(PEP )([0-9]{4})\b")           # pep link
-re_rfc = re.compile(r"\b(RFC )([0-9]+)\b")              # rfc link
+
 re_link = re.compile(r"((http|https|git|ftp)://[^\s<>]*)", re.I)
 
 re_preauto = re.compile(r"\n\s*\n( {4}.*?)(\n?)((\n\S)|$)", re.S)  # <pre>
@@ -257,15 +255,7 @@ class Wiki(ApiDoc):
         doc = re_link.sub(r'<a href="\1">\1</a>', doc)
 
         doc = self.linked_api(doc)   # api keywords
-
-        doc = re_pep3.sub(          # pep with 3 numbers
-            r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>', doc)
-        doc = re_pep4.sub(          # pep with 4 numbers
-            r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>', doc)
-        doc = re_rfc.sub(           # rfc
-            r'<a href="http://www.faqs.org/rfcs/rfc\2/">\1\2</a>', doc)
-
-        return _nlstrip(doc)
+        return _nlstrip(pep_rfc(doc))
 
     def load_text(self, textfile):    # deprecated alias for load_wiki
         sys.stderr.write("[W] Using deprecated function load_text in\n")
@@ -373,14 +363,5 @@ class Wiki(ApiDoc):
             doc = re_link.sub(r'<a href="\1">\1</a>', doc)
 
             doc = self.linked_api(doc)       # api keywords
-
-            doc = re_pep3.sub(          # pep with 3 numbers
-                r'<a href="http://www.python.org/dev/peps/pep-0\2/">\1\2</a>',
-                doc)
-            doc = re_pep4.sub(          # pep with 4 numbers
-                r'<a href="http://www.python.org/dev/peps/pep-\2/">\1\2</a>',
-                doc)
-            doc = re_rfc.sub(           # rfc
-                r'<a href="http://www.faqs.org/rfcs/rfc\2/">\1\2</a>', doc)
-        return doc
+        return pep_rfc(doc)
 # endclass

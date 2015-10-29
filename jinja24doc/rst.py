@@ -12,7 +12,7 @@ if version_info[0] == 2:
 
 import os
 
-from jinja24doc.apidoc import ApiDoc
+from jinja24doc.apidoc import ApiDoc, pep_rfc
 from jinja24doc.wiki import re_source, re_python, _python
 
 
@@ -51,7 +51,7 @@ class Rst(ApiDoc):
         if out.startswith('<p') and out.endswith('</p>') and \
                 out.count('</p>') == 1:     # strip paragraph if is one
             out = out[out.index('>')+1:-4]
-        return self.linked_api(out)
+        return self.linked_api(pep_rfc(out))
 
     def load_rst(self, rstfile, link='link', top='top', system_message=False):
         """
@@ -97,7 +97,7 @@ class Rst(ApiDoc):
                 out.count('</p>') == 1:     # strip paragraph if is one
             out = out[out.index('>')+1:-4]
 
-        out = self.linked_api(out)
+        out = self.linked_api(pep_rfc(out))
 
         retval = list(('h%d' % lvl, self.uni(name), id, '')
                       for lvl, name, id in parts['sections'])
