@@ -35,14 +35,14 @@ re_gt = re.compile(r">")
 re_amp = re.compile(r"&(?!amp;)")
 
 # TODO: not work on multi type on same line :(
-re_bold = re.compile(r"\*(.+)\*")                       # * bold *
-re_italic = re.compile(r"/(.+)/")                       # / italic /
-re_code = re.compile(r"{(.+)}", re.S)                   # { code }
+re_bold = re.compile(r"\*\b(.+)\b\*")                   # * bold *
+re_italic = re.compile(r"/\b(.+)\b/")                   # / italic /
+re_code = re.compile(r"{\b(.+)\b}", re.S)               # { code }
 
-re_section1 = re.compile(r"^(={1})([^=]+)(={1}\s*)")
-re_section2 = re.compile(r"^(={2})(.*?)(={2}\s*)")
-re_section3 = re.compile(r"^(={3})(.*?)(={3}\s*)")
-re_section4 = re.compile(r"^(={4})(.*?)(={4}\s*)")
+re_section1 = re.compile(r"^(={1}) \b(.*)\b (={1})$")
+re_section2 = re.compile(r"^(={2}) \b(.*)\b (={2})$")
+re_section3 = re.compile(r"^(={3}) \b(.*)\b (={3})$")
+re_section4 = re.compile(r"^(={4}) \b(.*)\b (={4})$")
 
 re_header2 = re.compile(r"==(.*?)==")                   # = head3 =
 re_header3 = re.compile(r"===(.*?)===")                 # = head3 =
