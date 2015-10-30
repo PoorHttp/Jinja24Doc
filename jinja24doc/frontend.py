@@ -139,12 +139,15 @@ def jinja_cmdline(description=''):
                 output = output.encode('utf-8')
             print(output)
     except SystemExit as e:
+        if args.traceback:
+            stderr.write("%s\n" % args)
+            stderr.write(format_exc())
         parser.error(e.message)
     except BaseException as e:
-        parser.error('Error while proccessing %s' % e)
-    finally:
         if args.traceback:
+            stderr.write("%s\n" % args)
             stderr.write(format_exc())
+        parser.error('Error while proccessing %s' % e)
 # enddef
 
 
@@ -181,11 +184,13 @@ def auto_cmdline(description='', formater='rst', file_types=['.txt']):
                 output = output.encode('utf-8')
             print(output)
     except SystemExit as e:
+        if args.traceback:
+            stderr.write("%s\n" % args)
+            stderr.write(format_exc())
         parser.error(e.message)
     except BaseException as e:
-        parser.error('Error while proccessing %s' % e)
-    finally:
         if args.traceback:
-            stderr.write(str(args))
+            stderr.write("%s\n" % args)
             stderr.write(format_exc())
+        parser.error('Error while proccessing %s' % e)
 # enddef
