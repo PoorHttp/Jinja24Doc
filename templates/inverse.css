@@ -151,7 +151,7 @@ a:active {
 
 h1, h2 {
     color: #888;
-} 
+}
 h2 > i {
     font-size: 70%;
 }
@@ -201,14 +201,14 @@ h3.variable {
     font-size: 130%;
 }
 
-h4.method, h4.staticmethod {
+h4.method, h4.staticmethod, h4.descriptor {
     margin: 2em 0 0 8em;
     text-indent: -8em;
     padding-left: 2em;
     font-family: monospace;
     font-size: 130%;
 }
-h4.method > i, h4.staticmethod > i {
+h4.method > i, h4.staticmethod > i, h4.descriptor > i {
     font-size: 90%;
     color: #333
 }
@@ -224,7 +224,7 @@ h4.property > small, h4.staticmethod > small {
     color: #888;
 }
 
-div.module, div.class, div.method, div.staticmethod, div.function, div.property {
+div.module, div.class, div.method, div.staticmethod, div.descriptor, div.function, div.property {
     text-align: jus-tify;
     color: #ddd;
     margin: 0.7em 0 0 0;
@@ -240,14 +240,14 @@ div.module > h4 {
     font-size: 100%;
     margin: 0 0 0 -1em;
 }
-div.method, div.staticmethod, div.property {
+div.method, div.staticmethod, div.descriptor, div.property {
     padding-left: 3em;
 }
 pre {
     font-size: 10pt;
     margin: 0.5em 0 1.5em 0;
     padding: 0.5em;
-    background-color: #ddd;
+    background-color: #444;
     border: 1px dotted gray;
     border-radius: 6px 6px 6px;
     overflow: auto;
@@ -301,13 +301,16 @@ code.param {
 }
 
 
+dt {
+    font-weight: bold;
+}
 th, td {
     vertical-align: top;
 }
 table {
     margin-top: 1em;
 }
-td * {
+td *, dd * {
     margin-top: 0;
 }
 .citations td:first-child {
