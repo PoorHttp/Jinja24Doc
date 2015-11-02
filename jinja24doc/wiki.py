@@ -35,14 +35,14 @@ re_gt = re.compile(r">")
 re_amp = re.compile(r"&(?!amp;)")
 
 # TODO: not work on multi type on same line :(
-re_bold = re.compile(r"\*\b(.+)\b\*")                   # * bold *
-re_italic = re.compile(r"/\b(.+)\b/")                   # / italic /
-re_code = re.compile(r"{\b(.+)\b}", re.S)               # { code }
+re_bold = re.compile(r"(^|\s)\*((\S{1,2})|(\S.+?\S))\*(\s|$|,|\.)", re.S)
+re_italic = re.compile(r"(^|\s)/((\S{1,2})|(\S.+?\S))/(\s|$|,|\.)", re.S)
+re_code = re.compile(r"(^|\s){((\S{1,2})|(\S.+?\S))}(\s|$|,|\.)", re.S)
 
-re_section1 = re.compile(r"^(={1}) \b(.*)\b (={1})$")
-re_section2 = re.compile(r"^(={2}) \b(.*)\b (={2})$")
-re_section3 = re.compile(r"^(={3}) \b(.*)\b (={3})$")
-re_section4 = re.compile(r"^(={4}) \b(.*)\b (={4})$")
+re_section1 = re.compile(r"^(={1}) \b(.*?)\b (={1})$")
+re_section2 = re.compile(r"^(={2}) \b(.*?)\b (={2})$")
+re_section3 = re.compile(r"^(={3}) \b(.*?)\b (={3})$")
+re_section4 = re.compile(r"^(={4}) \b(.*?)\b (={4})$")
 
 re_header2 = re.compile(r"==(.*?)==")                   # = head3 =
 re_header3 = re.compile(r"===(.*?)===")                 # = head3 =
@@ -55,7 +55,6 @@ re_link = re.compile(r"((http|https|git|ftp)://[^\s<>]*)", re.I)
 re_preauto = re.compile(r"\n\s*\n( {4}.*?)(\n?)((\n\S)|$)", re.S)  # <pre>
 # 3 groups
 re_notpre = re.compile(r'(.*?)((<pre class="\w*">.*?</pre>)|$)', re.S)
-#        r"(^.*?<pre>)|(</pre>.*?<pre>)|(</pre>.*?$)|(^.*?$)", re.S)
 re_param = re.compile(r"(^|\n) {4}(\S*\s*)")
 
 re_source = re.compile(r'<pre class="(\w*)">(.*?)</pre>', re.S)
@@ -78,9 +77,10 @@ def _not_in_pre(obj):
 
     tmp = groups[0]
 
-    tmp = re_italic.sub(r"<i>\1</i>", tmp)
-    tmp = re_bold.sub(r"<b>\1</b>", tmp)
-    tmp = re_code.sub(r"<code>\1</code>", tmp)
+    tmp = re_italic.sub(r"\1<i>\2</i>\5", tmp)
+    tmp = re_bold.sub(r"\1<b>\2</b>\5", tmp)
+    tmp = re_code.sub(r"\1<code>\2</code>\5", tmp)
+
     tmp = re_header4.sub(r"<h4>\1</h4>", tmp)
     tmp = re_header3.sub(r"<h3>\1</h3>", tmp)
     tmp = re_header2.sub(r"<h2>\1</h2>", tmp)
@@ -89,7 +89,7 @@ def _not_in_pre(obj):
 
 
 def _python(obj):
-    """ Highlight python syntax on Match object with one group """
+    """Highlight python syntax on Match object with one group."""
     tmp = obj.group()
     if tmp[0] in ('"', '\'', '#'):
         return "<i>%s</i>" % tmp
@@ -111,7 +111,7 @@ def _python(obj):
 
 
 def _jinja(obj):
-    """ Highlight python syntax on Match object with one group """
+    """.Highlight python syntax on Match object with one group."""
     tmp = obj.group()
     if tmp[0] in ('"', '\''):
         return "<i>%s</i>" % tmp
@@ -125,7 +125,7 @@ def _jinja(obj):
 
 
 def _ini(obj):
-    """ Highlight ini syntax on Match object with one group """
+    """.Highlight ini syntax on Match object with one group."""
     tmp = obj.group()
     if tmp[0] == '#':
         return "<i>%s</i>" % tmp
@@ -135,7 +135,7 @@ def _ini(obj):
 
 
 def _code(obj):
-    """ Call highlight functions by class python, jinja or ini """
+    """Call highlight functions by class python, jinja or ini."""
     tmp = obj.groups()
     if tmp[0] == 'python':
         source = re_python.sub(_python, tmp[1])
@@ -149,7 +149,7 @@ def _code(obj):
 
 
 def _pre(obj):
-    """ Create pre tag with specific code type. """
+    """Create pre tag with specific code type."""
     groups = obj.groups()
 
     if groups[0][0:9] == '    #!ini':
@@ -183,58 +183,59 @@ class Wiki(ApiDoc):
     # jinja function
     def wiki(self, doc, link='link', top='top', name='__doc__',
              section_level=2, system_message=False):
-        """ Call some regular expressions on doc, and return it with html
-            interpretation of wiki formating. If you want to create links to
-            know api for your module, just call keywords function after gets
-            full api documentation list.
+        """
+        Call some regular expressions on doc, and return it with html
+        interpretation of wiki formating. If you want to create links to
+        know api for your module, just call keywords function after gets
+        full api documentation list.
 
-                #!jinja
-                {{ wiki(string) }}
-                {{ wiki('= header 1 =') }}      {# <h1> header 1 </h1> #}
-                {{ wiki('= header 2 =') }}      {# <h2> header 2 </h2> #}
-                {{ wiki('= header 3 =') }}      {# <h3> header 3 </h3> #}
-                {{ wiki('= header 4 =') }}      {# <h4> header 4 </h4> #}
-                {{ wiki('* bold text *') }}     {# <b> bold text </b> #}
-                {{ wiki('/ italic text /') }}   {# <i> iatlic text </i> #}
-                {{ wiki('{ code text }') }}     {# <code> code text </code> #}
+            #!jinja
+            {{ wiki(string) }}
+            {{ wiki('= header 1 =') }}      {# <h1> header 1 </h1> #}
+            {{ wiki('= header 2 =') }}      {# <h2> header 2 </h2> #}
+            {{ wiki('= header 3 =') }}      {# <h3> header 3 </h3> #}
+            {{ wiki('= header 4 =') }}      {# <h4> header 4 </h4> #}
+            {{ wiki('*bold text*') }}       {# <b> bold text </b> #}
+            {{ wiki('/italic text/') }}     {# <i> iatlic text </i> #}
+            {{ wiki('{code text}') }}       {# <code> code text </code> #}
 
-            Formated pre code type could be python (/default if not set/),
-            jinja, ini or text. Text type stops highlighting. Code type
-            must be on first line with hashbang prefix like in example:
+        Formated pre code type could be python (/default if not set/),
+        jinja, ini or text. Text type stops highlighting. Code type
+        must be on first line with hashbang prefix like in example:
 
-                #!text
-                #!python
-                # simple python example
-                from poorwsgi import *
+            #!text
+            #!python
+            # simple python example
+            from poorwsgi import *
 
-                @app.route('/')                         # uri /
-                def root(req):
-                    return 'Hello world %s' % 1234      # return text
+            @app.route('/')                         # uri /
+            def root(req):
+                return 'Hello world %s' % 1234      # return text
 
-            Looks that:
+        Looks that:
 
-                #!python
-                # simple python example
-                from poorwsgi import *
+            #!python
+            # simple python example
+            from poorwsgi import *
 
-                @app.route('/')                         # uri /
-                def root(req):
-                    return 'Hello world %s' % 1234      # return text
+            @app.route('/')                         # uri /
+            def root(req):
+                return 'Hello world %s' % 1234      # return text
 
-            Parameters padding:
+        Parameters padding:
 
-                #!text
-                This is some text, which could be little bit long. Never mind
-                if text is on next line.
-                    parameter - some text for parameter
-                    parameter - some text for parameter
-
-            Looks that:
-
-            This is some text, which could be little bit long. Never mind if
-            text is on next line.
+            #!text
+            This is some text, which could be little bit long. Never mind
+            if text is on next line.
                 parameter - some text for parameter
                 parameter - some text for parameter
+
+        Looks that:
+
+        This is some text, which could be little bit long. Never mind if
+        text is on next line.
+            parameter - some text for parameter
+            parameter - some text for parameter
         """
         if isinstance(doc, Undefined):      # template error
             return doc
