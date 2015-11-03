@@ -141,6 +141,7 @@ a:active {
     border-top: 1px solid #888;
 }
 .links {
+    width: 5em;
     margin-right: 1em;
     float: right;
     text-align: right;
