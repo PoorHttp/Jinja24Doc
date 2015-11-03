@@ -66,6 +66,8 @@ def test_monospace(ctx):
 def test_link(ctx):
     html = ctx.wiki("http://x.y/abc")
     assert html == '<a href="http://x.y/abc">http://x.y/abc</a>'
+    html = ctx.wiki("http://abc/d.")
+    assert html == '<a href="http://abc/d">http://abc/d</a>.'
 
 
 def test_combinate(ctx):
