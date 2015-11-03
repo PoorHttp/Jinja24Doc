@@ -1,4 +1,7 @@
+"""Frontend command functions.
 
+Module containts some funtcions which are run by command tools.
+"""
 from traceback import format_exc
 from argparse import ArgumentParser
 from sys import path as python_path, version_info, stderr
@@ -14,6 +17,7 @@ from jinja24doc.context import Context
 
 
 def build_parser(description):
+    """Create ArgumentParser instance with all suported options."""
     parser = ArgumentParser(
         description=description,
         usage="%(prog)s [options] SOURCE [PATH[:PATH]]")
@@ -67,6 +71,7 @@ def build_parser(description):
 
 
 def verbose(args, parser):
+    """Print info message to stderr when verbose option is set."""
     if args.verbose:
         stderr.write("%s proccessing %s " % (parser.prog, args.source))
         if args.output:
@@ -77,6 +82,7 @@ def verbose(args, parser):
 
 
 def embed_stylesheet(args, stylesheets):
+    """Return stylesheets content readed from stylesheets."""
     embed_stylesheet = ''
     for stylesheet in stylesheets:
         try:
@@ -93,6 +99,8 @@ def embed_stylesheet(args, stylesheets):
 
 
 def process(ctx, source, file_types, **kwargs):
+    """Run Context.generate on right internal template dependend on file_types.
+    """
     if source[-1] == '/':
             source = source[:-1]
     file_name, ext = path.splitext(path.basename(source))
@@ -112,6 +120,7 @@ def process(ctx, source, file_types, **kwargs):
 
 
 def jinja_cmdline(description=''):
+    """Function called by jinja24doc command tool."""
     parser = build_parser(description)
     args = parser.parse_args()
     try:
@@ -152,6 +161,7 @@ def jinja_cmdline(description=''):
 
 
 def auto_cmdline(description='', formater='rst', file_types=['.txt']):
+    """Function called by rst24doc and wiki24doc command tools."""
     parser = build_parser(description)
     args = parser.parse_args()
     try:

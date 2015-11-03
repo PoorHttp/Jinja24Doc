@@ -26,12 +26,13 @@ def _doctest_code(obj):
 
 
 class Rst(ApiDoc):
+    """Class based on ApiDoc."""
 
     def rst(self, doc, link='link', top='top', title='__doc__',
             section_level=2, system_message=False):
         """
-        Call rst docutil parser for doc and return it with html representation
-        of reStructuredText formating. For more details see
+        Call reStructuredText docutil parser for doc and return it with html
+        representation of reStructuredText formating. For more details see
         http://docutils.sourceforge.net/rst.html.
         """
         writer = Writer()
@@ -54,8 +55,9 @@ class Rst(ApiDoc):
         return self.linked_api(pep_rfc(out))
 
     def load_rst(self, rstfile, link='link', top='top', system_message=False):
-        """
-        Load rst file and create docs list of headers and text.
+        """Load reStructuredText file and create docs list of headers and text.
+
+        Parameters:
             rstfile - string, reStructured source file name (readme.rst)
             link - link label for headers. If is empty, link href will be
                 hidden.

@@ -38,6 +38,14 @@ class Context(Wiki, Rst):
         self.encoding = encoding
 
     def prepare_environment(self):
+        """Prepare jinja2 environment.
+
+        This method is called internal by Context.generate method, and append
+        Conetxt methods to jinja2 template globals. So Context.load_module,
+        Context.keywords, local_name, property_info, wiki, Context.load_wiki,
+        Context.load_text, Context.load_source, Context.rst, Context.load_rst
+        and log methods and functions are enabled to call in templates.
+        """
         env = Environment(loader=FileSystemLoader(self.paths),
                           trim_blocks=True,
                           extensions=['jinja2.ext.do',
@@ -56,10 +64,11 @@ class Context(Wiki, Rst):
 
         env.globals['rst'] = self.rst
         env.globals['load_rst'] = self.load_rst
-        # env.globals['log'] = log
+        env.globals['log'] = log
         return env
 
     def generate(self, template, **kwargs):
+        """Generate html output from template."""
         env = self.prepare_environment()
         temp = env.get_template(template)
         return temp.render(**kwargs)

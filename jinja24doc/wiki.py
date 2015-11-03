@@ -36,7 +36,7 @@ re_amp = re.compile(r"&(?!amp;)")
 
 # TODO: not work on multi type on same line :(
 re_bold = re.compile(r"(^|\s)\*((\S{1,2})|(\S.+?\S))\*(\s|$|,|\.)", re.S)
-re_italic = re.compile(r"(^|\s)/((\S{1,2})|(\S.+?\S))/(\s|$|,|\.)", re.S)
+re_italic = re.compile(r"(^|\s\(|)/((\S{1,2})|(\S.+?\S))/(\s|$|,|\.|\))", re.S)
 re_code = re.compile(r"(^|\s){((\S{1,2})|(\S.+?\S))}(\s|$|,|\.)", re.S)
 
 re_section1 = re.compile(r"^(={1}) \b(.*?)\b (={1})$")
@@ -50,7 +50,7 @@ re_header4 = re.compile(r"====(.*?)====")               # = head4 =
 re_nlnl = re.compile(r"(\n\s*\n)")                      # <br><br>
 
 
-re_link = re.compile(r"((http|https|git|ftp)://[^\s<>]*)", re.I)
+re_link = re.compile(r"((http|https|git|ftp)://[^\s<>]*)\b", re.I)
 
 re_preauto = re.compile(r"\n\s*\n( {4}.*?)(\n?)((\n\S)|$)", re.S)  # <pre>
 # 3 groups
@@ -191,13 +191,14 @@ class Wiki(ApiDoc):
 
             #!jinja
             {{ wiki(string) }}
-            {{ wiki('= header 1 =') }}      {# <h1> header 1 </h1> #}
-            {{ wiki('= header 2 =') }}      {# <h2> header 2 </h2> #}
-            {{ wiki('= header 3 =') }}      {# <h3> header 3 </h3> #}
-            {{ wiki('= header 4 =') }}      {# <h4> header 4 </h4> #}
-            {{ wiki('*bold text*') }}       {# <b> bold text </b> #}
-            {{ wiki('/italic text/') }}     {# <i> iatlic text </i> #}
-            {{ wiki('{code text}') }}       {# <code> code text </code> #}
+            {{ wiki('=header1 =') }}            {# <h1>header 1</h1> #}
+            {{ wiki('=header2 =') }}            {# <h2>header 2</h2> #}
+            {{ wiki('=header3 =') }}            {# <h3>header 3</h3> #}
+            {{ wiki('=header4 =') }}            {# <h4>header 4</h4> #}
+            {{ wiki('*bold text*') }}           {# <b>bold text</b> #}
+            {{ wiki('/italic text/') }}         {# <i>iatlic text</i> #}
+            {{ wiki('{code text}') }}           {# <code>code text</code> #}
+            {{ wiki('http://a/b') }}
 
         Formated pre code type could be python (/default if not set/),
         jinja, ini or text. Text type stops highlighting. Code type
@@ -258,7 +259,8 @@ class Wiki(ApiDoc):
         doc = self.linked_api(doc)   # api keywords
         return _nlstrip(pep_rfc(doc))
 
-    def load_text(self, textfile):    # deprecated alias for load_wiki
+    def load_text(self, textfile):
+        """Deprecated alias for Wiki.load_wiki."""
         sys.stderr.write("[W] Using deprecated function load_text in\n")
         for s in stack()[1:]:
             sys.stderr.write("  File %s, line %s, in %s\n" % s[1:4])
@@ -270,7 +272,6 @@ class Wiki(ApiDoc):
     def load_wiki(self, textfile, link='link', top='top'):
         """
         Load file and create docs list of headers and texts.
-            ctx - context object, which you can't use
             textfile - string, text file name (manual.txt)
             link - link label for headers. If is empty, link href will be
                 hidden.

@@ -15,9 +15,9 @@ to **PEP**.
 Documentation in few seconds
 ----------------------------
 There are three tools for your usage:
-`rst24doc <http://poorhttp.zeropage.cz/jinja24tools.html#rst24doc>`_,
-`wiki24doc <http://poorhttp.zeropage.cz/jinja24tools.html#wiki24doc>`_ and
-`jinja24doc <http://poorhttp.zeropage.cz/jinja24tools.html#jinja24doc>`_.
+`rst24doc <http://poorhttp.zeropage.cz/jinja24doc_tools.html#rst24doc>`_,
+`wiki24doc <http://poorhttp.zeropage.cz/jinja24doc_tools.html#wiki24doc>`_ and
+`jinja24doc <http://poorhttp.zeropage.cz/jinja24doc_tools.html#jinja24doc>`_.
 You can generate simple page like this with tools rst24doc and wiki24doc in
 one command:
 
@@ -48,19 +48,19 @@ Jinja24doc as library
 ---------------------
 There are three submodules which you could interest to:
 
-* `apidoc <http://poorhttp.zeropage.cz/apidoc.html>`_ which contains base ApiDoc
-  class to read python modules and create list of module items by method
-  load_module.
-* `rst <http://poorhttp.zeropage.cz/rst.html>`_ which contains Rst class
-  based on ApiDoc to parse reStructuredText __doc__ or document.
-* `wiki <http://poorhttp.zeropage.cz/wiki.html>`_ which contains Wiki class
-  based on ApiDoc to parse wiki formated __doc__ or document.
-* `context <http://poorhttp.zeropage.cz/context.html>`_ which contains Context
-  class based on Rst and Wiki to couple all functionality to working with
-  jinja2 templates.
-* `frontend <http://poorhttp.zeropage.cz/frontend.html>`_ which contains some
-  functions to easier create command tool like rst24doc, wiki24doc and
-  jinja24doc.
+* `apidoc <http://poorhttp.zeropage.cz/jinja24doc_api.html#apidoc>`_ which
+  contains base ApiDoc class to read python modules and create list of module
+  items by method load_module.
+* `rst <http://poorhttp.zeropage.cz/jinja24doc_api.html#rst>`_ which contains
+  Rst class based on ApiDoc to parse reStructuredText __doc__ or document.
+* `wiki <http://poorhttp.zeropage.cz/jinja24doc_api.html#wiki>`_ which contains
+  Wiki class based on ApiDoc to parse wiki formated __doc__ or document.
+* `context <http://poorhttp.zeropage.cz/jinja24doc_api.html#context>`_ which
+  contains Context class based on Rst and Wiki to couple all functionality
+  to working with jinja2 templates.
+* `frontend <http://poorhttp.zeropage.cz/jinja24doc_api.html#frontend>`_ which
+  contains some functions to easier create command tool like rst24doc, wiki24doc
+  and jinja24doc.
 
 Getting Jinja24doc
 ~~~~~~~~~~~~~~~~~~
@@ -69,16 +69,16 @@ build and or for install. So you must install it first.
 
 Source tarball
 
-.. code-block:: bash
+.. code-block:: sh
 
-    ~$ wget https://pypi.python.org/packages/source/j/jinja24doc/jinja24doc-1.2.0.tar.gz
-    ~$ tar xzf jinja24doc-1.2.0.tar.gz
-    ~$ cd jinja24doc-1.2.0
+    ~$ wget https://pypi.python.org/packages/source/j/jinja24doc/jinja24doc-1.3.0rc1.tar.gz
+    ~$ tar xzf jinja24doc-1.3.0rc1.tar.gz
+    ~$ cd jinja24doc-1.3.0rc1
     ~$ python setup.py install
 
 Source from git
 ~~~~~~~~~~~~~~~
-.. code-block:: bash
+.. code-block:: sh
 
     ~$ git clone https://github.com/PoorHttp/Jinja24Doc.git
     ~$ cd Jinja24Doc
@@ -90,7 +90,7 @@ Don't forget to install all packages first. Jinja24Doc will need it to
 install, but pip do not install packages first even if it download
 automatically.
 
-.. code-block:: bash
+.. code-block:: sh
 
     ~$ pip install jinja2
     ~$ pip install jinja24doc

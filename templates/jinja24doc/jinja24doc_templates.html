@@ -1,0 +1,26 @@
+{% set page = 'templates' %}{% include "_header.html" %}
+
+{% set api = load_module('context') %}
+{% do keywords(api, types = ('class', 'method', 'function')) %}
+{% set sections = load_rst("templates.rst") %}
+{% set api = sections + api %}
+
+      <menu class="sidebar">
+      {% for type, name, args, doc in api %}
+        {% if type == 'module' %}<h2><a href="#{{ name }}">Module {{ name }}</a></h2>
+        {% elif type =='function' and name[0] != '_' %}<h3><a href="#{{ name }}">def {{ name }}</a></h3>
+        {% elif type == 'h2' %}<h2><a href="#{{ id }}">{{ name }}</a></h2>
+        {% elif type == 'h3' %}<h3><a href="#{{ id }}">{{ name }}</a></h3>
+        {% endif %}
+      {% endfor %}
+      </menu><!-- sidebar --!>
+
+      <div class="content">
+    {% for type, name, args, doc in api %}
+      {% if type == 'text' %}
+        <div>{{ doc }}</div>
+      {% endif %}
+    {% endfor %}
+{% include "_reference.html" %}
+      </div><!-- content --!>
+{% include "_footer.html" %}

@@ -33,6 +33,7 @@ re_rfc = re.compile(r"\b(RFC )([0-9]+)\b")              # rfc link
 
 
 class Fn:
+    """Support class for naming in module."""
     def __init__(self, name):
         self.name = name
 
@@ -43,6 +44,8 @@ class Fn:
 def local_name(name):
     """Returns striped name from its parent (module or class).
 
+    Typical use:
+
         #!jinja
         {{ local_name('MyClass.__init__') }} {# put __init__ to document #}
     """
@@ -51,9 +54,10 @@ def local_name(name):
 
 
 def property_info(info, delimiter=' | '):
-    """
-    Returns property info from tupple, where there is flags if property is
-    writable,  readable and deletable.
+    """Returns property info from tupple.
+
+    Input tuple must containts flags if property is writable, readable
+    and deletable.
 
         #!jinja
         {# return someone like this: WRITE | READ | DELETE #}
@@ -81,6 +85,7 @@ def _pep(obj):
 
 
 def pep_rfc(doc):
+    """Automatic create html links in doc from PEP and RFC notifications."""
     doc = re_pep.sub(_pep, doc)
     doc = re_rfc.sub(           # rfc
         r'<a href="http://www.faqs.org/rfcs/rfc\2/">\1\2</a>', doc)
@@ -97,7 +102,7 @@ class ApiDoc(object):
         self.modules = []
         self.encoding = 'utf-8'
 
-    def _keyword(self, obj):
+    def __keyword(self, obj):
         groups = obj.groups()
         key = groups[1]
         args = self.api_keywords[key]
@@ -105,15 +110,15 @@ class ApiDoc(object):
               (self.api_url, key, args, key)
         return groups[0] + tmp + groups[2]
 
-    def _not_in_link(self, obj):
+    def __not_in_link(self, obj):
         groups = obj.groups()
         if not groups[0]:
             return groups[1]
-        tmp = self.re_docs.sub(self._keyword, groups[0])
+        tmp = self.re_docs.sub(self.__keyword, groups[0])
         return tmp + groups[1]
 
     def uni(self, text):
-        """ Function always return unicode or str in Python 3.x """
+        """Function always return unicode in Python 2 or str in Python 3."""
         if unicode_exist and isinstance(text, str):
             return text.decode(self.encoding)
         return text
@@ -121,15 +126,17 @@ class ApiDoc(object):
     def linked_api(self, doc):
         """Append link to api to html.
 
-        Function is called by wiki or rst.
+        Function is called by Context.wiki or Context.rst.
         """
         if self.re_docs is not None:
-            return re_notlink.sub(self._not_in_link, doc)
+            return re_notlink.sub(self.__not_in_link, doc)
         else:
             return doc
 
     def load_module(self, module):               # jinja function
         """Get documentation of function, variables and classes from module.
+
+        Example:
 
             #!jinja
             {% set api = load_module('module') %}

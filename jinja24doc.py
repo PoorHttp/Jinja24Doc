@@ -1,5 +1,4 @@
 #!/usr/bin/python
-"""Jinja24doc command tool for template processing """
 
 from jinja24doc.frontend import jinja_cmdline
 

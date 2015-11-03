@@ -1,0 +1,22 @@
+{% set page = 'api' %}{% include "_header.html" %}
+
+{% set api = load_module('jinja24doc') %}
+{% set api = api + load_module('apidoc') %}
+{% set api = api + load_module('rst') %}
+{% set api = api + load_module('wiki') %}
+{% set api = api + load_module('context') %}
+{% set api = api + load_module('frontend') %}
+
+{% do keywords(api) %}
+      <menu class="sidebar">
+        {% for type, name, args, doc in api %}
+        {% if type == 'module' %}<h2><a href="#{{ name }}">{{ name }}</a></h2>
+        {% elif type =='function' and name[0] != '_' %}<h3><a href="#{{ name }}">{{ name }}</a></h3>
+        {% endif %}
+        {% endfor %}
+      </menu><!-- sidebar --!>
+
+    <div class="content">
+{% include "_reference.html" %}
+    </div><!-- content --!>
+{% include "_footer.html" %}
