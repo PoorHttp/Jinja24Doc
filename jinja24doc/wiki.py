@@ -60,7 +60,8 @@ re_param = re.compile(r"(^|\n) {4}(\S*\s*)")
 re_source = re.compile(r'<pre class="(\w*)">(.*?)</pre>', re.S)
 
 re_python = re.compile(
-    r"(\bdef \w+\b|\bclass \w+\b|\b\w+\b|\"[^\"]*\"|'[^\']*'|#.*|@[\w\.]+)")
+    r"(\bdef \w+\b|\bclass \w+\b|\b\w+\b|\"[^\"]*\"|'[^\']*'|#.*|"
+    "^\s?@[\w\.]+)", re.M)
 re_jinja = re.compile(r"(\b\w+\b|{{|}}|{%|%}|\".*\"|'[^\']*'|{#.*#})")
 re_ini = re.compile(r"(\n\s*\w+\b|\n\s*\[.*\]|#.*)", re.M)
 
