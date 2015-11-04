@@ -174,6 +174,7 @@ class ApiDoc(object):
         for name, item in getmembers(module):
             if isclass(item):                       # module classes
                 if module.__name__ != item.__module__:
+                    dependences.add(item.__module__)
                     continue
                 # type, name, args, doc
                 doc.append(('class',
