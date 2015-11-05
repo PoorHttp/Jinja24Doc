@@ -211,6 +211,9 @@ h4.method > i, h4.staticmethod > i, h4.descriptor > i {
     font-size: 90%;
     color: #333
 }
+h4.staticmethod > i {
+    margin-left: -9em;
+}
 
 h4.property {
     margin: 2em 0 0 0;
@@ -309,8 +312,12 @@ table {
     margin-top: 1em;
 }
 td *, dd * {
-    margin-top: 0;
+    margin-top: 0.2em;
+    margin-bottom: 0.4em;
 }
 .citations td:first-child {
     white-space: nowrap;
+}
+dd > ul {
+    padding-left: 0;
 }
