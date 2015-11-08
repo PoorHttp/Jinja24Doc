@@ -316,6 +316,7 @@ class Wiki(ApiDoc):
 
                     id = name.lower().replace(' ', '-')
                     doc.append((type, self.uni(name), id, ''))
+                    out += '<a name="%s"></a>' % id
                     out += '<%s>%s' % (type, name)
                     if type != 'h1' and (link or top):
                         out += '<span class="links">'
