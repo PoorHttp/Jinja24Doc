@@ -61,7 +61,7 @@ re_source = re.compile(r'<pre class="(\w*)">(.*?)</pre>', re.S)
 
 re_python = re.compile(
     r"(\bdef \w+\b|\bclass \w+\b|\b\w+\b|\"[^\"]*\"|'[^\']*'|#.*|"
-    "^\s?@[\w\.]+)", re.M)
+    "^\s*@[\w\.]+)", re.M)
 re_jinja = re.compile(r"(\b\w+\b|{{|}}|{%|%}|\".*\"|'[^\']*'|{#.*#})")
 re_ini = re.compile(r"(\n\s*\w+\b|\n\s*\[.*\]|#.*)", re.M)
 
@@ -96,8 +96,6 @@ def _python(obj):
         return "<i>%s</i>" % tmp
     if tmp[0] in ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'):
         return "<u>%s</u>" % tmp
-    if tmp[0] == '@':
-        return "<var>%s</var>" % tmp
     if tmp[:4] == "def ":
         return "<b>def</b> <em>%s</em>" % tmp[4:]
     if tmp[:6] == "class ":
@@ -108,6 +106,8 @@ def _python(obj):
         return "<tt>%s</tt>" % tmp
     if tmp in _builtin:
         return "<kbd>%s</kbd>" % tmp
+    if tmp.strip()[0] == '@':
+        return "<var>%s</var>" % tmp
     return tmp
 
 
