@@ -1,3 +1,298 @@
+2015-11-09  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/wiki.py: decorator could be indent from definition
+
+2015-11-08  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/wiki.py: missing section link
+
+2015-11-05  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/blue.css, templates/gray.css, templates/green.css,
+	templates/inverse.css, templates/red.css: styles update
+
+2015-11-04  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/apidoc.py: append dependeces from classes too
+
+2015-11-04  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/wiki.py: decorator fix regular expression
+
+2015-11-03  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/jinja24doc/_header.html: Same header as on web
+
+2015-11-03  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/blue.css, templates/gray.css, templates/green.css,
+	templates/inverse.css, templates/red.css: fix position for link and
+	top links
+
+2015-11-03  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/templates.rst, doc/tools.rst: missing documentation for tools
+	and templates
+
+2015-11-03  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* setup.py, tests/test_wiki.py: function setup.py and tests
+
+2015-11-03  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* README.rst, jinja24doc.py, jinja24doc/apidoc.py,
+	jinja24doc/context.py, jinja24doc/frontend.py, jinja24doc/rst.py,
+	jinja24doc/wiki.py, templates/_reference.html,
+	templates/jinja24doc/_header.html,
+	templates/jinja24doc/_reference.html,
+	templates/jinja24doc/_text.html, templates/jinja24doc/index.html,
+	templates/jinja24doc/jinja24doc_api.html,
+	templates/jinja24doc/jinja24doc_licence.html,
+	templates/jinja24doc/jinja24doc_templates.html,
+	templates/jinja24doc/jinja24doc_tools.html,
+	templates/jinja24doc/licence.html: Documentation update
+
+2015-11-02  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/wiki.py, tests/test_wiki.py: new regex for wiki
+	formating
+
+2015-10-30  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/wiki.py: fix of regular expression for wiki
+
+2015-10-30  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/__init__.py, jinja24doc/frontend.py: right traceback
+	output and right version tag
+
+2015-10-30  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/blue.css, templates/gray.css, templates/green.css,
+	templates/inverse.css, templates/red.css: missing descriptor and dt
+	styles
+
+2015-10-29  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/apidoc.py, jinja24doc/rst.py, jinja24doc/wiki.py: pep
+	and rfc links for wiki and rst
+
+2015-10-27  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* LICENCE, README.rst, templates/jinja24doc/_header.html,
+	templates/jinja24doc/_jinja24doc.html,
+	templates/jinja24doc/_jinja24doc_api.html,
+	templates/jinja24doc/_licence.html,
+	templates/jinja24doc/licence.html: documentation update - first
+	draft
+
+2015-10-23  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/__init__.py, jinja24doc/context.py,
+	jinja24doc/frontend.py, jinja24doc/rst.py, jinja24doc/wiki.py,
+	rst24doc.py, templates/text.html, wiki24doc.py: Bugfixes  * SystemExit exception  * encoding only in template header  * better assert  * filetype as argument for auto_cmdline
+
+2015-10-22  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/apidoc.py, jinja24doc/context.py: class instance fix
+
+2015-10-22  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py, jinja24doc/__init__.py, jinja24doc/apidoc.py,
+	jinja24doc/context.py, jinja24doc/frontend.py, jinja24doc/main.py,
+	jinja24doc/misc.py, jinja24doc/rst.py, jinja24doc/wiki.py,
+	rst24doc.py, templates/jinja24doc/_jinja24doc.html,
+	templates/jinja24doc/_jinja24doc_api.html,
+	tests/test_jinja24doc.py, wiki24doc.py: class refactoring
+
+2015-10-21  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py, jinja24doc/__init__.py, jinja24doc/apidoc.py,
+	jinja24doc/main.py, jinja24doc/misc.py, rst24doc.py, wiki24doc.py: 
+	code refactoring
+
+2015-10-20  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* examples/rst_module.py, examples/wiki_module.py,
+	jinja24doc/apidoc.py, jinja24doc/main.py, rst24doc.py,
+	templates/blue.css, templates/gray.css, templates/green.css,
+	templates/inverse.css, templates/red.css, templates/text.html,
+	tests/test_jinja24doc.py: wiki24doc  * code refactoring  * styles update
+
+2015-10-16  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/main.py, rst24doc.py, templates/_header.html: traceback
+	and embed stylesheet support  * error handle  * import module support  * embed stylesheet from filesystem
+
+2015-10-15  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/main.py, jinja24doc/misc.py, jinja24doc/rst.py,
+	jinja24doc/wiki.py, templates/_reference.html, templates/text.html: 
+	system message, verbose, vesrion
+
+2015-10-15  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/rst.py, jinja24doc/wiki.py, templates/_header.html,
+	templates/_reference.html, templates/module.html: variable top and
+	link for module (_reference template)
+
+2015-10-15  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/main.py, jinja24doc/misc.py, jinja24doc/rst.py,
+	rst24doc.py, setup.py, templates/_header.html,
+	templates/_text.html, templates/module.html, templates/text.html,
+	tests/test_jinja24doc.py: rst24doc with text module working
+
+2015-10-13  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/_header.html: header fix
+
+2015-10-13  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/apidoc.py, jinja24doc/main.py, jinja24doc/misc.py,
+	jinja24doc/rst.py, jinja24doc/wiki.py: pep8 code style
+
+2015-10-13  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/_reference.html, templates/blue.css,
+	templates/gray.css, templates/green.css, templates/inverse.css,
+	templates/red.css: template fix pre space before on each line
+
+2015-10-13  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/apidoc.py: default template path for setuptool
+	installation
+
+2015-10-13  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* examples/rst_module.py, jinja24doc/rst.py, tests/test_inspect.py,
+	tests/test_jinja24doc.py, tests/test_rst.py: docutils_tinyhtmlwriter
+	changes apply
+
+2015-10-12  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/_footer.html, templates/_header.html,
+	templates/_reference.html, templates/_text.html: template output
+	ident
+
+2015-10-12  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/apidoc.py, jinja24doc/main.py: system templates include
+	path by default
+
+2015-10-12  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* setup.py: fix distutils-tinyhtmlwriter dependece
+
+2015-10-12  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/__init__.py, jinja24doc/apidoc.py, jinja24doc/main.py,
+	jinja24doc/rst.py, jinja24doc/wiki.py: python3 support
+
+2015-10-11  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/rst.py: apply docutils-tinyhtmlwriter parts
+
+2015-10-10  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* examples/test.rst, jinja24doc/rst.py, jinja24doc/wiki.py,
+	tests/test_jinja24doc.py: rst part use docutils_tinyhtml writer
+
+2015-10-06  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/main.py, jinja24doc/wiki.py, templates/_text.html,
+	templates/jinja24doc/_text.html, tests/test_jinja24doc.py,
+	tests/test_rst.py: python3 an template fix
+
+2015-10-06  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* examples/generate.sh, examples/test-invalid.rst,
+	examples/test.rst, examples/test.wiki,
+	examples/test_module_rst.html,
+	examples/test_module_rst_linked.html,
+	examples/test_module_wiki.html,
+	examples/test_module_wiki_linked.html, examples/test_rst.html,
+	examples/test_rst_invalid.html, examples/test_wiki.html,
+	jinja24doc/main.py, jinja24doc/misc.py, jinja24doc/rst.py,
+	jinja24doc/wiki.py, templates/_reference.html,
+	templates/_text.html, templates/jinja24doc/_jinja24doc.html,
+	templates/jinja24doc/_jinja24doc_api.html,
+	templates/jinja24doc/_licence.html, tests/test_apidoc.py,
+	tests/test_jinja24doc.py: load_rst and examples  * load_rst and load_wiki generates list of headers and last item is
+	   formated text now  * load_rst and load_wiki have new argumenst link and top, to
+	 generate links span * examples update  * examples are generate by test (py.test needed)  * load_text is deprecated now
+
+2015-10-05  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/blue.css, templates/gray.css, templates/green.css,
+	templates/inverse.css, templates/red.css: styles update  * all styles know new highlight tags  * inverse (dark) style is more contrast
+
+2015-10-05  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* examples/rst_module.py, examples/test.rst,
+	examples/wiki_module.py, jinja24doc/rst.py, templates/blue.css: 
+	escape string colorize
+
+2015-10-05  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* examples/generate.sh, examples/rst_module.py, examples/test.rst,
+	examples/test_module_rst.html,
+	examples/test_module_rst_linked.html,
+	examples/test_module_wiki.html,
+	examples/test_module_wiki_linked.html, examples/test_rst.html,
+	examples/test_wiki.html, examples/wiki_module.py,
+	jinja24doc/rst.py, jinja24doc/wiki.py, templates/blue.css,
+	tests/test_rst.py: rst working  * connect to api keywords  * doctest automatics highlighting  * examples dictionary with test modules
+
+2015-09-25  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* tests/__init__.py, tests/test_apidoc.py, tests/test_inspect.py,
+	tests/test_rst.py, tests/test_wiki.py: tests suite
+
+2015-09-25  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/rst.py: rst fix
+
+2015-09-25  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* templates/_reference.html: reStructuredText is default format
+
+2015-09-25  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/apidoc.py, jinja24doc/main.py, jinja24doc/rst.py,
+	jinja24doc/wiki.py: rst support
+
+2015-09-25  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc.py, jinja24doc/__init__.py, jinja24doc/apidoc.py,
+	jinja24doc/main.py, jinja24doc/misc.py, jinja24doc/wiki.py,
+	setup.py, templates/jinja24doc/_jinja24doc.html,
+	templates/jinja24doc/_jinja24doc_api.html: separate functionality to
+	extra files
+
+2015-09-24  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* jinja24doc/__init__.py, jinja24doc/rst.py: basic reStructuredText
+	library
+
+2015-09-03  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt, templates/jinja24doc/_header.html: moved to GitHub
+	(fix documentation)
+
+2015-03-06  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt: documentation fix (version)
+
+2014-08-25  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/readme.txt, templates/green.css,
+	templates/jinja24doc/_header.html: documentation fixes
+
+2014-08-22  Ondrej Tuma <mcbig@zeropage.cz>
+
+	* doc/ChangeLog: ChangeLog
+
 2014-08-22  Ondrej Tuma <mcbig@zeropage.cz>
 
 	* setup.py: 1.2.0 release

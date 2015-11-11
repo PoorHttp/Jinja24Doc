@@ -71,9 +71,9 @@ Source tarball
 
 .. code-block:: sh
 
-    ~$ wget https://pypi.python.org/packages/source/j/jinja24doc/jinja24doc-1.3.0rc1.tar.gz
-    ~$ tar xzf jinja24doc-1.3.0rc1.tar.gz
-    ~$ cd jinja24doc-1.3.0rc1
+    ~$ wget https://pypi.python.org/packages/source/j/jinja24doc/jinja24doc-1.3.0.tar.gz
+    ~$ tar xzf jinja24doc-1.3.0.tar.gz
+    ~$ cd jinja24doc-1.3.0
     ~$ python setup.py install
 
 Source from git
@@ -94,3 +94,23 @@ automatically.
 
     ~$ pip install jinja2
     ~$ pip install jinja24doc
+
+Unstable version
+~~~~~~~~~~~~~~~~
+From git unstable branch:
+
+.. code-block:: sh
+
+    ~$ git clone clone https://github.com/PoorHttp/Jinja24Doc.git
+    ~$ cd Jinja24Doc
+    ~$ git checkout unstable
+    ~$ python setup.py install
+
+or from zip package:
+
+.. code-block:: sh
+
+    ~$ wget https://github.com/PoorHttp/Jinja24Doc/archive/unstable.zip
+    ~$ unzip unstable.zip
+    ~$ cd Jinja24Doc-unstable
+    ~$ python setup.py install
