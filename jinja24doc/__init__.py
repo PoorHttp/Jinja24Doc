@@ -8,5 +8,5 @@
 """
 
 __author__ = "Ondřej Tůma (McBig) <mcbig@zeropage.cz>"
-__date__ = "20 Oct 2015"
-__version__ = "1.3.0rc2"
+__date__ = "13 Apr 2016"
+__version__ = "1.3.0"

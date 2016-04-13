@@ -97,6 +97,7 @@ kwargs = {
                          'build/_scripts_/rst24doc',
                          'build/_scripts_/wiki24doc'],
     'data_files':
+        [('share/doc/jinja24doc', ['LICENCE', 'README.rst'])] +
         find_data_files('doc', 'share/doc/jinja24doc') +
         find_data_files('build/_html_', 'share/doc/jinja24doc/html') +
         find_data_files('templates', 'share/jinja24doc/templates'),
@@ -124,7 +125,7 @@ kwargs = {
         "Topic :: Text Processing :: Markup",
         "Topic :: Utilities"
     ],
-    'install_requires': ['jinja2 >= 2.6', 'doctutils-tinyhtmlwriter'],
+    'install_requires': ['jinja2 >= 2.6', 'docutils-tinyhtmlwriter'],
     'test_suite':        'tests',
     'cmdclass':           {'build_scripts': X_build_scripts,
                            'build': X_build,
