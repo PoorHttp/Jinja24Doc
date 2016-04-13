@@ -90,7 +90,7 @@ class Rst(ApiDoc):
 
         out = parts['body']
         if parts['html_footnotes'] or parts['html_citations']:
-            out = parts['html_line'] + \
+            out += parts['html_line'] + \
                 parts['html_footnotes'] + parts['html_citations']
 
         out = re_source.sub(_doctest_code, out)
