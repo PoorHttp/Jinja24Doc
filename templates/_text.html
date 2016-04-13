@@ -1,32 +1,29 @@
-{%- include "_header.html" %}
-      <menu class="sidebar">
-    {% for type, name, args, doc in sections %}
-        {% if type == 'h2' %}<h2><a href="#{{ name }}">{{ name }}</a></h2>
-        {% elif type == 'h3' %}<h3><a href="#{{ name }}">{{ name }}</a></h3>
-        {% endif %}
-    {% endfor %}
-      </menu><!-- /sidebar -->
+{% if title is not defined %}
+  {% for type, name, args, doc in sections %}
+    {% if type == 'text' %}
+      {% set title = name %}
+      {% include "_header.html" %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% else %}
+{% include "_header.html" %}
+{% endif %}
 
-    <div class="content">
-    {% for type, name, args, doc in sections %}
-      {% if type == 'h2' %}
-      <h2>{{ name }}
-        <span class="links">
-          <a name="{{ name }}" href="#{{ name }}">link</a> |
-          <a href="#">top</a></span></h2>
-      {% elif type == 'h3' %}
-      <h3>{{ name }}
-        <span class="links">
-          <a name="{{ name }}" href="#{{ name }}">link</a> |
-          <a href="#">top</a></span></h3>
-      {% elif type == 'h4' %}
-      <h4>{{ name }}
-        <span class="links">
-          <a name="{{ name }}" href="#{{ name }}">link</a> |
-          <a href="#">top</a></span></h4>
-      {% elif type == 'text' %}
-      <div>{{ wiki(doc) }}</div>
-      {% endif %}
-    {% endfor %}
-    </div><!-- /content -->
+      <menu class="sidebar">
+      {% for type, name, id, doc in sections %}
+        {% if type == 'h2' %}<h2><a href="#{{ id }}">{{ name }}</a></h2>
+        {% elif type == 'h3' %}<h3><a href="#{{ id }}">{{ name }}</a></h3>
+        {% endif %}
+      {% endfor %}
+      </menu>
+
+      <div class="content">
+      {% for type, name, args, doc in sections %}
+        {% if type == 'text' %}
+        {{ doc }}
+        {% endif %}
+      {% endfor %}
+      </div>
+
 {% include "_footer.html" -%}

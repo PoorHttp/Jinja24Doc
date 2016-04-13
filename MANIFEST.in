@@ -1,5 +1,7 @@
 include *.py
 include MANIFEST.in
+include README.rst
+include LICENCE
 graft templates
 graft doc
 global-exclude *~

@@ -122,7 +122,7 @@ a:active {
     margin-top: 0.5em;
 }
 
-@media (max-width: 560px){
+@media (max-width: 50em){
     .content { margin: 0;}
     .sidebar { float: none;}
 }
@@ -141,6 +141,7 @@ a:active {
     border-top: 1px solid #888;
 }
 .links {
+    width: 5em;
     margin-right: 1em;
     float: right;
     text-align: right;
@@ -151,7 +152,7 @@ a:active {
 
 h1, h2 {
     color: #888;
-} 
+}
 h2 > i {
     font-size: 70%;
 }
@@ -179,7 +180,8 @@ h3 > .links {
     line-height: 2em;
 }
 h3.function {
-    margin: 2em 0 0 0;
+    margin: 2em 0 0 8em;
+    text-indent: -8em;
     padding-bottom: 0;
     color: #e44;
     font-family: monospace;
@@ -200,11 +202,19 @@ h3.variable {
     font-size: 130%;
 }
 
-h4.method, h4.staticmethod {
-    margin: 2em 0 0 0;
+h4.method, h4.staticmethod, h4.descriptor {
+    margin: 2em 0 0 8em;
+    text-indent: -8em;
     padding-left: 2em;
     font-family: monospace;
     font-size: 130%;
+}
+h4.method > i, h4.staticmethod > i, h4.descriptor > i {
+    font-size: 90%;
+    color: #333
+}
+h4.staticmethod > i {
+    margin-left: -9em;
 }
 
 h4.property {
@@ -218,7 +228,7 @@ h4.property > small, h4.staticmethod > small {
     color: #888;
 }
 
-div.module, div.class, div.method, div.staticmethod, div.function, div.property {
+div.module, div.class, div.method, div.staticmethod, div.descriptor, div.function, div.property {
     text-align: jus-tify;
     color: #ddd;
     margin: 0.7em 0 0 0;
@@ -234,33 +244,47 @@ div.module > h4 {
     font-size: 100%;
     margin: 0 0 0 -1em;
 }
-div.method, div.staticmethod, div.property {
+div.method, div.staticmethod, div.descriptor, div.property {
     padding-left: 3em;
 }
 pre {
     font-size: 10pt;
     margin: 0.5em 0 1.5em 0;
-    padding: 0.5em 0 0.5em 0;
+    padding: 0.5em;
     background-color: #444;
     border: 1px dotted gray;
     border-radius: 6px 6px 6px;
     overflow: auto;
+    color: #fff;
 }
 pre > b {
     color: #E55A58;
 }
-pre > u {
-    color: #306900;
+pre > u, pre > var {
+    color: #62C411;
     text-decoration: none;
 }
 pre > i {
     color: #0095ff;
     font-style: normal;
 }
-pre > em {
-    color: #4545FD;
+pre > i > b {
+    color: #CA8400;
+    font-weight: normal;
+}
+pre > em, pre > kbd {
+    color: #A5A5FF;
     font-style: normal;
 }
+pre > tt {
+    color: #999;
+}
+
+.code, .doctest {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
 code {
     font-size: 11pt;
     color: #fff;
@@ -278,4 +302,25 @@ code.param {
 }
 .submodules > .submodule {
     padding: 0 0 0 0.3em;
+}
+
+
+dt {
+    font-weight: bold;
+}
+th, td {
+    vertical-align: top;
+}
+table {
+    margin-top: 1em;
+}
+td *, dd * {
+    margin-top: 0.2em;
+    margin-bottom: 0.4em;
+}
+.citations td:first-child {
+    white-space: nowrap;
+}
+dd > ul {
+    padding-left: 0;
 }

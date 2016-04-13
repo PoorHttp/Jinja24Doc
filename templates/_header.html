@@ -1,27 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta charset="{{ encoding or 'utf-8' }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {%- if description is defined %}    <meta name="description" content="{{ description }}">{% endif %}
-    {%- if author is defined %}    <meta name="author" content="{{ content }}">{% endif %}
-
+    <meta name="generator" content="Jinja24Doc">
+  {% if description is defined %}
+    <meta name="description" content="{{ description }}">
+  {% endif %}
+  {% if author is defined %}
+    <meta name="author" content="{{ author }}">
+  {% endif %}
     <title>{{ title }}</title>
-    <link href="style.css" rel="stylesheet">
+{% if embed_stylesheet is defined %}
+    {{ embed_stylesheet }}
+{% else %}
+  {% set stylesheets = stylesheets if stylesheets is defined else ['style.css'] %}
+  {% for stylesheet in stylesheets %}
+    <link href="{{ stylesheet }}" rel="stylesheet">
+  {% endfor %}
+{% endif %}
   </head>
   <body>
     <div class="page">
 
       <div class="header">
         <h1>{{ title }}</h1>
-{%- if description is defined %}        <small>{{ description }}.</small>{% endif %}
+      {% if description is defined %}
+        <small>{{ description }}.</small>
+      {% endif %}
         <div class="pannel">
-{% if menu is defined -%}
+        {% if menu is defined %}
           <menu class="main">
-          {%- for item in menu %}
-            <span class="item {{ 'selected' if item.selected }}"><a href="{{ item.link }}" title="{{ item.title }}" >{{ item.label }}</a></span>
-          {%- endfor %}
+          {% for item in menu %}
+            {% set m_title = ' title="' + item.title + '"' if item.title else '' %}
+            <span class="item {{ 'selected' if item.selected }}"><a href="{{ item.link }}"{{ m_title }}>{{ item.label }}</a></span>
+          {% endfor %}
           </menu>
-{% endif %}
-        </div><!-- /panel -->
-      </div><!-- /header -->
+        {% endif %}
+        </div>
+      </div>
+

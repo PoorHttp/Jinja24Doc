@@ -1,26 +1,53 @@
-{% set prev = 'none' %}
-{% for type, name, args, doc in api %}
-  {% if type not in ('submodule', 'dependence') and prev in ('submodule', 'dependence') %}
-      </div><!-- /submodules -->
-  {% endif%}
-  {% if type == 'module' %}
-    <h2 class="{{ type }}"><i>module</i> {{ name }}
-      <span class="links">
-        <a name="{{ name }}" href="#{{ name }}">link</a> |
-        <a href="#">top</a></span></h2>
-  {% elif type in ('submodule', 'dependence') %}
-    {% if prev not in ('submodule', 'dependence') %}
-    <div class="submodules">
-      <small>Module dependences:</small>
-    {% else %},
-    {% endif %}
-      <span class="{{ type }}">{{ wiki(name) }}</span>
-  {% elif type == 'function' and not (local_name(name)[0] == '_') %}
-    <h3 class="{{ type }}"><i>def</i> {{ name }}{{ args|truncate(end='...)')|e }}
-      <span class="links">
-        <a name="{{ name }}" href="#{{ name }}">link</a> |
-        <a href="#">top</a></span></h3>
-    <div class="{{ type }}">{{ wiki(doc) }}</div>
-  {% endif %}
-  {% set prev = type %}
-{% endfor %}
+  {% macro links(name) -%}
+    <span class="links">
+            <a href="#{{ name }}">link</a> |
+            <a href="#">top</a></span>
+  {% endmacro %}
+
+    {% set prev = 'none' %}
+    {% for type, name, args, doc in api %}
+        {% if type not in ('submodule', 'dependence') and prev in ('submodule', 'dependence') %}
+        </div><!-- /submodules -->
+      {% endif%}
+      {% if type == 'module' %}
+        <h2 class="{{ type }}"><a name="{{ name }}"></a>
+          <i>module</i> {{ name }}
+          {{ links(name) }}</h2>
+      {% elif type in ('submodule', 'dependence') %}
+        {% if prev not in ('submodule', 'dependence') %}
+        <div class="submodules">
+          <small>Module dependences:</small>
+        {% else %},
+        {% endif %}
+          <span class="{{ type }}">{{ wiki(name) }}</span>
+      {% elif type == 'class' %}
+        <h3 class="{{ type }}"><a name="{{ name }}"></a>
+          <i>class</i> {{ name }}
+          {{ links(name) }}</h3>
+      {% elif type == 'property' %}
+        <h4 class="{{ type }}"><a name="{{ name }}"></a>
+          {{ local_name(name) }} <small>({{ property_info(args)|e }})</small>
+          {{ links(name) }}</h4>
+      {% elif type in ('method', 'descriptor') and local_name(name)[:2] != '__' %}
+        <h4 class="{{ type }}"><a name="{{ name }}"></a>
+          <i>def</i> {{ local_name(name) }}{{ args|truncate(end='...)')|e }}
+          {{ links(name) }}</h4>
+      {% elif type == 'staticmethod' and local_name(name)[:2] != '__' %}
+        <h4 class="{{ type }}"><a name="{{ name }}"></a>
+          <small>@staticmethod</small><br>
+          <i>def</i> {{ local_name(name) }}{{ args|truncate(end='...)')|e }}
+          {{ links(name) }}</h4>
+      {% elif type == 'function' and not (local_name(name)[0] == '_') %}
+        <h3 class="{{ type }}"><a name="{{ name }}"></a>
+          <i>def</i> {{ name }}{{ args|truncate(end='...)')|e }}
+          {{ links(name) }}</h3>
+      {% else %}
+      {% set type = 'dontwant' %}
+      {% endif %}
+      {% if type not in ('dontwant', 'submodule', 'dependence') %}
+<div class="{{ type }}">
+{{ wiki(doc) }}
+</div>
+      {% endif %}
+      {% set prev = type %}
+    {% endfor %}

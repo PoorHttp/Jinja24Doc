@@ -1,0 +1,74 @@
+= Jinja24Doc wiki test =
+
+== Paragraph ==
+So this is some Jinja24Doc wiki test. First, we test some text
+paragraphs with base formating like /italic/, * bold *,
+{ monospaced text } and normal external hyperlink to Jinja24Doc
+http://jinja24doc.zeropage.cz
+
+== Params ==
+Sometime, there could be params in documentation:
+    argc - string argument
+    argv - number argument
+
+== Codes ==
+=== code block with syntax (python by default) ===
+
+    # simple python exmple in code-block (python)
+    from cool import notcool
+
+    class Object(object):
+       ''' Class documentation '''
+        none = None
+        true = True
+        false = False
+        n = int(10)
+        s = str('text')
+
+        def __init__(self):
+            raise RuntimeError('This is singleton\n') # raise the exception
+
+    try:
+        obj = Object()
+    except Exception as e:
+        print(e)
+
+    class Foo(Object):
+        @staticmethod
+        def info():
+            return "This is foo \u010d"
+
+    for i in range(100):
+        if i > 10 and i < 50:
+            print (i*i)
+
+=== doctest code ===
+Doctest code is not highlited by default from rst, but,
+Jinja24Doc can do that. For examle see the last code, but in doctest
+mode:
+
+    >>> @decorator(*args):
+    >>> def function(param, **kwargs):
+    >>>     """ __doc__ for function """
+    >>>     if param is None:
+    >>>         raise Exception("Param can't be None")
+    >>>     assert (isinstance(param, int))
+    >>>     value = param * 2       # some work
+    >>>     return value
+    >>>
+    >>>  try:
+    >>>     function()
+    >>>  except Exception as e:
+    >>>     print(e)
+    Exception: Param can't be None
+
+
+=== Pre block ===
+Need some text here...:(
+
+    #!text
+    This is indent block, which is formated as block
+    only by indenting in source.
+
+And this is process as normal text and as python documentation of module for
+example now. :)

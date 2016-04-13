@@ -1,0 +1,15 @@
+#!/bin/sh
+
+mkdir -p public
+ln -sf ../style.css public/
+PYTHONPATH=jinja24doc
+( cd .. && PYTHONPATH=$PYTHONPATH python3 jinja24doc.py -v --traceback jinja24doc.html web:doc > web/public/jinja24doc.tmp )
+sed 's/http:\/\/poorhttp.zeropage.cz\///' public/jinja24doc.tmp > public/jinja24doc.html
+( cd .. && PYTHONPATH=$PYTHONPATH python3 jinja24doc.py -v --traceback jinja24doc_tools.html web:doc > web/public/jinja24doc_tools.tmp )
+sed 's/http:\/\/poorhttp.zeropage.cz\///' public/jinja24doc_tools.tmp > public/jinja24doc_tools.html
+( cd .. && PYTHONPATH=$PYTHONPATH python3 jinja24doc.py -v --traceback jinja24doc_templates.html web:doc > web/public/jinja24doc_templates.tmp )
+sed 's/http:\/\/poorhttp.zeropage.cz\///' public/jinja24doc_templates.tmp > public/jinja24doc_templates.html
+( cd .. && PYTHONPATH=$PYTHONPATH python3 jinja24doc.py -v --traceback jinja24doc_api.html web:doc > web/public/jinja24doc_api.tmp )
+sed 's/http:\/\/poorhttp.zeropage.cz\///' public/jinja24doc_api.tmp > public/jinja24doc_api.html
+( cd .. && PYTHONPATH=$PYTHONPATH python3 jinja24doc.py -v --traceback jinja24doc_licence.html web:doc > web/public/jinja24doc_licence.tmp )
+sed 's/http:\/\/poorhttp.zeropage.cz\///' public/jinja24doc_licence.tmp > public/jinja24doc_licence.html
