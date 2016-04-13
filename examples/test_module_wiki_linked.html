@@ -1,0 +1,6 @@
+{% set title = 'Your Python Module with wiki __doc__' %}
+{% set author = 'Ondřej Tůma' %}
+{% set formater = wiki %}
+{% set api = load_module('wiki_module') %}
+{% do keywords(api) %}
+{% include '_reference.html' %}

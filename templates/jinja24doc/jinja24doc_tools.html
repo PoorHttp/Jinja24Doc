@@ -1,0 +1,11 @@
+{% set page = 'tools' %}{% include "_header.html" %}
+
+{% set sects = load_rst("tools.rst") %}
+
+{#      need api for keywords yea?     #}
+{% set api = load_module('frontend') %}
+
+{% do keywords(api, 'api.html', types = ('class','function')) %}
+
+{% include "_text.html" %}
+{% include "_footer.html" %}

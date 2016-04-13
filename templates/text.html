@@ -1,0 +1,6 @@
+{% if formater == wiki %}
+{% set sections = load_wiki(source, link, top, system_message) %}
+{% else %}
+{% set sections = load_rst(source, link, top, system_message) %}
+{% endif %}
+{% include '_text.html' %}
