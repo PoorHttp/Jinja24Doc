@@ -124,7 +124,7 @@ kwargs = {
         "Topic :: Text Processing :: Markup",
         "Topic :: Utilities"
     ],
-    'install_requires': ['jinja2 >= 2.6', 'distutils-tinyhtmlwriter'],
+    'install_requires': ['jinja2 >= 2.6', 'doctutils-tinyhtmlwriter'],
     'test_suite':        'tests',
     'cmdclass':           {'build_scripts': X_build_scripts,
                            'build': X_build,
