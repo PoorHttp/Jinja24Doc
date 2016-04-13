@@ -71,9 +71,9 @@ Source tarball
 
 .. code-block:: sh
 
-    ~$ wget https://pypi.python.org/packages/source/j/jinja24doc/jinja24doc-1.3.0.tar.gz
-    ~$ tar xzf jinja24doc-1.3.0.tar.gz
-    ~$ cd jinja24doc-1.3.0
+    ~$ wget https://pypi.python.org/packages/source/j/jinja24doc/jinja24doc-1.3.1.tar.gz
+    ~$ tar xzf jinja24doc-1.3.1.tar.gz
+    ~$ cd jinja24doc-1.3.1
     ~$ python setup.py install
 
 Source from git
