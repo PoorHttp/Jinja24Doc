@@ -10,25 +10,38 @@
     <title>Jinja24Doc for Python</title>
 
     <link href="style.css" rel="stylesheet">
+    <link href="web.css" rel="stylesheet">
 
   </head>
   <body>
     <div class="page">
 
       <div class="header">
+        <img class="right" src="small-logo.png" alt="logo">
         <h1>Jinja24Doc for Python</h1>
         <small>Lightweight documentation generator with jinja2 templates.</small>
         <div class="pannel">
           <menu class="main">
-            <span class="item {{ 'selected' if page == 'about' }}"><a href="index.html" title="" >About</a></span>
-            <span class="item {{ 'selected' if page == 'tools' }}"><a href="jinja24doc_tools.html" title="" >Tools</a></span>
-            <span class="item {{ 'selected' if page == 'templates' }}"><a href="jinja24doc_templates.html" title="" >Templates</a></span>
-            <span class="item {{ 'selected' if page == 'api' }}"><a href="jinja24doc_api.html" title="" >Api Reference</a></span>
-            <span class="item {{ 'selected' if page == 'licence' }}"><a href="jinja24doc_licence.html" title="">Licence</a></span>
-            <span class="item"><a href="https://github.com/PoorHttp/Jinja24Doc">GitHub</a></span>
-            <span class="item"><a href="https://github.com/PoorHttp/Jinja24Doc/issues">Issues</a></span>
-            <span class="item"><a href="https://groups.google.com/d/forum/poorhttp">Forum</a></span>
-            <span class="item"><a href="http://poorhttp.zeropage.cz">PoorHttp</a></span>
+            <span class="item {{ 'selected' if page == 'about' }}">
+                <a href="index.html" title="" >About</a></span>
+            <span class="item {{ 'selected' if page == 'tools' }}">
+                <a href="tools.html" title="" >Tools</a></span>
+            <span class="item {{ 'selected' if page == 'templates' }}">
+                <a href="templates.html" title="" >Templates</a></span>
+            <span class="item {{ 'selected' if page == 'api' }}">
+                <a href="api.html" title="" >Api Reference</a></span>
+            <span class="item {{ 'selected' if page == 'licence' }}">
+                <a href="licence.html" title="">Licence</a></span>
+            <span class="item">
+                <a href="https://github.com/PoorHttp/Jinja24Doc">GitHub</a></span>
+            <span class="item">
+                <a href="https://github.com/PoorHttp/Jinja24Doc/issues">Issues</a></span>
+            <span class="item"
+                ><a href="https://pypi.python.org/pypi/Jinja24Doc">PyPI</a></span>
+          {% if public is defined and public %}
+            <span class="item">
+                <a href="..">PoorHttp</a></span>
+          {% endif %}
           </menu>
-        </div>
-      </div>
+        </div>{# menu #}
+      </div>{# header #}

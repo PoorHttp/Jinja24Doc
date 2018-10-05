@@ -31,9 +31,9 @@
       </menu>
 
       <div class="content">
-    {% set prev = 'none' %}
+    {% set ns = namespace(prev='none') %}
     {% for type, name, args, doc in api %}
-        {% if type not in ('submodule', 'dependence') and prev in ('submodule', 'dependence') %}
+        {% if type not in ('submodule', 'dependence') and ns.prev in ('submodule', 'dependence') %}
         </div><!-- /submodules -->
       {% endif%}
       {% if type == 'module' %}
@@ -41,7 +41,7 @@
           <i>module</i> {{ name }}
           {{ links(name) }}</h2>
       {% elif type in ('submodule', 'dependence') %}
-        {% if prev not in ('submodule', 'dependence') %}
+        {% if ns.prev not in ('submodule', 'dependence') %}
         <div class="submodules">
           <small>Module dependences:</small>
         {% else %},
@@ -80,7 +80,7 @@
 {{ formater(doc, link, top, name, system_message) }}
 </div>
       {% endif %}
-      {% set prev = type %}
+      {% set ns.prev = type %}
     {% endfor %}
       </div>
 
