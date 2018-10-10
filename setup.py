@@ -18,20 +18,24 @@ from shutil import copyfile
 from jinja24doc import __version__
 
 
-def find_data_files(directory, targetFolder=""):
-    """Create datafiles from directory tree."""
+def doc():
+    """Return README.rst content."""
+    with open("README.rst", "r") as readme:
+        return readme.read().strip()
+
+
+def find_data_files(directory, target_folder=""):
+    """Generate tuple for setup data_files argument."""
     rv = []
     for root, dirs, files in walk(directory):
-        if targetFolder:
-            location = (targetFolder+root.lstrip(directory)).rstrip('/')
-            rv.append((location,
-                       list(root+'/'+f
+        if target_folder:
+            rv.append((target_folder,
+                       list(root + '/' + f
                             for f in files if f[0] != '.' and f[-1] != '~')))
         else:
             rv.append((root,
-                       list(root+'/'+f
+                       list(root + '/' + f
                             for f in files if f[0] != '.' and f[-1] != '~')))
-    log.info(str(rv))
     return rv
 
 
@@ -128,32 +132,25 @@ class X_clean(clean):
         clean.run(self)
 
 
-kwargs = {
-    'name':             "jinja24doc",
-    'version':          __version__,
-    'description':      "Jinja24Doc for Python",
-    'author':           "Ondrej Tuma",
-    'author_email':     "mcbig@zeropage.cz",
-    'url':              "http://poorhttp.zeropage.cz/jinja24doc.html",
-    'packages':         ['jinja24doc'],
-    'scripts':          ['build/_scripts_/jinja24doc',
-                         'build/_scripts_/rst24doc',
-                         'build/_scripts_/wiki24doc'],
-    'data_files':
+setup(
+    name="jinja24doc",
+    version=__version__,
+    description="Jinja24Doc for Python",
+    author="Ondrej Tuma",
+    author_email="mcbig@zeropage.cz",
+    url="http://poorhttp.zeropage.cz/jinja24doc.html",
+    packages=['jinja24doc'],
+    scripts=['build/_scripts_/jinja24doc',
+             'build/_scripts_/rst24doc',
+             'build/_scripts_/wiki24doc'],
+    data_files=(
         [('share/doc/jinja24doc', ['LICENCE', 'README.rst'])] +
         find_data_files('doc', 'share/doc/jinja24doc') +
         find_data_files('build/doc', 'share/doc/jinja24doc/html') +
-        find_data_files('templates', 'share/jinja24doc/templates'),
-    'license':           "BSD",
-    'long_description':
-    """
-    Jinja24doc is lightweight documentation generator for python modules
-    with jinja2 templates. It is part of Poor Http group tools (WSGI
-    connector, WSGI/HTTP Server and mod_python connector). It could load
-    modules and gets documentation for its items. No configuration is
-    needed, only jinja2 templates. Your or from jinja2doc package.
-    """,
-    'classifiers':      [
+        find_data_files('templates', 'share/jinja24doc/templates')),
+    license="BSD",
+    long_description=doc(),
+    classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
         "Intended Audience :: Developers",
@@ -168,12 +165,10 @@ kwargs = {
         "Topic :: Text Processing :: Markup",
         "Topic :: Utilities"
     ],
-    'install_requires': ['jinja2 >= 2.10', 'docutils-tinyhtmlwriter'],
-    'test_suite':        'tests',
-    'cmdclass':           {'build_scripts': X_build_scripts,
-                           'build': X_build,
-                           'clean': X_clean,
-                           'build_doc': build_doc},
-}
-
-setup(**kwargs)
+    install_requires=['jinja2 >= 2.10', 'docutils-tinyhtmlwriter'],
+    test_suite='tests',
+    cmdclass={'build_scripts': X_build_scripts,
+              'build': X_build,
+              'clean': X_clean,
+              'build_doc': build_doc}
+)
