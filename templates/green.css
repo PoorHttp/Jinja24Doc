@@ -192,7 +192,7 @@ h3.class {
     padding: 0.1em 0em 0.1em 0.5em;
     background-color: #ddd;
     border-radius: 3px 3px 3px;
-    color: #293CB1;
+    color: #b02c29;
     font-size: 130%;
 }
 h3.variable {
@@ -226,7 +226,7 @@ h4.property > small, h4.staticmethod > small {
     color: #888;
 }
 
-div.module, div.class, div.method, div.staticmethod, div.descriptor, div.function, div.property {
+div.module, div.class, div.method, div.staticmethod, div.descriptor, div.function, div.property, p {
     text-align: jus-tify;
     color: #333;
     margin: 0.7em 0 0 0;
@@ -248,7 +248,7 @@ div.method, div.staticmethod, div.descriptor, div.property {
 pre {
     font-size: 10pt;
     margin: 0.5em 0 1.5em 0;
-    padding: 0.5em;
+    padding: 0.5em 0.5em 0.5em 0.5em;
     background-color: #ddd;
     border: 1px dotted gray;
     border-radius: 6px 6px 6px;
@@ -284,12 +284,38 @@ pre > tt {
 
 code {
     font-size: 11pt;
-    color: #000;
+    color: #900;
 }
 code.param {
     white-space: pre;
     font-weight: bold;
     margin-left: 1em;
+}
+th, td {
+    vertical-align: top;
+    text-align: left;
+}
+table.field_list th, dt {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 11pt;
+    color: #333;
+}
+dt tt {
+    font-weight: normal;
+    font-style: italic;
+}
+table p {
+    margin: 0 0 0.5em 0;
+}
+dd p {
+    margin: 0.5em 0 0.5em 0;
+}
+dd > ul {
+    padding-left: 0;
+}
+.citations td:first-child {
+    white-space: nowrap;
 }
 .submodules {
     padding: 0.2em 0.5em 0.2em 0.5em;
@@ -299,25 +325,4 @@ code.param {
 }
 .submodules > .submodule {
     padding: 0 0 0 0.3em;
-}
-
-
-dt {
-    font-weight: bold;
-}
-th, td {
-    vertical-align: top;
-}
-table {
-    margin-top: 1em;
-}
-td *, dd * {
-    margin-top: 0.2em;
-    margin-bottom: 0.4em;
-}
-.citations td:first-child {
-    white-space: nowrap;
-}
-dd > ul {
-    padding-left: 0;
 }

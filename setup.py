@@ -1,11 +1,6 @@
 #!/usr/bin/python
 
-# try:
-#   can't use setuptools yet, becouse i found data file in absolute path
-#    from setuptools import setup
-# except:
-from distutils.core import setup, Command
-
+from distutils.core import Command
 from distutils.command.build_scripts import build_scripts
 from distutils.command.build import build
 from distutils.command.clean import clean
@@ -14,6 +9,8 @@ from distutils import log
 
 from os import path, walk
 from shutil import copyfile
+
+from setuptools import setup
 
 from jinja24doc import __version__
 
@@ -29,7 +26,7 @@ def find_data_files(directory, target_folder=""):
     rv = []
     for root, dirs, files in walk(directory):
         if target_folder:
-            rv.append((target_folder,
+            rv.append((target_folder+root[len(directory):],
                        list(root + '/' + f
                             for f in files if f[0] != '.' and f[-1] != '~')))
         else:
@@ -94,15 +91,6 @@ class build_doc(Command):
                  self.build_doc+'/small-logo.png')
 
 
-class X_build_scripts(build_scripts):
-    def run(self):
-        self.mkpath('build/_scripts_')
-        copyfile('jinja24doc.py', 'build/_scripts_/jinja24doc')
-        copyfile('rst24doc.py', 'build/_scripts_/rst24doc')
-        copyfile('wiki24doc.py', 'build/_scripts_/wiki24doc')
-        build_scripts.run(self)     # run original build
-
-
 class X_build(build):
     sub_commands = build.sub_commands + [('build_doc', lambda self: True)]
 
@@ -140,9 +128,6 @@ setup(
     author_email="mcbig@zeropage.cz",
     url="http://poorhttp.zeropage.cz/jinja24doc.html",
     packages=['jinja24doc'],
-    scripts=['build/_scripts_/jinja24doc',
-             'build/_scripts_/rst24doc',
-             'build/_scripts_/wiki24doc'],
     data_files=(
         [('share/doc/jinja24doc', ['LICENCE', 'README.rst'])] +
         find_data_files('doc', 'share/doc/jinja24doc') +
@@ -167,8 +152,14 @@ setup(
     ],
     install_requires=['jinja2 >= 2.10', 'docutils-tinyhtmlwriter'],
     test_suite='tests',
-    cmdclass={'build_scripts': X_build_scripts,
-              'build': X_build,
+    cmdclass={'build': X_build,
               'clean': X_clean,
-              'build_doc': build_doc}
+              'build_doc': build_doc},
+    entry_points={
+        'console_scripts': [
+            'jinja24doc = jinja24doc.tools:jinja24doc',
+            'rst24doc = jinja24doc.tools:rst24doc',
+            'wiki24doc = jinja24doc.tools:wiki24doc',
+        ]
+    }
 )

@@ -5,15 +5,15 @@ Module containts some funtcions which are run by command tools.
 from traceback import format_exc
 from argparse import ArgumentParser
 from sys import path as python_path, version_info, stderr
-from os import path
+from os import path, getcwd
 
 if version_info[0] == 2:
     from io import open         # python3x compatible open
 
-import os
-
 from jinja24doc import __version__
 from jinja24doc.context import Context
+
+STYLESHEET = "../../../../share/jinja24doc/templates/"
 
 
 def build_parser(description):
@@ -27,7 +27,8 @@ def build_parser(description):
         help="python module or reStructured text file",
         metavar="SOURCE")
     parser.add_argument(
-        "path", default="", type=str, nargs='?', metavar="PATH[:PATH]",
+        "path", default="", type=lambda s: [it for it in s.split(':') if it],
+        nargs='?', metavar="PATH[:PATH]",
         help="template paths separated by colon")
     parser.add_argument(
         "-O", "--output", type=str, metavar="FILE",
@@ -36,7 +37,9 @@ def build_parser(description):
         "--encoding", default="utf-8", type=str, metavar="STRING",
         help="write html to output file insead of stdout")
     parser.add_argument(
-        "--stylesheet",  default="style.css", type=str, metavar="FILE[,FILE]",
+        "--stylesheet",  default="style.css",
+        type=lambda s: [it for it in s.split(',') if it],
+        metavar="FILE[,FILE]",
         help="stylesheet file name (default style.css)")
     parser.add_argument(
         "--embed-stylesheet", action="store_true",
@@ -81,19 +84,31 @@ def verbose(args, parser):
     # endif verbose
 
 
-def embed_stylesheet(args, stylesheets):
+def embed_stylesheet(args):
     """Return stylesheets content readed from stylesheets."""
     embed_stylesheet = ''
-    for stylesheet in stylesheets:
+    paths = args.path + [getcwd(),
+                         path.abspath(path.join(path.dirname(__file__),
+                                                STYLESHEET))]
+    for stylesheet in args.stylesheet:
+        stylesheet_path = None
+        for directory in paths:
+            tmp = path.join(directory, stylesheet)
+            if path.exists(tmp):
+                stylesheet_path = tmp
+                break
+        if stylesheet_path is None:
+            raise SystemExit("Stylesheet %s does not exist in path %s" %
+                             (stylesheet, ':'.join(paths)))
         try:
-            with open(stylesheet, 'rt', encoding=args.encoding) as css:
+            with open(stylesheet_path, 'rt', encoding=args.encoding) as css:
                 embed_stylesheet += '<style source="%s">\n      ' % \
                                     stylesheet
                 embed_stylesheet += css.read().replace('\n', "\n      ")
                 embed_stylesheet += "</style>\n"
-        except BaseException as e:
+        except OSError as e:
             raise SystemExit("Can't read stylesheet %s:\n\t%s" %
-                             (stylesheet, e))
+                             (stylesheet_path, e))
     return embed_stylesheet
 # enddef
 
@@ -110,12 +125,10 @@ def process(ctx, source, file_types, **kwargs):
         kwargs.update({'title': file_name,
                        'module': file_name})
         output = ctx.generate("module.html", **kwargs)
-    elif ext in (file_types):
+    else:
         ctx.paths.insert(0, path.abspath(path.dirname(source)))
         kwargs['source'] = path.basename(source)
         output = ctx.generate("text.html", ** kwargs)
-    else:
-        raise SystemExit("Unsupport file type `%s'." % source)
     return output
 
 
@@ -125,7 +138,7 @@ def jinja_cmdline(description=''):
     args = parser.parse_args()
     try:
         ctx = Context(args.path, args.encoding)
-        python_path.insert(0, os.getcwd())
+        python_path.insert(0, getcwd())
 
         source = args.source
         # TODO: styles
@@ -151,7 +164,7 @@ def jinja_cmdline(description=''):
         if args.traceback:
             stderr.write("%s\n" % args)
             stderr.write(format_exc())
-        parser.error(e.message)
+        parser.error(e)
     except BaseException as e:
         if args.traceback:
             stderr.write("%s\n" % args)
@@ -168,7 +181,6 @@ def auto_cmdline(description='', formater='rst', file_types=['.txt']):
         ctx = Context(args.path, args.encoding)
 
         source = args.source
-        stylesheets = args.stylesheet.split(',')
         verbose(args, parser)
 
         kwargs = {
@@ -180,9 +192,9 @@ def auto_cmdline(description='', formater='rst', file_types=['.txt']):
         }
 
         if args.embed_stylesheet:
-            kwargs['embed_stylesheet'] = embed_stylesheet(args, stylesheets)
+            kwargs['embed_stylesheet'] = embed_stylesheet(args)
         else:
-            kwargs['stylesheets'] = stylesheets
+            kwargs['stylesheets'] = args.stylesheet
 
         output = process(ctx, source, file_types, **kwargs)
 
@@ -197,7 +209,7 @@ def auto_cmdline(description='', formater='rst', file_types=['.txt']):
         if args.traceback:
             stderr.write("%s\n" % args)
             stderr.write(format_exc())
-        parser.error(e.message)
+        parser.error(e)
     except BaseException as e:
         if args.traceback:
             stderr.write("%s\n" % args)

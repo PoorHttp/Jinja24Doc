@@ -9,7 +9,7 @@ from jinja24doc.apidoc import local_name, property_info
 from jinja24doc.wiki import Wiki
 from jinja24doc.rst import Rst
 
-TEMPLATES = "/share/jinja24doc/templates/"
+TEMPLATES = "../../../../share/jinja24doc/templates/"
 
 
 def log(message):
@@ -26,15 +26,12 @@ class Context(Wiki, Rst):
 
     def __init__(self, paths, encoding='utf-8'):
         super(Context, self).__init__()
-        if isinstance(paths, str):
-            paths = list(it.strip() for it in paths.split(':'))
         if isinstance(paths, tuple):
             paths = list(paths)
         assert isinstance(paths, list), "Paths is %s" % paths.__class__
-        paths.insert(0, getcwd())
-        self.paths = paths + ['/usr/local%s' % TEMPLATES,
+        self.paths = paths + [getcwd(),
                               path.abspath(path.join(path.dirname(__file__),
-                                           path.pardir+TEMPLATES))]
+                                                     TEMPLATES))]
         self.encoding = encoding
 
     def prepare_environment(self):

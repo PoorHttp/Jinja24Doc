@@ -245,7 +245,9 @@ class ApiDoc(object):
             elif isfunction(item) or isroutine(item):
                 if module.__name__ != item.__module__:
                     item__module__ = item.__module__
-                    if item.__module__.startswith(module.__name__):
+                    if item.__module__ is None:
+                        item__module__ = "None"
+                    elif item.__module__.startswith(module.__name__):
                         item__module__ = \
                             item__module__[len(module.__name__)+1:]
                     # append to dependences
