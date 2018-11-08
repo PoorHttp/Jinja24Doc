@@ -69,6 +69,10 @@ def build_parser(description):
         "-v", "--verbose", action="store_true",
         help="verbose mode")
     parser.add_argument(
+        "--var", action='append',
+        help="Named variable, which is visible in templates. Could rewrite "
+             "other input variables for context.generate method.")
+    parser.add_argument(
         '--version', action='version', version='%%(prog)s %s' % __version__)
     return parser
 
@@ -150,6 +154,9 @@ def jinja_cmdline(description=''):
             'system_message': args.system_message,
             'encoding': args.encoding
         }
+        for kwarg in args.var:
+            key, val = kwarg.split('=', 1)
+            kwargs[key] = val
 
         output = ctx.generate(source, **kwargs)
 
@@ -190,6 +197,9 @@ def auto_cmdline(description='', formater='rst', file_types=['.txt']):
             'encoding': args.encoding,
             'formater': getattr(ctx, formater)
         }
+        for kwarg in args.var:
+            key, val = kwarg.split('=', 1)
+            kwargs[key] = val
 
         if args.embed_stylesheet:
             kwargs['embed_stylesheet'] = embed_stylesheet(args)
