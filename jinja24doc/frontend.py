@@ -154,9 +154,10 @@ def jinja_cmdline(description=''):
             'system_message': args.system_message,
             'encoding': args.encoding
         }
-        for kwarg in args.var:
-            key, val = kwarg.split('=', 1)
-            kwargs[key] = val
+        if args.var:    # could be None
+            for kwarg in args.var:
+                key, val = kwarg.split('=', 1)
+                kwargs[key] = val
 
         output = ctx.generate(source, **kwargs)
 
@@ -197,9 +198,10 @@ def auto_cmdline(description='', formater='rst', file_types=['.txt']):
             'encoding': args.encoding,
             'formater': getattr(ctx, formater)
         }
-        for kwarg in args.var:
-            key, val = kwarg.split('=', 1)
-            kwargs[key] = val
+        if args.var:    # could be None
+            for kwarg in args.var:
+                key, val = kwarg.split('=', 1)
+                kwargs[key] = val
 
         if args.embed_stylesheet:
             kwargs['embed_stylesheet'] = embed_stylesheet(args)

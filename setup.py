@@ -126,7 +126,7 @@ setup(
     description="Jinja24Doc for Python",
     author="Ondrej Tuma",
     author_email="mcbig@zeropage.cz",
-    url="http://poorhttp.zeropage.cz/jinja24doc.html",
+    url="http://poorhttp.zeropage.cz/jinja24doc",
     packages=['jinja24doc'],
     data_files=(
         [('share/doc/jinja24doc', ['LICENCE', 'README.rst'])] +
