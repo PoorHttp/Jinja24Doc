@@ -71,9 +71,9 @@ Source tarball
 
 .. code-block:: sh
 
-    ~$ wget https://pypi.python.org/packages/source/j/jinja24doc/jinja24doc-1.3.2.tar.gz
-    ~$ tar xzf jinja24doc-1.3.2.tar.gz
-    ~$ cd jinja24doc-1.3.2
+    ~$ wget https://pypi.python.org/packages/source/j/jinja24doc/jinja24doc-1.3.3.tar.gz
+    ~$ tar xzf jinja24doc-1.3.3.tar.gz
+    ~$ cd jinja24doc-1.3.3
     ~$ python setup.py install
 
 Source from git
@@ -86,13 +86,9 @@ Source from git
 
 Install from PyPI
 ~~~~~~~~~~~~~~~~~
-Don't forget to install all packages first. Jinja24Doc will need it to
-install, but pip do not install packages first even if it download
-automatically.
 
 .. code-block:: sh
 
-    ~$ pip install jinja2
     ~$ pip install jinja24doc
 
 Unstable version

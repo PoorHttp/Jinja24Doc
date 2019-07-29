@@ -1,5 +1,6 @@
 1.3.3
     * no variables fix for command tools
+    * re.Pattern fix for Python 3.7 and above
 
 1.3.2
     * template update

@@ -8,6 +8,13 @@ from operator import itemgetter
 import sys
 import re
 
+# from Python 3.7 re.Pattern type instead of re._pattern_type
+try:
+    from re import _pattern_type as Pattern
+except ImportError:
+    from re import Pattern
+
+
 unicode_exist = True
 try:
     unicode()
@@ -292,7 +299,7 @@ class ApiDoc(object):
 
             elif ismodule(item):
                 doc.append(('submodule', name, None, ''))
-            elif isinstance(item, re._pattern_type):
+            elif isinstance(item, Pattern):
                 if name[0:2] == '__' \
                         or not re.search("\n%s\s*=" % name, source):
                     continue
