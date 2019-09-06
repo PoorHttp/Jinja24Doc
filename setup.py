@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 from distutils.core import Command
-from distutils.command.build_scripts import build_scripts
 from distutils.command.build import build
 from distutils.command.clean import clean
 from distutils.dir_util import remove_tree
