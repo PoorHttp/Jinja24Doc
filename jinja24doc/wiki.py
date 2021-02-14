@@ -5,12 +5,7 @@ from inspect import stack
 import re
 import os
 import sys
-
-if sys.version_info[0] == 2:
-    import __builtin__ as builtins
-    from io import open
-else:
-    import builtins
+import builtins
 
 from jinja24doc.apidoc import ApiDoc, pep_rfc
 
@@ -300,7 +295,7 @@ class Wiki(ApiDoc):
                 if match:
                     if tmp:                  # add block before header to doc
                         # doc.append(('text', '', None, wiki(self.uni(tmp))))
-                        out += self.wiki(self.uni(tmp))
+                        out += self.wiki(tmp)
                         tmp = ''
                     name = match.groups()[1].strip()
                     if match.re == re_section1:
@@ -315,7 +310,7 @@ class Wiki(ApiDoc):
                         raise RuntimeError("No match regex")
 
                     id = name.lower().replace(' ', '-')
-                    doc.append((type, self.uni(name), id, ''))
+                    doc.append((type, name, id, ''))
                     out += '<a name="%s"></a>' % id
                     out += '<%s>%s' % (type, name)
                     if type != 'h1' and (link or top):
@@ -329,7 +324,7 @@ class Wiki(ApiDoc):
                 else:
                     tmp += line
             # endfor
-        out += self.wiki(self.uni(tmp))
+        out += self.wiki(tmp)
         # doc.append(('text', '', None, wiki(self.uni(tmp))))
         doc.append(('text', textfile, None, out))
         return doc
@@ -354,7 +349,7 @@ class Wiki(ApiDoc):
         with open(x_srcfile, 'r', encoding=self.encoding) as f:
             class Obj:
                 def groups(self):
-                    doc = self.uni(f.read())
+                    doc = f.read()
                     doc = re_amp.sub(r"&amp;", doc)
                     doc = re_gt.sub(r"&gt;", doc)
                     doc = re_lt.sub(r"&lt;", doc)

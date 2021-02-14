@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     Jinja24doc is lightweight documentation generator for python modules with
     jinja2 templates. It is part of *Poor Http* group tools (WSGI connector,

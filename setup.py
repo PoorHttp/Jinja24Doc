@@ -1,15 +1,15 @@
 #!/usr/bin/python
 
 from distutils.core import Command
-from distutils.command.build import build
-from distutils.command.clean import clean
+from distutils.command.build import build  # type: ignore
+from distutils.command.clean import clean  # type: ignore
 from distutils.dir_util import remove_tree
 from distutils import log
 
 from os import path, walk
 from shutil import copyfile
 
-from setuptools import setup
+from setuptools import setup  # type: ignore
 
 from jinja24doc import __version__
 

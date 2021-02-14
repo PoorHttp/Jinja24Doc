@@ -1,8 +1,22 @@
-from jinja24doc.apidoc import load_module, keywords
+from jinja24doc.apidoc import ApiDoc
+
 
 def test_load_module():
-    load_module('sys')
+    api = ApiDoc()
+    api.load_module('sys')
+
 
 def test_keywords():
-    api = load_module('sys')
-    keywords(api)
+    api = ApiDoc()
+    module = api.load_module('sys')
+    api.keywords(module)
+
+
+def test_typing():
+    api = ApiDoc()
+    api.load_module('typing')
+
+
+def test_self():
+    api = ApiDoc()
+    api.load_module('jinja24doc.apidoc')

@@ -101,10 +101,10 @@ class Rst(ApiDoc):
 
         out = self.linked_api(pep_rfc(out))
 
-        retval = list(('h%d' % lvl, self.uni(name), id, '')
+        retval = list(('h%d' % lvl, name, id, '')
                       for lvl, name, id in parts['sections'])
         # TODO: append '(author, date, verstion)' from rst if exist like in
         # module
-        retval.append(('text', parts['title'], None, self.uni(out)))
+        retval.append(('text', parts['title'], None, out))
         return retval
 # endclass

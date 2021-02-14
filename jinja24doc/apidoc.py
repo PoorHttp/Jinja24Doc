@@ -1,6 +1,6 @@
 """ module api documentation reader """
 
-from inspect import getargspec, getdoc, getmembers, getsource, formatargspec, \
+from inspect import signature, getdoc, getmembers, getsource, \
     isfunction, isroutine, ismethod, isclass, ismodule, isbuiltin, \
     ismethoddescriptor, isgetsetdescriptor
 from operator import itemgetter
@@ -8,18 +8,7 @@ from operator import itemgetter
 import sys
 import re
 
-# from Python 3.7 re.Pattern type instead of re._pattern_type
-try:
-    from re import _pattern_type as Pattern
-except ImportError:
-    from re import Pattern
-
-
-unicode_exist = True
-try:
-    unicode()
-except:
-    unicode_exist = False
+from re import Pattern
 
 
 ordering = {'module':       (0, 0),
@@ -40,12 +29,18 @@ re_rfc = re.compile(r"\b(RFC )([0-9]+)\b")              # rfc link
 
 
 class Fn:
-    """Support class for naming in module."""
-    def __init__(self, name):
+    """Support class for naming in module.
+
+    >>> Fn('scope', 'name')
+    scope.name
+    """
+    # pylint: disable=too-few-public-methods
+    def __init__(self, scope, name):
+        self.scope = scope
         self.name = name
 
     def __repr__(self):
-        return self.name
+        return self.scope+'.'+self.name
 
 
 def local_name(name):
@@ -99,6 +94,33 @@ def pep_rfc(doc):
     return doc
 
 
+def fix_default_fce(sig):
+    """Replace parameters signature - default function and methods with
+       own __repr__.
+
+    >>> from inspect import signature
+    >>> def foo(fn=print):
+    ...     pass
+    >>> str(fix_default_fce(signature(foo)))
+    '(fn=<built-in function print>)'
+    >>> def boo(fn=foo):
+    ...     pass
+    >>> str(fix_default_fce(signature(boo)))
+    '(fn=apidoc.foo)'
+    """
+
+    parameters = []
+    for name in sig.parameters:
+        param = sig.parameters[name]
+        dflt = param.default
+        if isfunction(dflt):
+            param = param.replace(default=Fn(dflt.__module__, dflt.__name__))
+        elif ismethod(dflt):
+            param = param.replace(default=Fn(dflt.__objclass__, dflt.__name__))
+        parameters.append(param)
+    return sig.replace(parameters=parameters)
+
+
 class ApiDoc(object):
 
     def __init__(self):
@@ -123,12 +145,6 @@ class ApiDoc(object):
             return groups[1]
         tmp = self.re_docs.sub(self.__keyword, groups[0])
         return tmp + groups[1]
-
-    def uni(self, text):
-        """Function always return unicode in Python 2 or str in Python 3."""
-        if unicode_exist and isinstance(text, str):
-            return text.decode(self.encoding)
-        return text
 
     def linked_api(self, doc):
         """Append link to api to html.
@@ -185,9 +201,9 @@ class ApiDoc(object):
                     continue
                 # type, name, args, doc
                 doc.append(('class',
-                            self.uni(item.__name__),
+                            item.__name__,
                             None,
-                            self.uni(getdoc(item) or '')))
+                            getdoc(item) or ''))
 
                 for nm, it in getmembers(item):     # class members
                     if ismethod(it) or isfunction(it) \
@@ -209,30 +225,13 @@ class ApiDoc(object):
                             if isinstance(it, staticmethod):  # python 3.x
                                 it = it.__func__
 
-                            args, vargs, kwords, defaults = getargspec(it)
-                            if defaults:
-                                # transport functions to their names
-                                ndefaults = []
-                                for d in defaults:
-                                    if isfunction(d):
-                                        ndefaults.append(
-                                            Fn(".".join((d.__module__,
-                                                         d.__name__))))
-                                    elif ismethod(d):
-                                        ndefaults.append(
-                                            Fn(".".join((d.__objclass__,
-                                                         d.__name__))))
-                                    else:
-                                        ndefaults.append(d)
-                                defaults = ndefaults
-
+                            sig = fix_default_fce(signature(it))
                             # type, name, args, doc
                             doc.append((
                                 mtype,
-                                (self.uni(item.__name__) + '.' +
-                                 self.uni(it.__name__)),
-                                formatargspec(args, vargs, kwords,
-                                              defaults),
+                                (item.__name__ + '.' +
+                                 it.__name__),
+                                str(sig),
                                 getdoc(it) or ''))
                         except:
                             pass
@@ -241,7 +240,7 @@ class ApiDoc(object):
                         # type, name, property info, doc
                         doc.append((
                             'property',
-                            self.uni(item.__name__) + '.' + self.uni(nm),
+                            item.__name__ + '.' + nm,
                             (bool(it.fget), bool(it.fset), bool(it.fdel)),
                             getdoc(it) or ''))
                     # elif isbuiltin(it):    <- __new__, __subclasshook__
@@ -262,28 +261,11 @@ class ApiDoc(object):
                     continue
 
                 if not isbuiltin(item):
-                    args, vargs, kwords, defaults = getargspec(item)
-                    if defaults:
-                        # transport functions to their names
-                        ndefaults = []
-                        for d in defaults:
-                            if isfunction(d):
-                                ndefaults.append(
-                                    Fn(".".join((d.__module__,
-                                                 d.__name__))))
-                            elif ismethod(d):
-                                ndefaults.append(
-                                    Fn(".".join((d.__objclass__,
-                                                 d.__name__))))
-                            else:
-                                ndefaults.append(d)
-                        defaults = ndefaults
-
+                    sig = fix_default_fce(signature(item))
                     # type, name, args, doc
                     doc.append(('function',
                                 name,
-                                formatargspec(args, vargs, kwords,
-                                              defaults),
+                                str(sig),
                                 getdoc(item) or ''))
                 else:
                     bdoc = getdoc(item) or ''
@@ -301,9 +283,9 @@ class ApiDoc(object):
                 doc.append(('submodule', name, None, ''))
             elif isinstance(item, Pattern):
                 if name[0:2] == '__' \
-                        or not re.search("\n%s\s*=" % name, source):
+                        or not re.search(r"\n%s\s*=" % name, source):
                     continue
-                match = re.search("\n#\s*([^\n]*)\n%s\s*=" % name, source)
+                match = re.search(r"\n#\s*([^\n]*)\n%s\s*=" % name, source)
                 comment = match.groups()[0] if match else ''
                 # type, name, value, doc
                 doc.append(('variable',
@@ -312,12 +294,12 @@ class ApiDoc(object):
                             comment))
             else:
                 if name[0:2] == '__' \
-                        or not re.search("\n%s\s*=" % name, source):
+                        or not re.search(r"\n%s\s*=" % name, source):
                     if name in ('__author__', '__date__', '__version__'):
                         modinfo[name.strip('_')] = repr(item)
                     continue
                 # get last previous comment start with hash char (#)
-                match = re.search("\n#\s*([^\n]*)\n%s\s*=" % name, source)
+                match = re.search(r"\n#\s*([^\n]*)\n%s\s*=" % name, source)
                 comment = match.groups()[0] if match else ''
                 # type, name, value, doc
                 doc.append(('variable', name, repr(item), comment))
@@ -366,7 +348,7 @@ class ApiDoc(object):
 
         self.re_docs = re.compile(
             r"(\b)(%s)(\b)" % '|'.join(
-                (name.replace('.', '\.')
+                (name.replace('.', r'\.')
                     for type, name, args, doc in api if type in types)))
         if self.re_docs.pattern == r"(\b)()(\b)":  # no keywrods found
             self.re_docs = None
