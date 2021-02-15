@@ -1,22 +1,16 @@
-
 """
 Library for reStrucuredText parsing, and generating simple HTML output.
 """
+import os
 
 from docutils.core import publish_parts
 from docutils_tinyhtml import Writer
-
-from sys import version_info
-if version_info[0] == 2:
-    from io import open
-
-import os
 
 from jinja24doc.apidoc import ApiDoc, pep_rfc
 from jinja24doc.wiki import re_source, re_python, _python
 
 
-def _doctest_code(obj):
+def doctest_code(obj):
     tmp = obj.groups()
     if tmp[0] == 'doctest':
         source = re_python.sub(_python, tmp[1])
@@ -47,7 +41,7 @@ class Rst(ApiDoc):
         out = parts['body'] + parts['html_line'] + \
             parts['html_footnotes'] + parts['html_citations']
 
-        out = re_source.sub(_doctest_code, out.strip())
+        out = re_source.sub(doctest_code, out.strip())
 
         if out.startswith('<p') and out.endswith('</p>') and \
                 out.count('</p>') == 1:     # strip paragraph if is one
@@ -93,7 +87,7 @@ class Rst(ApiDoc):
             out += parts['html_line'] + \
                 parts['html_footnotes'] + parts['html_citations']
 
-        out = re_source.sub(_doctest_code, out)
+        out = re_source.sub(doctest_code, out)
 
         if out.startswith('<p') and out.endswith('</p>') and \
                 out.count('</p>') == 1:     # strip paragraph if is one

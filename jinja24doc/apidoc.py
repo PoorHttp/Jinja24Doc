@@ -211,18 +211,10 @@ class ApiDoc(object):
                             or isgetsetdescriptor(it):
                         try:
                             mtype = 'descriptor'
-                            if sys.version_info[0] > 2:     # python 3.x
-                                if isfunction(it):
-                                    mtype = 'method'
-                                elif isinstance(it, staticmethod):
-                                    mtype = 'staticmethod'
-                            else:                           # python 2.x
-                                if ismethod(it):
-                                    mtype = 'method'
-                                elif isfunction(it):
-                                    mtype = 'staticmethod'
-
-                            if isinstance(it, staticmethod):  # python 3.x
+                            if isfunction(it):
+                                mtype = 'method'
+                            elif isinstance(it, staticmethod):
+                                mtype = 'staticmethod'
                                 it = it.__func__
 
                             sig = fix_default_fce(signature(it))

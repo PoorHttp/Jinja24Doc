@@ -1,11 +1,11 @@
-
-from jinja2 import Undefined
 from inspect import stack
 
 import re
 import os
 import sys
 import builtins
+
+from jinja2 import Undefined
 
 from jinja24doc.apidoc import ApiDoc, pep_rfc
 

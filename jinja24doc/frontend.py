@@ -7,9 +7,6 @@ from argparse import ArgumentParser
 from sys import path as python_path, version_info, stderr
 from os import path, getcwd
 
-if version_info[0] == 2:
-    from io import open         # python3x compatible open
-
 from jinja24doc import __version__
 from jinja24doc.context import Context
 

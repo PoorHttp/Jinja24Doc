@@ -149,7 +149,7 @@ setup(
         "Topic :: Text Processing :: Markup",
         "Topic :: Utilities"
     ],
-    install_requires=['jinja2 >= 2.10', 'docutils-tinyhtmlwriter'],
+    install_requires=['jinja2 >= 2.10', 'docutils-tinyhtmlwriter', 'pygments'],
     test_suite='tests',
     cmdclass={'build': X_build,
               'clean': X_clean,
