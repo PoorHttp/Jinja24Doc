@@ -4,7 +4,7 @@ from os import path
 python_path.insert(0, path.abspath(
     path.join(path.dirname(__file__), path.pardir)))
 
-import pytest
+import pytest  # type: ignore
 
 from jinja24doc.wiki import Wiki
 

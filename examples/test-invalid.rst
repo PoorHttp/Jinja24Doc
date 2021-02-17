@@ -44,8 +44,8 @@ Doctest code is not highlited by default from rst, but,
 Jinja24Doc can do that. For examle see the last code, but in doctest
 mode:
 
-    >>> from functools import cache
-    >>> @cache
+    >>> from functools import lru_cache
+    >>> @lru_cache(maxsize=32)
     ... def function(param, **kwargs):
     ...     """__doc__ for function"""
     ...     if param is None:

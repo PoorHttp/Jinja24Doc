@@ -8,7 +8,7 @@ python:
  - "3.9"
 
 install:
- - pip install pytest mock pytest-mypy pytest-doctestplus
+ - pip install pytest pytest-mypy pytest-doctestplus mock
    jinja2 pygments docutils docutils-tinyhtmlwriter m2r
 
 script:

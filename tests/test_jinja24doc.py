@@ -3,7 +3,7 @@ from os import path, makedirs
 from shutil import copyfile
 
 from mock import patch
-import pytest
+import pytest  # type: ignore
 
 python_path.insert(0, path.abspath(
     path.join(path.dirname(__file__), path.pardir)))

@@ -8,7 +8,11 @@ from operator import itemgetter
 import sys
 import re
 
-from re import Pattern
+# from Python 3.7 re.Pattern type instead of re._pattern_type
+try:
+    from re import Pattern  # type: ignore
+except ImportError:
+    from re import _pattern_type as Pattern  # type: ignore
 
 
 ordering = {'module':       (0, 0),
