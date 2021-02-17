@@ -85,20 +85,20 @@ Doctest code is not highlited by default from rst, but,
 Jinja24Doc can do that. For examle see the last code, but in doctest
 mode:
 
->>> @decorator(\*args):
-    def function(param, \*\*kwargs):
-        """ __doc__ for function """
-        if param is None:
-            raise Exception("Param can't be None")
-        assert (isinstance(param, int))
-        value = param * 2       # some work
-        return value
-None
->>>  try:
-       function()
-     except Exception as e:
-        print(e)
-Exception: Param can't be None
+    >>> from functools import cache
+    >>> @cache
+    ... def function(param, **kwargs):
+    ...     """__doc__ for function"""
+    ...     if param is None:
+    ...         raise Exception("Param can't be None")
+    ...     assert (isinstance(param, int))
+    ...     value = param * 2       # some work
+    ...     return value
+    >>> try:
+    ...     function(None)
+    ... except Exception as e:
+    ...     print(e)
+    Param can't be None
 
 Indent block
 ............

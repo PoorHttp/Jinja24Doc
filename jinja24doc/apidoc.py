@@ -106,8 +106,9 @@ def fix_default_fce(sig):
     >>> def boo(fn=foo):
     ...     pass
     >>> str(fix_default_fce(signature(boo)))
-    '(fn=apidoc.foo)'
+    '(fn=jinja24doc.apidoc.foo)'
     """
+    # TODO: str -> str
 
     parameters = []
     for name in sig.parameters:

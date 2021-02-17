@@ -8,8 +8,13 @@ python:
  - "3.9"
 
 install:
- - pip install pytest mock
-   jinja2 pygments docutils docutils-tinyhtmlwriter
+ - pip install pytest mock pytest-mypy pytest-doctestplus
+   jinja2 pygments docutils docutils-tinyhtmlwriter m2r
 
 script:
+ - pytest -v --mypy --doctest-plus --doctest-rst
  - pytest -v tests
+
+before_deploy:
+ - python3 setup.py sdist
+ - python3 setup.py bdist_wheel

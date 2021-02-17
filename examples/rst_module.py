@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Example module with wiki formated __doc__
 ==========================================
@@ -87,28 +86,28 @@ def check_number(val):
         sys.stdout.write("\\t10**10\\t:%s\\n" % check_number(10**10))  # True
         sys.stdout.flush()
     """
-    pass
 
 
-class Object(object):
+class Object:
     """ Empty class
 
     Example code:
 
-    >>> print 'simple text'
-    >>> print 'text with number 3'
-    >>> print 'text with float 3.13'
-    >>> print u'Unicode Text'
-    >>> print u'Ondřej Tůma'
+    >>> print('simple text')
+    simple text
+    >>> print('text with number 3')
+    text with number 3
+    >>> print('text with float 3.13')
+    text with float 3.13
+    >>> print('Ondřej Tůma')
+    Ondřej Tůma
     """
-    pass
 
 
 class Point(Object):
     """ Point class """
     def __init__(self, x, y):
         """ Set x and y values """
-        pass
 
     def draw(self, color="black"):
         """ draw point with defined color
@@ -125,7 +124,6 @@ class Point(Object):
     @property
     def read_only(self):
         """ this is read only property """
-        pass
 
 # module name
 module_name = "rst module"
