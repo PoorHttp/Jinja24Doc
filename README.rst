@@ -67,23 +67,6 @@ Getting Jinja24doc
 Jinja24Doc needs Jinja2, docutils and distutils-tinyhtmlwriter package for
 build and or for install. So you must install it first.
 
-Source tarball
-
-.. code-block:: sh
-
-    ~$ wget https://pypi.python.org/packages/source/j/jinja24doc/jinja24doc-1.3.3.tar.gz
-    ~$ tar xzf jinja24doc-1.3.3.tar.gz
-    ~$ cd jinja24doc-1.3.3
-    ~$ python setup.py install
-
-Source from git
-~~~~~~~~~~~~~~~
-.. code-block:: sh
-
-    ~$ git clone https://github.com/PoorHttp/Jinja24Doc.git
-    ~$ cd Jinja24Doc
-    ~$ python setup.py install
-
 Install from PyPI
 ~~~~~~~~~~~~~~~~~
 
@@ -91,22 +74,10 @@ Install from PyPI
 
     ~$ pip install jinja24doc
 
-Unstable version
-~~~~~~~~~~~~~~~~
-From git unstable branch:
-
+Develop version from git
+~~~~~~~~~~~~~~~~~~~~~~~~
 .. code-block:: sh
 
-    ~$ git clone clone https://github.com/PoorHttp/Jinja24Doc.git
+    ~$ git clone https://github.com/PoorHttp/Jinja24Doc.git
     ~$ cd Jinja24Doc
-    ~$ git checkout unstable
-    ~$ python setup.py install
-
-or from zip package:
-
-.. code-block:: sh
-
-    ~$ wget https://github.com/PoorHttp/Jinja24Doc/archive/unstable.zip
-    ~$ unzip unstable.zip
-    ~$ cd Jinja24Doc-unstable
     ~$ python setup.py install

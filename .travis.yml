@@ -1,15 +1,14 @@
 ---
 language: python
-
 python:
- - "3.6"
- - "3.7"
- - "3.8"
- - "3.9"
+ - '3.6'
+ - '3.7'
+ - '3.8'
+ - '3.9'
 
 install:
- - pip install pytest pytest-mypy pytest-doctestplus mock
-   jinja2 pygments docutils docutils-tinyhtmlwriter m2r
+ - pip install pytest pytest-mypy pytest-doctestplus mock jinja2 pygments
+   docutils docutils-tinyhtmlwriter m2r
 
 script:
  - pytest -v --mypy --doctest-plus --doctest-rst
@@ -18,3 +17,30 @@ script:
 before_deploy:
  - python3 setup.py sdist
  - python3 setup.py bdist_wheel
+
+deploy:
+ - provider: pypi
+   user: __token__
+   password:
+    secure: r0XfjnqgHj7WfD1oOkg06seczS2TyM0K3aar8elg9iaxzz167VQcQnjsHwT3QS3Sf6q2AyWxlPOh5dRspUAtk5ykZMw0uUk/ptHDmiQAkRuaQOH7DEQ+AeuF4aZzURsjtIK5WV4lGcOfuh8cU1mMd6Rs3uakN4Lf84GxwmHRkMqyxLK5jziHTWBVpf7cy20JNh7WLV5jlWKupDI9RleB0qlXxiSAe2gWCFhwVPmHtAUVmvnE6zyPMx4a+ShJqBboKS0hie7+LkWbk9BgEC2SdpdXGF/Twzzj1JjNACs6L0PWmt3QQXtii9k8l79L2gkVV0+LUqYHveWy6gOPrd6oA2uQCDUH3alOCf7AEet7q/yBaj8LfIhJMDWxrxQOmjSaHvbBbbe1smL5+C0BSR2bTHgO0xCvNDtzg6hQewKgwXWqndxVR7UFJo2klQx3aeTRrrIB8g5Z2pzr/ngvGJo7RVuHecWVXhvBEqUSVTO2asIyVR3WmD4a4Snv/SsmCtS9MSN5nO5jqJI5XMzDAdtCAWXs7/XW37iklMHylJCMzAC6vWEK3Y+M3v8/tlYz5G8ML5x0Ob34wA25hqmZ3Z4OhN/5IuMizhyd44wjSjKUzRyxSbmxRC6VEKNb3jNnbvDOC91OlY8v0bFpzMJHDo6n9poXb2q2I9dIqrqyXqrJYhs=
+   distribution: sdist bdist_wheel
+   skip_cleanup: true
+   skip_existing: true
+   overwrite: true
+   on:
+    repo: PoorHttp/Jinja24Doc
+    branch: master
+    tags: true
+ - provider: releases
+   api_key:
+    secure: VRVtRdr1AJEP4JzOz27H+J9lp+fBnb+L/rePZ4X3GRjABiRBxQBOjsDl9C29XwxQIKK8bPd+PN4embvT1gsNooPyBWvR+9WQoW7Btjli01E/CyBIxlv4FG9rPlasptp6w1vCpg10OKz5IfHHMLmU2JFhkzwieDYLwqfSiearUcbC9xz070w+i5LHIVVhPM5bbicSt4OsKAxftK2o0fFV/AjK+cO0kdIeh87AtpdiaFk2Ao6YxwWrZ2MoUV/b52DV/rOpkWHh58P/YFKvpSuA7i7fV+yI+VlEpI2a62OtMhw62CxVcqOAcZw0GFDbUlG1GWC+mRTBiXQUxYECQTDGBC9IsJT1heYVUgQFjsqrami9Q0GumXgFSrHo5o/ONR7gRByYTTYu6zHcE/1GPPggkGJHCurvNI2m+6aH1eDVWbs90wASmxnjQAo8fRgoyTSlJE0RlqEXtGiBQISCK1nmctcPXiMTMqo9UmbAWoz5aGLHQU/mS6+GJ8MaNWoh4/v/joroLEXWrsWc8IqSnKBXiGPgDWjqOPQfV4DlF17yFAR65uZfA7jXIUR2+X9V10i8NkXxCTCFet3Dj7rLcw7YYz7uxUV6Ut/dHtcQBIiyXz3ivZk3TgrGFxaImXqxyctx/C7hKUDlzcHRLZzzXTQwBjmzaXTeoNRbyLKGDgzU48A=
+   file:
+    - dist/Jinja24Doc-$TRAVIS_TAG.tar.gz
+    - dist/Jinja24Doc-$TRAVIS_TAG-py3-none-any.whl
+   skip_cleanup: true
+   skip_existing: true
+   overwrite: true
+   on:
+    repo: PoorHttp/Jinja24Doc
+    branch: master
+    tags: true
