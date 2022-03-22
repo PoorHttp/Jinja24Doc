@@ -1,0 +1,382 @@
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #fcfcfc;
+    font-family: Lato,proxima-nova,Helvetica Neue,Arial,sans-serif;
+    font-weight: 400;
+    color: #404040;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+menu {
+}
+
+.page {
+    background: #fcfcfc;
+}
+
+.header {
+    width: 300px;
+    min-width: 10em;
+    background-color: #2980b9;
+    position: sticky;
+}
+
+.header img {
+    padding: 1em 1em 0 0;
+    margin-left: -2em;
+    width: 2em;
+}
+.header h1 {
+    color: #fcfcfc;
+    font-size: 120%;
+    font-weight: bold;
+    padding: 1.5em 0.2em;
+    text-align: center;
+    margin: 0;
+}
+.header small {
+    margin: 0 0 1em 1em;
+    font-size: 85%;
+    display: none;
+}
+
+.pannel {
+    background: #343131;
+}
+.pannel menu {
+    margin: 0;
+    padding: 0;
+    padding-bottom: 1em;
+}
+.pannel menu a:link,
+.pannel menu a:visited,
+.pannel menu a:active {
+    color: #55a5d9;
+}
+.pannel menu.languages {
+    display: table;
+    float: right;
+    text-align: right;
+    font-size: 100%;
+}
+.pannel menu > .item {
+    display: block;
+    padding: 0.5em 0.3em 0.3em 1em;
+    font-size: 120%;
+}
+.pannel menu > .selected > a {
+    font-weight: bold;
+}
+.pannel menu > .item:hover {
+    background-color: #4e4a4a;
+
+}
+
+.sidebar {
+    margin: 0;
+    clear: both;
+    width: 300px;
+    height: 100%;
+    background: #343131;
+    padding: 0;
+    color: #9b9b9b;
+    position: sticky;
+}
+.sidebar a:link,
+.sidebar a:visited,
+.sidebar a:active {
+    line-height: 18px;
+    padding: 0.4em 1.6em;
+    color: #d9d9d9;
+    display: block;
+}
+.sidebar a:hover {
+    background-color: #4e4a4a;
+}
+
+.sidebar h1 {
+    margin: 0;
+    font-size: 120%;
+    font-weight: normal;
+    color: #55a5d9;
+}
+.sidebar h2 {
+    margin: 0;
+    font-size: 100%;
+    font-weight: normal;
+    line-height: 18px;
+    color: #d9d9d9;
+}
+.sidebar h2 a:link,
+.sidebar h2 a:visited,
+.sidebar h2 a:active
+{
+    color: #55a5d9;
+    text-transform: uppercase;
+}
+
+
+.sidebar h3 {
+    margin: 0;
+    font-size: 90%;
+    font-weight: normal;
+}
+
+.linebar {
+    float: left;
+    margin: 0.5em 0 1.5em 0;
+    padding: 0.5em;
+    font-size: 11pt;
+    background-color: #ddd;
+    border: 1px dotted gray;
+    border-radius: 6px 6px 6px;
+    border-right: none;
+}
+.linebar h3 {
+    margin: 0;
+    font-size: 90%;
+    font-weight: normal;
+    text-align: right;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+    color: #69000B;
+    text-decoration: none;
+}
+
+.content {
+    margin-left: 300px;
+    min-width: 16em;
+    max-width: 800px;
+    padding: 1.618em 3.236em;
+    color: #404040;
+}
+
+.footer {
+    color: #cfcfcf;
+    font-size: 90%;
+    text-align: center;
+    width: 300px;
+    bottom: 0;
+    position: fixed;
+}
+.footer .credit {
+    padding: 0.5em;
+}
+.footer a:link,
+.footer a:visited,
+.footer a:active {
+    color: #55a5d9;
+}
+
+.line {
+    border-top: 1px solid #413d3d;
+    width: 90%;
+    margin: auto;
+}
+.links {
+    width: 5em;
+    margin-right: 1em;
+    float: right;
+    text-align: right;
+    font-weight: normal;
+    font-family: sans-serif;
+    font-size: 11pt;
+}
+.links a:link,
+.links a:visited,
+.links a:active {
+    color: #404040;
+}
+
+@media (max-width: 50em){
+    .content { margin: 0;}
+    .header {
+        position: relative;
+        width: 100%;
+    }
+    .sidebar { display: none;}
+    .footer {position: relative; width: 100%;}
+}
+
+
+h1 {
+    font-size: 200%;
+}
+h2 > i {
+    font-size: 70%;
+}
+h2 > .links {
+    line-height: 2em;
+}
+h2.module {
+    margin: 0;
+    font-size: 175%;
+}
+h2.module > .links > a {
+    color: #bbe;
+}
+
+h3 > i {
+    font-size: 90%;
+    color: #2980b9;
+}
+h3 > .links {
+    line-height: 2em;
+}
+h3.function {
+    margin: 2em 0 0 0em;
+    font-family: monospace;
+    font-size: 100%;
+    border-top: 2px solid #6ab0de;
+    background-color: #e7f2fa;
+
+}
+h3.function > i {
+    font-size: 45%;
+}
+h3.class {
+    border-top: 3px solid #6ab0de;
+    padding: 6px;
+    background-color: #e7f2fa;
+    font-size: 100%;
+}
+h3.variable {
+    font-family: monospace;
+    font-size: 130%;
+}
+
+h4.method, h4.staticmethod, h4.descriptor {
+    margin: 2em 0 0 1em;
+    border-top: 1px solid #6ab0de;
+    background-color: #e7f2fa;
+    font-family: monospace;
+    font-size: 90%;
+}
+h4.method > i, h4.staticmethod > i, h4.descriptor > i {
+    font-size: 90%;
+    color: #2980b9;
+}
+
+h4.staticmethod > i {
+    margin-left: -9em;
+}
+
+h4.property {
+    margin: 1em 0 0 0;
+    padding-left: 1em;
+    font-family: monospace;
+    font-size: 90;
+}
+
+h4.property > small, h4.staticmethod > small {
+    color: #888;
+}
+
+div.module, div.class, div.method, div.staticmethod, div.descriptor, div.function, div.property, p {
+    text-align: justify;
+}
+div.module > h3 {
+    color: #000;
+    font-size: 120%;
+    margin: 0 0 0 -0.8em;
+}
+div.module > h4 {
+    color: #000;
+    font-size: 100%;
+    margin: 0 0 0 -1em;
+}
+div.method, div.staticmethod, div.descriptor, div.property {
+    padding-left: 3em;
+}
+pre {
+    font-family: SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    background-color: #f8f8f8;
+    border: 1px solid #e1e4e5;
+    overflow: auto;
+}
+pre > b {
+    color: #b02c29;
+}
+pre > u, pre > var {
+    color: #306900;
+    text-decoration: none;
+}
+pre > i {
+    color: #005089;
+    font-style: normal;
+}
+pre > i > b {
+    color: #CA8400;
+    font-weight: normal;
+}
+pre > em, pre > kbd {
+    color: #0000B0;
+    font-style: normal;
+}
+pre > tt {
+    color: #666;
+}
+
+.code, .doctest {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+code {
+    font-size: 11pt;
+    color: #900;
+}
+code.param {
+    white-space: pre;
+    font-weight: bold;
+    margin-left: 1em;
+}
+th, td {
+    vertical-align: top;
+    text-align: left;
+}
+table.field_list th, dt {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 11pt;
+    color: #333;
+}
+dt tt {
+    font-weight: normal;
+    font-style: italic;
+}
+table p {
+    margin: 0 0 0.5em 0;
+}
+dd p {
+    margin: 0.5em 0 0.5em 0;
+}
+dd > ul {
+    padding-left: 0;
+}
+.citations td:first-child {
+    white-space: nowrap;
+}
+.submodules {
+    padding: 0.2em 0.5em 0.2em 0.5em;
+    margin: 0.5em 0 0.5em 0;
+    background-color: #ddd;
+    border-radius: 3px 3px 3px;
+}
+.submodules > .submodule {
+    padding: 0 0 0 0.3em;
+}
